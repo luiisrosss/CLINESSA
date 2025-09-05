@@ -15,6 +15,7 @@ import { PatientsPage } from '@/pages/patients/PatientsPage'
 import { AppointmentsPage } from '@/pages/appointments/AppointmentsPage'
 import { MedicalRecordsPage } from '@/pages/medical-records/MedicalRecordsPage'
 import { UsersPage } from '@/pages/users/UsersPage'
+import { BillingPage } from '@/pages/billing/BillingPage'
 import { SettingsPage } from '@/pages/settings/SettingsPage'
 import { SetupPage } from '@/pages/SetupPage'
 
@@ -93,6 +94,7 @@ function App() {
                 </ProtectedRoute>
               } 
             />
+            <Route path="billing" element={<BillingPage />} />
             <Route path="settings" element={<SettingsPage />} />
           </Route>
           

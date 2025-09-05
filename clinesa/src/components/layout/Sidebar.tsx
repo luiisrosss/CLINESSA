@@ -9,6 +9,7 @@ import {
   UserPlus,
   Stethoscope,
   Activity,
+  CreditCard,
   X,
   Menu
 } from 'lucide-react'
@@ -57,6 +58,11 @@ const navigation: NavItem[] = [
     href: '/users',
     icon: UserPlus,
     permissions: ['canManageUsers']
+  },
+  {
+    label: 'Facturación',
+    href: '/billing',
+    icon: CreditCard,
   },
   {
     label: 'Configuración',
