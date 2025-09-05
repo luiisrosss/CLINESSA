@@ -14,9 +14,14 @@ This directory contains the SQL migrations and setup files for the CLINESA medic
 
 In your Supabase SQL Editor, execute the files in the following order:
 
-1. **001_initial_schema.sql** - Creates the complete database schema
-2. **002_row_level_security.sql** - Sets up security policies
+1. **001_initial_schema.sql** - Creates the complete database schema with triggers
+2. **002_row_level_security.sql** - Sets up security policies for multi-tenancy
 3. **003_sample_data.sql** - *(Optional)* Adds sample data for testing
+
+**⚠️ Important Notes:**
+- Execute each file completely before proceeding to the next one
+- The schema includes validation triggers for data integrity
+- Sample data is optional but recommended for development
 
 ### 2. Generate TypeScript Types (Optional)
 
@@ -52,6 +57,8 @@ VITE_SUPABASE_ANON_KEY=your-supabase-anon-key
 - **Row Level Security**: Ensures users only access their organization's data
 - **Audit Trail**: All tables include `created_at` and `updated_at` timestamps
 - **Soft Deletes**: Records are marked as inactive instead of being deleted
+- **Data Validation**: Triggers ensure doctors have correct roles for appointments
+- **Auto-timestamps**: Automatic `updated_at` updates on record changes
 - **HIPAA Compliance**: Designed with healthcare data privacy in mind
 
 ### Sample Data

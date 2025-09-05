@@ -107,14 +107,7 @@ CREATE TABLE appointments (
     -- System fields
     created_by UUID REFERENCES users(id),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    
-    CONSTRAINT appointments_doctor_role_check 
-        CHECK (EXISTS (
-            SELECT 1 FROM users 
-            WHERE id = doctor_id 
-            AND role IN ('doctor', 'admin')
-        ))
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- Medical records table
@@ -192,3 +185,27 @@ CREATE TRIGGER update_patients_updated_at BEFORE UPDATE ON patients FOR EACH ROW
 CREATE TRIGGER update_appointments_updated_at BEFORE UPDATE ON appointments FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_medical_records_updated_at BEFORE UPDATE ON medical_records FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_medical_history_updated_at BEFORE UPDATE ON medical_history FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- Function to validate appointment doctor role
+CREATE OR REPLACE FUNCTION validate_appointment_doctor()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Check if the doctor_id exists and has the correct role
+    IF NOT EXISTS (
+        SELECT 1 FROM users 
+        WHERE id = NEW.doctor_id 
+        AND role IN ('doctor', 'admin')
+        AND organization_id = NEW.organization_id
+    ) THEN
+        RAISE EXCEPTION 'El usuario asignado como doctor debe tener rol de doctor o admin en la misma organización';
+    END IF;
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Apply doctor validation trigger
+CREATE TRIGGER validate_appointment_doctor_trigger
+    BEFORE INSERT OR UPDATE ON appointments
+    FOR EACH ROW
+    EXECUTE FUNCTION validate_appointment_doctor();
