@@ -47,8 +47,8 @@ export function LoginPage() {
   const onSubmit = async (data: LoginForm) => {
     try {
       await signIn(data.email, data.password)
-      // Success toast will be shown only if authentication is successful
-      // The useAuth hook will handle the success state
+      // Show welcome toast only once after successful login
+      toast.success(`¡Bienvenido a CLINESA!`)
     } catch (error) {
       // Error is handled by the auth store and shown via toast above
       console.error('Login error:', error)
