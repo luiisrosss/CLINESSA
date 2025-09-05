@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { 
   Calendar,
@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/Button'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { useAuth } from '@/hooks/useAuth'
 import { useDashboard } from '@/hooks/useDashboard'
+import { useMonitoring } from '@/hooks/useMonitoring'
 import { PlanUsageWidget } from '@/components/dashboard/PlanUsageWidget'
 import { cn } from '@/lib/utils'
 
@@ -90,7 +91,15 @@ function QuickAction({ title, description, icon: Icon, onClick, disabled }: Quic
 export function DashboardPage() {
   const { userProfile, isDoctor, canManagePatients } = useAuth()
   const { stats, todayAppointments, loading, error } = useDashboard()
+  const { trackPageView, trackFeatureUsage } = useMonitoring()
   const navigate = useNavigate()
+
+  // Track page view
+  useEffect(() => {
+    trackPageView('Dashboard', {
+      userRole: userProfile?.role,
+    })
+  }, [trackPageView, userProfile?.role])
   
   const currentHour = new Date().getHours()
   const greeting = currentHour < 12 ? 'Buenos días' : currentHour < 18 ? 'Buenas tardes' : 'Buenas noches'
