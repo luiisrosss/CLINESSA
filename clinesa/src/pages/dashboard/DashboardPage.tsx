@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/Button'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { useAuth } from '@/hooks/useAuth'
 import { useDashboard } from '@/hooks/useDashboard'
+import { PlanUsageWidget } from '@/components/dashboard/PlanUsageWidget'
 import { cn } from '@/lib/utils'
 
 interface StatCardProps {
@@ -208,7 +209,7 @@ export function DashboardPage() {
         ))}
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-4 gap-4 sm:gap-6">
         {/* Quick Actions */}
         <div className="xl:col-span-1">
           <Card>
@@ -224,6 +225,11 @@ export function DashboardPage() {
               ))}
             </CardContent>
           </Card>
+        </div>
+
+        {/* Plan Usage Widget */}
+        <div className="xl:col-span-1">
+          <PlanUsageWidget />
         </div>
 
         {/* Today's Appointments */}

@@ -17,6 +17,12 @@ const planIcons = {
   enterprise: Crown,
 }
 
+const planDescriptions = {
+  basic: 'Para médicos independientes y consultorios pequeños',
+  professional: '⭐ MÁS POPULAR - Para clínicas y consultorios en crecimiento',
+  enterprise: 'Para hospitales y grandes organizaciones médicas',
+}
+
 const planColors = {
   basic: 'border-gray-200 dark:border-gray-700',
   professional: 'border-blue-500 dark:border-blue-400',
@@ -146,7 +152,7 @@ export function PlanSelector({ onClose, showCurrentPlan = true }: PlanSelectorPr
           >
             Anual
             <span className="ml-1 text-xs bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-1.5 py-0.5 rounded">
-              -20%
+              -17%
             </span>
           </button>
         </div>
@@ -201,6 +207,9 @@ export function PlanSelector({ onClose, showCurrentPlan = true }: PlanSelectorPr
                 <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">
                   {plan.name}
                 </CardTitle>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  {planDescriptions[plan.type as keyof typeof planDescriptions]}
+                </p>
                 <div className="mt-2">
                   <span className="text-4xl font-bold text-gray-900 dark:text-white">
                     {CURRENCY_SYMBOL}{price}
@@ -210,7 +219,7 @@ export function PlanSelector({ onClose, showCurrentPlan = true }: PlanSelectorPr
                   </span>
                   {savings > 0 && (
                     <div className="text-sm text-green-600 dark:text-green-400 font-medium">
-                      Ahorra {savings}%
+                      Ahorra {savings}% con facturación anual
                     </div>
                   )}
                 </div>

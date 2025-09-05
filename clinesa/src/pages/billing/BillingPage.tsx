@@ -12,6 +12,8 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { PlanSelector } from '@/components/billing/PlanSelector'
+import { PricingComparison } from '@/components/billing/PricingComparison'
+import { PlanLimitsDisplay } from '@/components/billing/PlanLimitsDisplay'
 import { useStripe } from '@/hooks/useStripe'
 import { useAuth } from '@/hooks/useAuth'
 import { format } from 'date-fns'
@@ -34,6 +36,7 @@ export function BillingPage() {
   } = useStripe()
   
   const [showPlanSelector, setShowPlanSelector] = useState(false)
+  const [showPricingComparison, setShowPricingComparison] = useState(false)
   const [actionLoading, setActionLoading] = useState(false)
 
   const handleManageBilling = async () => {
@@ -151,7 +154,15 @@ export function BillingPage() {
             Gestiona tu suscripción y métodos de pago
           </p>
         </div>
-        <div className="flex space-x-3">
+        <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
+          <Button
+            variant="outline"
+            onClick={() => setShowPricingComparison(true)}
+            className="flex items-center space-x-2"
+          >
+            <CreditCard className="w-4 h-4" />
+            <span>Ver Planes</span>
+          </Button>
           <Button
             variant="outline"
             onClick={() => setShowPlanSelector(true)}
@@ -206,98 +217,9 @@ export function BillingPage() {
         </div>
       )}
 
-      {/* Current Subscription */}
+      {/* Current Subscription and Limits */}
       {subscription && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Subscription Details */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <CreditCard className="w-5 h-5" />
-                <span>Detalles de Suscripción</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Plan:</span>
-                <span className="font-semibold">{subscription.plan?.name || 'N/A'}</span>
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Estado:</span>
-                <div className="flex items-center space-x-2">
-                  {(() => {
-                    const Icon = getStatusIcon(subscription.status)
-                    return <Icon className={`w-4 h-4 ${getStatusColor(subscription.status)}`} />
-                  })()}
-                  <span className={`font-medium ${getStatusColor(subscription.status)}`}>
-                    {getStatusLabel(subscription.status)}
-                  </span>
-                </div>
-              </div>
-
-              {subscription.current_period_start && subscription.current_period_end && (
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Período:</span>
-                  <span className="text-sm">
-                    {format(new Date(subscription.current_period_start), 'dd/MM/yyyy', { locale: es })} - {' '}
-                    {format(new Date(subscription.current_period_end), 'dd/MM/yyyy', { locale: es })}
-                  </span>
-                </div>
-              )}
-
-              {subscription.trial_end_date && (
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Prueba hasta:</span>
-                  <span className="text-sm">
-                    {format(new Date(subscription.trial_end_date), 'dd/MM/yyyy', { locale: es })}
-                  </span>
-                </div>
-              )}
-
-              {subscription.cancel_at_period_end && (
-                <div className="bg-orange-50 dark:bg-orange-900 border border-orange-200 dark:border-orange-700 rounded-lg p-3">
-                  <div className="flex items-center space-x-2">
-                    <AlertTriangle className="w-4 h-4 text-orange-600 dark:text-orange-400" />
-                    <span className="text-sm font-medium text-orange-800 dark:text-orange-200">
-                      Cancelada al final del período
-                    </span>
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Plan Limits */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center space-x-2">
-                <Settings className="w-5 h-5" />
-                <span>Límites del Plan</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {subscription.plan && (
-                <>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Usuarios:</span>
-                    <span className="font-semibold">{subscription.plan.max_users}</span>
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Pacientes:</span>
-                    <span className="font-semibold">{subscription.plan.max_patients.toLocaleString()}</span>
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Citas/mes:</span>
-                    <span className="font-semibold">{subscription.plan.max_appointments_per_month.toLocaleString()}</span>
-                  </div>
-                </>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+        <PlanLimitsDisplay showUpgradeButton={true} />
       )}
 
       {/* No Subscription */}
@@ -360,6 +282,29 @@ export function BillingPage() {
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {/* Pricing Comparison Modal */}
+      {showPricingComparison && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="w-full max-w-7xl max-h-[90vh] overflow-y-auto">
+            <Card>
+              <CardHeader>
+                <CardTitle>Comparación de Planes</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <PricingComparison 
+                  onSelectPlan={(planId) => {
+                    // Handle plan selection
+                    setShowPricingComparison(false)
+                    setShowPlanSelector(true)
+                  }}
+                  onClose={() => setShowPricingComparison(false)}
+                />
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       )}
 
       {/* Plan Selector Modal */}

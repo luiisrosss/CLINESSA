@@ -16,6 +16,7 @@ import { AppointmentsPage } from '@/pages/appointments/AppointmentsPage'
 import { MedicalRecordsPage } from '@/pages/medical-records/MedicalRecordsPage'
 import { UsersPage } from '@/pages/users/UsersPage'
 import { BillingPage } from '@/pages/billing/BillingPage'
+import { PlansPage } from '@/pages/billing/PlansPage'
 import { SettingsPage } from '@/pages/settings/SettingsPage'
 import { SetupPage } from '@/pages/SetupPage'
 
@@ -50,6 +51,7 @@ function App() {
           <Route path="/auth/login" element={<LoginPage />} />
           <Route path="/auth/plans" element={<PlanSelectionPage />} />
           <Route path="/auth/register" element={<RegisterPage />} />
+          <Route path="/plans" element={<PlansPage />} />
           
           {/* Protected Routes */}
           <Route 
