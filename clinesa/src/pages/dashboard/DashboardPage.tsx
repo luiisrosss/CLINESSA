@@ -11,7 +11,9 @@ import {
 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { useAuth } from '@/hooks/useAuth'
+import { useDashboard } from '@/hooks/useDashboard'
 import { cn } from '@/lib/utils'
 
 interface StatCardProps {
@@ -86,36 +88,37 @@ function QuickAction({ title, description, icon: Icon, onClick, disabled }: Quic
 
 export function DashboardPage() {
   const { userProfile, isDoctor, canManagePatients } = useAuth()
+  const { stats, todayAppointments, loading, error } = useDashboard()
   const navigate = useNavigate()
   
   const currentHour = new Date().getHours()
   const greeting = currentHour < 12 ? 'Buenos días' : currentHour < 18 ? 'Buenas tardes' : 'Buenas noches'
 
-  const stats = [
+  const statsCards = [
     {
       title: 'Citas Hoy',
-      value: 12,
-      description: '3 pendientes, 9 completadas',
+      value: stats.appointmentsToday,
+      description: `${stats.pendingAppointments} pendientes, ${stats.completedAppointments} completadas`,
       icon: Calendar,
       trend: { value: 8, isPositive: true }
     },
     {
       title: 'Pacientes Activos',
-      value: 248,
-      description: '15 nuevos este mes',
+      value: stats.activePatients,
+      description: `${stats.newPatientsThisMonth} nuevos este mes`,
       icon: Users,
       trend: { value: 6, isPositive: true }
     },
     {
       title: 'Historiales',
-      value: 89,
-      description: 'Actualizados esta semana',
+      value: stats.medicalRecords,
+      description: `${stats.updatedRecordsThisWeek} actualizados esta semana`,
       icon: FileText,
       trend: { value: 12, isPositive: true }
     },
     {
       title: 'Tiempo Promedio',
-      value: '24min',
+      value: `${stats.averageConsultationTime}min`,
       description: 'Por consulta',
       icon: Clock,
       trend: { value: 3, isPositive: false }
@@ -153,36 +156,30 @@ export function DashboardPage() {
     }
   ]
 
-  const upcomingAppointments = [
-    {
-      id: 1,
-      patient: 'María González',
-      time: '09:30',
-      type: 'Consulta General',
-      status: 'confirmed'
-    },
-    {
-      id: 2,
-      patient: 'Carlos Rodríguez',
-      time: '10:15',
-      type: 'Control',
-      status: 'pending'
-    },
-    {
-      id: 3,
-      patient: 'Ana Martínez',
-      time: '11:00',
-      type: 'Primera Consulta',
-      status: 'confirmed'
-    },
-    {
-      id: 4,
-      patient: 'Juan López',
-      time: '11:45',
-      type: 'Seguimiento',
-      status: 'pending'
-    }
-  ]
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <LoadingSpinner size="lg" className="mb-4" />
+          <p className="text-gray-600">Cargando datos del dashboard...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="text-center">
+          <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+          <p className="text-red-600 mb-2">Error al cargar los datos</p>
+          <p className="text-gray-600 text-sm">{error}</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">
@@ -194,7 +191,7 @@ export function DashboardPage() {
               {greeting}, {userProfile?.first_name}
             </h1>
             <p className="text-medical-100 mt-1">
-              Tienes 12 citas programadas para hoy
+              Tienes {stats.appointmentsToday} citas programadas para hoy
             </p>
           </div>
           <div className="hidden md:flex items-center space-x-2">
@@ -206,7 +203,7 @@ export function DashboardPage() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat, index) => (
+        {statsCards.map((stat, index) => (
           <StatCard key={index} {...stat} />
         ))}
       </div>
@@ -240,35 +237,48 @@ export function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {upcomingAppointments.map((appointment) => (
-                  <div key={appointment.id} className="flex items-center justify-between p-3 rounded-lg border border-gray-200 hover:bg-gray-50">
-                    <div className="flex items-center space-x-3">
-                      <div className="text-center">
-                        <p className="text-sm font-medium text-gray-900">
-                          {appointment.time}
-                        </p>
+                {todayAppointments.length > 0 ? (
+                  todayAppointments.map((appointment) => (
+                    <div key={appointment.id} className="flex items-center justify-between p-3 rounded-lg border border-gray-200 hover:bg-gray-50">
+                      <div className="flex items-center space-x-3">
+                        <div className="text-center">
+                          <p className="text-sm font-medium text-gray-900">
+                            {appointment.time}
+                          </p>
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-sm font-medium text-gray-900">
+                            {appointment.patient_name || 'Paciente sin nombre'}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {appointment.type}
+                          </p>
+                        </div>
                       </div>
-                      <div className="flex-1">
-                        <p className="text-sm font-medium text-gray-900">
-                          {appointment.patient}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {appointment.type}
-                        </p>
+                      <div className="flex items-center space-x-2">
+                        <span className={cn(
+                          "px-2 py-1 rounded-full text-xs font-medium",
+                          appointment.status === 'confirmed' 
+                            ? "bg-green-100 text-green-800"
+                            : appointment.status === 'completed'
+                            ? "bg-blue-100 text-blue-800"
+                            : appointment.status === 'cancelled'
+                            ? "bg-red-100 text-red-800"
+                            : "bg-yellow-100 text-yellow-800"
+                        )}>
+                          {appointment.status === 'confirmed' ? 'Confirmada' : 
+                           appointment.status === 'completed' ? 'Completada' :
+                           appointment.status === 'cancelled' ? 'Cancelada' : 'Pendiente'}
+                        </span>
                       </div>
                     </div>
-                    <div className="flex items-center space-x-2">
-                      <span className={cn(
-                        "px-2 py-1 rounded-full text-xs font-medium",
-                        appointment.status === 'confirmed' 
-                          ? "bg-green-100 text-green-800"
-                          : "bg-yellow-100 text-yellow-800"
-                      )}>
-                        {appointment.status === 'confirmed' ? 'Confirmada' : 'Pendiente'}
-                      </span>
-                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8">
+                    <Calendar className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-500">No hay citas programadas para hoy</p>
                   </div>
-                ))}
+                )}
               </div>
               
               <div className="mt-4 pt-4 border-t border-gray-200">
