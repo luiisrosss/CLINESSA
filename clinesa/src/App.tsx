@@ -1,34 +1,121 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { Toaster } from 'react-hot-toast'
+
+// Layout Components
+import { DashboardLayout } from '@/components/layout/DashboardLayout'
+import { ProtectedRoute } from '@/components/layout/ProtectedRoute'
+
+// Pages
+import { LoginPage } from '@/pages/auth/LoginPage'
+import { DashboardPage } from '@/pages/dashboard/DashboardPage'
+import { PatientsPage } from '@/pages/patients/PatientsPage'
+
+// Placeholder components for future development
+
+const AppointmentsPage = () => (
+  <div className="text-center py-12">
+    <h2 className="text-2xl font-semibold text-gray-900 mb-2">Sistema de Citas</h2>
+    <p className="text-gray-600">Módulo en desarrollo - Próximamente disponible</p>
+  </div>
+)
+
+const MedicalRecordsPage = () => (
+  <div className="text-center py-12">
+    <h2 className="text-2xl font-semibold text-gray-900 mb-2">Historiales Médicos</h2>
+    <p className="text-gray-600">Módulo en desarrollo - Próximamente disponible</p>
+  </div>
+)
+
+const UsersPage = () => (
+  <div className="text-center py-12">
+    <h2 className="text-2xl font-semibold text-gray-900 mb-2">Gestión de Usuarios</h2>
+    <p className="text-gray-600">Módulo en desarrollo - Próximamente disponible</p>
+  </div>
+)
+
+const SettingsPage = () => (
+  <div className="text-center py-12">
+    <h2 className="text-2xl font-semibold text-gray-900 mb-2">Configuración</h2>
+    <p className="text-gray-600">Módulo en desarrollo - Próximamente disponible</p>
+  </div>
+)
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <Router>
+      <div className="App">
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            duration: 4000,
+            style: {
+              background: '#363636',
+              color: '#fff',
+            },
+            success: {
+              duration: 3000,
+            },
+            error: {
+              duration: 5000,
+            },
+          }}
+        />
+        
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/auth/login" element={<LoginPage />} />
+          
+          {/* Protected Routes */}
+          <Route 
+            path="/" 
+            element={
+              <ProtectedRoute>
+                <DashboardLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<Navigate to="/dashboard" replace />} />
+            <Route path="dashboard" element={<DashboardPage />} />
+            <Route 
+              path="patients" 
+              element={
+                <ProtectedRoute requiredPermissions={['canManagePatients']}>
+                  <PatientsPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="appointments" 
+              element={
+                <ProtectedRoute requiredPermissions={['canManageAppointments']}>
+                  <AppointmentsPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="medical-records" 
+              element={
+                <ProtectedRoute requiredPermissions={['canViewMedicalRecords']}>
+                  <MedicalRecordsPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="users" 
+              element={
+                <ProtectedRoute requiredPermissions={['canManageUsers']}>
+                  <UsersPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route path="settings" element={<SettingsPage />} />
+          </Route>
+          
+          {/* Catch all - redirect to dashboard */}
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        </Routes>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </Router>
   )
 }
 
