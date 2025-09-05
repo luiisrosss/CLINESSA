@@ -144,10 +144,10 @@ export function AppointmentForm({ appointment, onSubmit, onCancel, loading }: Ap
   };
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4 sm:space-y-6">
       {/* Patient Selection */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           Patient *
         </label>
         <Select
@@ -165,7 +165,7 @@ export function AppointmentForm({ appointment, onSubmit, onCancel, loading }: Ap
 
       {/* Doctor Selection */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           Doctor *
         </label>
         <Select
@@ -186,7 +186,7 @@ export function AppointmentForm({ appointment, onSubmit, onCancel, loading }: Ap
 
       {/* Title */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           Appointment Title *
         </label>
         <Input
@@ -197,9 +197,9 @@ export function AppointmentForm({ appointment, onSubmit, onCancel, loading }: Ap
       </div>
 
       {/* Date and Time */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Date *
           </label>
           <Input
@@ -210,7 +210,7 @@ export function AppointmentForm({ appointment, onSubmit, onCancel, loading }: Ap
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Time *
           </label>
           <Input
@@ -223,7 +223,7 @@ export function AppointmentForm({ appointment, onSubmit, onCancel, loading }: Ap
 
       {/* Duration */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           Duration (minutes)
         </label>
         <Select
@@ -241,7 +241,7 @@ export function AppointmentForm({ appointment, onSubmit, onCancel, loading }: Ap
 
       {/* Reason for Visit */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           Reason for Visit
         </label>
         <Input
@@ -252,7 +252,7 @@ export function AppointmentForm({ appointment, onSubmit, onCancel, loading }: Ap
 
       {/* Description */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           Description
         </label>
         <Textarea
@@ -264,7 +264,7 @@ export function AppointmentForm({ appointment, onSubmit, onCancel, loading }: Ap
 
       {/* Notes */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
           Internal Notes
         </label>
         <Textarea
@@ -289,7 +289,7 @@ export function AppointmentForm({ appointment, onSubmit, onCancel, loading }: Ap
 
         {followUpRequired && (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Follow-up Date
             </label>
             <Input

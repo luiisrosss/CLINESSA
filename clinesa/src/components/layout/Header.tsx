@@ -17,31 +17,32 @@ export function Header({ title, className }: HeaderProps) {
 
   return (
     <header className={cn(
-      'flex items-center justify-between h-16 px-6 bg-white border-b border-gray-200',
+      'flex items-center justify-between h-16 px-4 sm:px-6 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700',
       className
     )}>
       {/* Title and Search */}
-      <div className="flex items-center space-x-6">
+      <div className="flex items-center space-x-2 sm:space-x-4 lg:space-x-6 flex-1 min-w-0">
         {title && (
-          <h1 className="text-xl font-semibold text-gray-900">
+          <h1 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white truncate">
             {title}
           </h1>
         )}
         
-        <div className="hidden md:block">
+        {/* Search - Hidden on mobile, visible on tablet+ */}
+        <div className="hidden sm:block flex-1 max-w-md">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
             <Input
               type="text"
               placeholder="Buscar pacientes, citas..."
-              className="pl-10 w-80 h-9"
+              className="pl-10 w-full h-9 text-sm"
             />
           </div>
         </div>
       </div>
 
       {/* Actions */}
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-4 flex-shrink-0">
         {/* Settings */}
         <Button 
           variant="ghost" 
@@ -50,40 +51,43 @@ export function Header({ title, className }: HeaderProps) {
           onClick={() => setIsConfigOpen(true)}
           title="Configuración"
         >
-          <Settings className="w-5 h-5" />
+          <Settings className="w-4 h-4 sm:w-5 sm:h-5" />
         </Button>
 
         {/* Notifications */}
         <Button variant="ghost" size="sm" className="relative p-2">
-          <Bell className="w-5 h-5" />
+          <Bell className="w-4 h-4 sm:w-5 sm:h-5" />
           <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full text-xs flex items-center justify-center text-white">
             3
           </span>
         </Button>
 
         {/* User Menu */}
-        <div className="flex items-center space-x-3">
-          <div className="hidden md:flex flex-col items-end">
-            <span className="text-sm font-medium text-gray-900">
+        <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-3">
+          {/* User info - Hidden on mobile, visible on tablet+ */}
+          <div className="hidden sm:flex flex-col items-end">
+            <span className="text-sm font-medium text-gray-900 dark:text-white truncate max-w-24 lg:max-w-none">
               {fullName}
             </span>
-            <span className="text-xs text-gray-500 capitalize">
+            <span className="text-xs text-gray-500 dark:text-gray-400 capitalize">
               {userProfile?.role}
             </span>
           </div>
           
-          <div className="flex items-center justify-center w-8 h-8 bg-medical-100 rounded-full">
-            <span className="text-sm font-medium text-medical-600">
+          {/* Avatar */}
+          <div className="flex items-center justify-center w-8 h-8 bg-medical-100 dark:bg-medical-900 rounded-full">
+            <span className="text-sm font-medium text-medical-600 dark:text-medical-400">
               {initials}
             </span>
           </div>
           
+          {/* Logout - Hidden on mobile, visible on tablet+ */}
           <Button
             variant="ghost"
             size="sm"
             onClick={signOut}
             disabled={loading}
-            className="p-2 text-gray-400 hover:text-gray-600"
+            className="hidden sm:flex p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
             title="Cerrar sesión"
           >
             <LogOut className="w-4 h-4" />

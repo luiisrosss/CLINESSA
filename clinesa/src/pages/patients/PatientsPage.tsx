@@ -24,28 +24,28 @@ function PatientCard({ patient, onView, onEdit, onDelete }: PatientCardProps) {
   
   return (
     <Card className="hover:shadow-lg transition-shadow duration-200 cursor-pointer group">
-      <CardContent className="p-6">
-        <div className="flex items-start justify-between">
-          <div className="flex items-start space-x-4 flex-1">
+      <CardContent className="p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between space-y-4 sm:space-y-0">
+          <div className="flex items-start space-x-3 sm:space-x-4 flex-1 min-w-0">
             {/* Avatar */}
-            <div className="w-12 h-12 bg-medical-100 rounded-full flex items-center justify-center flex-shrink-0">
-              <span className="text-medical-600 font-medium text-sm">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-medical-100 dark:bg-medical-900 rounded-full flex items-center justify-center flex-shrink-0">
+              <span className="text-medical-600 dark:text-medical-400 font-medium text-sm">
                 {getInitials(`${patient.first_name} ${patient.last_name}`)}
               </span>
             </div>
             
             {/* Patient Info */}
             <div className="flex-1 min-w-0">
-              <div className="flex items-center space-x-2 mb-1">
-                <h3 className="text-lg font-semibold text-gray-900 truncate">
+              <div className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-2 mb-2">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white truncate">
                   {patient.first_name} {patient.last_name}
                 </h3>
-                <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                <span className="text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-2 py-1 rounded-full w-fit">
                   {patient.patient_number}
                 </span>
               </div>
               
-              <div className="grid grid-cols-2 gap-4 text-sm text-gray-600">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 text-sm text-gray-600 dark:text-gray-400">
                 <div>
                   <span className="font-medium">Edad:</span> {age} años
                 </div>
@@ -55,10 +55,10 @@ function PatientCard({ patient, onView, onEdit, onDelete }: PatientCardProps) {
                     patient.gender === 'female' ? 'Femenino' : 'Otro'
                   }
                 </div>
-                <div>
+                <div className="truncate">
                   <span className="font-medium">Teléfono:</span> {patient.phone || 'No registrado'}
                 </div>
-                <div>
+                <div className="truncate">
                   <span className="font-medium">Email:</span> {patient.email || 'No registrado'}
                 </div>
               </div>
@@ -66,17 +66,17 @@ function PatientCard({ patient, onView, onEdit, onDelete }: PatientCardProps) {
               {/* Medical Info */}
               <div className="mt-3 flex flex-wrap gap-2">
                 {patient.blood_type && (
-                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-red-100 text-red-800">
+                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200">
                     Tipo: {patient.blood_type}
                   </span>
                 )}
                 {patient.allergies && (
-                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-yellow-100 text-yellow-800">
+                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200">
                     Alergias
                   </span>
                 )}
                 {patient.insurance_provider && (
-                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">
+                  <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
                     {patient.insurance_provider}
                   </span>
                 )}
@@ -85,7 +85,7 @@ function PatientCard({ patient, onView, onEdit, onDelete }: PatientCardProps) {
           </div>
           
           {/* Actions */}
-          <div className="flex items-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="flex items-center justify-end sm:justify-start space-x-1 sm:space-x-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
             <Button
               variant="ghost"
               size="sm"
@@ -219,23 +219,23 @@ export function PatientsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between space-y-4 sm:space-y-0">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Gestión de Pacientes</h1>
-          <p className="text-gray-600 mt-1">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Gestión de Pacientes</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
             Administra la información de todos los pacientes de la clínica
           </p>
         </div>
-        <Button onClick={() => setShowCreateModal(true)} className="flex items-center space-x-2">
+        <Button onClick={() => setShowCreateModal(true)} className="flex items-center space-x-2 w-full sm:w-auto">
           <Plus className="w-4 h-4" />
           <span>Nuevo Paciente</span>
         </Button>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center">
@@ -289,8 +289,8 @@ export function PatientsPage() {
 
       {/* Search and Filters */}
       <Card>
-        <CardContent className="p-6">
-          <div className="flex items-center space-x-4">
+        <CardContent className="p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
               <Input
@@ -300,7 +300,7 @@ export function PatientsPage() {
                 className="pl-10"
               />
             </div>
-            <Button variant="outline" className="flex items-center space-x-2">
+            <Button variant="outline" className="flex items-center space-x-2 w-full sm:w-auto">
               <Filter className="w-4 h-4" />
               <span>Filtros</span>
             </Button>

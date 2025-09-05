@@ -121,11 +121,11 @@ export function PatientForm({ patient, onSubmit, onClose, loading = false }: Pat
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="w-full max-w-4xl max-h-[90vh] overflow-hidden">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-4 z-50">
+      <div className="w-full max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden">
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6">
-            <CardTitle className="text-xl font-bold">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 sm:pb-6">
+            <CardTitle className="text-lg sm:text-xl font-bold">
               {isEditing ? 'Editar Paciente' : 'Nuevo Paciente'}
             </CardTitle>
             <Button
@@ -138,12 +138,12 @@ export function PatientForm({ patient, onSubmit, onClose, loading = false }: Pat
             </Button>
           </CardHeader>
           
-          <CardContent className="overflow-y-auto max-h-[calc(90vh-100px)]">
-            <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-8">
+          <CardContent className="overflow-y-auto max-h-[calc(95vh-120px)] sm:max-h-[calc(90vh-100px)]">
+            <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6 sm:space-y-8">
               {/* Personal Information */}
               <div>
                 <h3 className="text-lg font-medium text-gray-900 mb-4">Información Personal</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Input
                     label="Nombre *"
                     {...register('first_name')}
@@ -219,7 +219,7 @@ export function PatientForm({ patient, onSubmit, onClose, loading = false }: Pat
               {/* Address Information */}
               <div>
                 <h3 className="text-lg font-medium text-gray-900 mb-4">Dirección</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="md:col-span-2">
                     <Input
                       label="Dirección"
@@ -243,7 +243,7 @@ export function PatientForm({ patient, onSubmit, onClose, loading = false }: Pat
               {/* Insurance Information */}
               <div>
                 <h3 className="text-lg font-medium text-gray-900 mb-4">Seguro Médico</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Input
                     label="Proveedor de Seguro"
                     {...register('insurance_provider')}

@@ -119,11 +119,11 @@ export function ConfigModal({ isOpen, onClose }: ConfigModalProps) {
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl w-full max-w-4xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+        <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">
             Configuración
           </h2>
           <Button
@@ -136,10 +136,10 @@ export function ConfigModal({ isOpen, onClose }: ConfigModalProps) {
           </Button>
         </div>
 
-        <div className="flex h-[600px]">
+        <div className="flex flex-col lg:flex-row h-[calc(95vh-80px)] sm:h-[600px]">
           {/* Sidebar */}
-          <div className="w-64 bg-gray-50 dark:bg-gray-700 p-4 border-r border-gray-200 dark:border-gray-600">
-            <nav className="space-y-2">
+          <div className="w-full lg:w-64 bg-gray-50 dark:bg-gray-700 p-4 border-b lg:border-b-0 lg:border-r border-gray-200 dark:border-gray-600">
+            <nav className="flex flex-wrap lg:flex-col gap-2 lg:space-y-2">
               {tabs.map((tab) => {
                 const Icon = tab.icon
                 return (
@@ -147,14 +147,15 @@ export function ConfigModal({ isOpen, onClose }: ConfigModalProps) {
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
                     className={cn(
-                      'w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors',
+                      'flex items-center space-x-2 lg:space-x-3 px-3 py-2 rounded-lg text-left transition-colors text-sm',
+                      'w-full lg:w-full',
                       activeTab === tab.id
                         ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
                         : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600'
                     )}
                   >
-                    <Icon className="w-5 h-5" />
-                    <span className="text-sm font-medium">{tab.label}</span>
+                    <Icon className="w-4 h-4 lg:w-5 lg:h-5 flex-shrink-0" />
+                    <span className="font-medium truncate">{tab.label}</span>
                   </button>
                 )
               })}
@@ -162,7 +163,7 @@ export function ConfigModal({ isOpen, onClose }: ConfigModalProps) {
           </div>
 
           {/* Content */}
-          <div className="flex-1 overflow-y-auto p-6">
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6">
             {activeTab === 'theme' && (
               <div className="space-y-6">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -191,20 +192,20 @@ export function ConfigModal({ isOpen, onClose }: ConfigModalProps) {
                   <label className="block text-sm font-medium text-gray-900 dark:text-white mb-3">
                     Color Principal
                   </label>
-                  <div className="grid grid-cols-3 gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
                     {colorOptions.map((color) => (
                       <button
                         key={color.value}
                         onClick={() => updateConfig('primaryColor', color.value)}
                         className={cn(
-                          'flex items-center space-x-2 p-3 rounded-lg border-2 transition-all',
+                          'flex items-center space-x-2 p-2 sm:p-3 rounded-lg border-2 transition-all',
                           config.primaryColor === color.value
                             ? 'border-blue-500 bg-blue-50 dark:bg-blue-900'
                             : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'
                         )}
                       >
-                        <div className={cn('w-4 h-4 rounded-full', color.color)} />
-                        <span className="text-sm text-gray-700 dark:text-gray-300">
+                        <div className={cn('w-4 h-4 rounded-full flex-shrink-0', color.color)} />
+                        <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 truncate">
                           {color.label}
                         </span>
                       </button>
@@ -298,7 +299,7 @@ export function ConfigModal({ isOpen, onClose }: ConfigModalProps) {
                   Perfil de Usuario
                 </h3>
                 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Input
                     label="Nombre"
                     value={config.firstName}
@@ -358,7 +359,7 @@ export function ConfigModal({ isOpen, onClose }: ConfigModalProps) {
                     value={config.organizationAddress}
                     onChange={(e) => updateConfig('organizationAddress', e.target.value)}
                   />
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <Input
                       label="Teléfono"
                       value={config.organizationPhone}
@@ -381,7 +382,7 @@ export function ConfigModal({ isOpen, onClose }: ConfigModalProps) {
                   Configuración del Sistema
                 </h3>
                 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
                       Idioma
@@ -459,11 +460,11 @@ export function ConfigModal({ isOpen, onClose }: ConfigModalProps) {
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end space-x-3 p-6 border-t border-gray-200 dark:border-gray-700">
-          <Button variant="outline" onClick={onClose}>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end space-y-2 sm:space-y-0 sm:space-x-3 p-4 sm:p-6 border-t border-gray-200 dark:border-gray-700">
+          <Button variant="outline" onClick={onClose} className="w-full sm:w-auto">
             Cancelar
           </Button>
-          <Button onClick={handleSave} loading={saving}>
+          <Button onClick={handleSave} loading={saving} className="w-full sm:w-auto">
             Guardar Cambios
           </Button>
         </div>
