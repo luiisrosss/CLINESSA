@@ -19,15 +19,17 @@ export function useAuth() {
   const isAuthenticated = !!user && !!session
 
   useEffect(() => {
-    initialize()
-  }, [initialize])
+    if (!user && !session) {
+      initialize()
+    }
+  }, [initialize, user, session])
 
-  // Show success toast when user is authenticated
+  // Show success toast when user is authenticated (only once)
   useEffect(() => {
-    if (isAuthenticated && userProfile) {
+    if (isAuthenticated && userProfile && !loading) {
       toast.success(`¡Bienvenido a CLINESA, ${userProfile.first_name}!`)
     }
-  }, [isAuthenticated, userProfile])
+  }, [isAuthenticated, userProfile?.first_name, loading])
   const isAdmin = userProfile?.role === 'admin'
   const isDoctor = userProfile?.role === 'doctor'
   const isNurse = userProfile?.role === 'nurse'
