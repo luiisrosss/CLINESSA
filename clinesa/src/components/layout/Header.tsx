@@ -1,8 +1,10 @@
-import { Bell, Search, LogOut } from 'lucide-react'
+import { Bell, Search, LogOut, Settings } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
+import { ConfigModal } from '@/components/ui/ConfigModal'
 import { useAuth } from '@/hooks/useAuth'
 import { cn } from '@/lib/utils'
+import { useState } from 'react'
 
 interface HeaderProps {
   title?: string | undefined
@@ -11,6 +13,7 @@ interface HeaderProps {
 
 export function Header({ title, className }: HeaderProps) {
   const { userProfile, fullName, initials, signOut, loading } = useAuth()
+  const [isConfigOpen, setIsConfigOpen] = useState(false)
 
   return (
     <header className={cn(
@@ -39,6 +42,17 @@ export function Header({ title, className }: HeaderProps) {
 
       {/* Actions */}
       <div className="flex items-center space-x-4">
+        {/* Settings */}
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          className="p-2"
+          onClick={() => setIsConfigOpen(true)}
+          title="Configuración"
+        >
+          <Settings className="w-5 h-5" />
+        </Button>
+
         {/* Notifications */}
         <Button variant="ghost" size="sm" className="relative p-2">
           <Bell className="w-5 h-5" />
@@ -76,6 +90,12 @@ export function Header({ title, className }: HeaderProps) {
           </Button>
         </div>
       </div>
+
+      {/* Config Modal */}
+      <ConfigModal 
+        isOpen={isConfigOpen} 
+        onClose={() => setIsConfigOpen(false)} 
+      />
     </header>
   )
 }

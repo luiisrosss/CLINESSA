@@ -5,22 +5,22 @@
 
 @layer base {
   * {
-    @apply border-gray-200;
+    @apply border-gray-200 dark:border-gray-700;
   }
   
   body {
-    @apply bg-gray-50 text-gray-900 font-sans;
+    @apply bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold text-gray-900;
+    @apply font-semibold text-gray-900 dark:text-gray-100;
   }
 }
 
 @layer components {
   .medical-card {
-    @apply bg-white rounded-xl border border-gray-200 shadow-medical hover:shadow-medical-lg transition-shadow duration-200;
+    @apply bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-medical hover:shadow-medical-lg transition-shadow duration-200;
   }
   
   .medical-button-primary {
@@ -28,18 +28,18 @@
   }
   
   .medical-button-secondary {
-    @apply bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium px-4 py-2 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2;
+    @apply bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-medium px-4 py-2 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2;
   }
   
   .medical-input {
-    @apply block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-medical-500 focus:border-medical-500 sm:text-sm;
+    @apply block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-medical-500 focus:border-medical-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100;
   }
   
   .sidebar-link {
-    @apply flex items-center px-4 py-3 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-100 hover:text-medical-600 transition-colors duration-200;
+    @apply flex items-center px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 hover:text-medical-600 transition-colors duration-200;
   }
   
   .sidebar-link.active {
-    @apply bg-medical-50 text-medical-600 border-r-2 border-medical-600;
+    @apply bg-medical-50 dark:bg-medical-900 text-medical-600 border-r-2 border-medical-600;
   }
 }
