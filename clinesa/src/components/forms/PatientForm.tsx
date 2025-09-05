@@ -115,7 +115,7 @@ export function PatientForm({ patient, onSubmit, onClose, loading = false }: Pat
       await onSubmit(data)
       reset()
       onClose()
-    } catch (error) {
+    } catch {
       // Error handled by parent component
     }
   }

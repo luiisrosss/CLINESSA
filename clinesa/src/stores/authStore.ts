@@ -57,18 +57,26 @@ export const useAuthStore = create<AuthStore>()(
         try {
           set({ loading: true, error: null })
           
+          if (!supabase) {
+            throw new Error('Configuración de Supabase no válida')
+          }
+          
           const { data, error } = await supabase.auth.signInWithPassword({
             email,
             password,
           })
 
-          if (error) throw error
+          if (error) {
+            // Clear any previous auth state on error
+            set({ user: null, session: null, userProfile: null, organization: null })
+            throw error
+          }
 
           if (data.user && data.session) {
             set({ user: data.user, session: data.session })
             
             // Fetch user profile
-            const { data: profileData, error: profileError } = await supabase
+            const { data: profileData, error: profileError } = await supabase!
               .from('users')
               .select('*')
               .eq('id', data.user.id)
@@ -76,7 +84,11 @@ export const useAuthStore = create<AuthStore>()(
 
             if (profileError) {
               console.error('Error fetching user profile:', profileError)
-            } else if (profileData) {
+              set({ error: 'Error al cargar el perfil de usuario' })
+              return
+            } 
+            
+            if (profileData) {
               const userWithOrg = profileData as UserWithOrganization
               // Fetch organization separately
               const { data: orgData, error: orgError } = await supabase
@@ -90,10 +102,20 @@ export const useAuthStore = create<AuthStore>()(
                 organization: orgError ? null : orgData
               })
             }
+          } else {
+            throw new Error('No se pudo obtener la sesión de usuario')
           }
         } catch (error) {
           console.error('Sign in error:', error)
-          set({ error: error instanceof Error ? error.message : 'Error signing in' })
+          const errorMessage = error instanceof Error ? error.message : 'Error al iniciar sesión'
+          set({ 
+            error: errorMessage,
+            user: null,
+            session: null,
+            userProfile: null,
+            organization: null
+          })
+          throw error // Re-throw to be caught by the component
         } finally {
           set({ loading: false })
         }
@@ -102,6 +124,10 @@ export const useAuthStore = create<AuthStore>()(
       signOut: async () => {
         try {
           set({ loading: true, error: null })
+          
+          if (!supabase) {
+            throw new Error('Configuración de Supabase no válida')
+          }
           
           const { error } = await supabase.auth.signOut()
           if (error) throw error
@@ -119,13 +145,18 @@ export const useAuthStore = create<AuthStore>()(
         try {
           set({ loading: true })
           
+          if (!supabase) {
+            set({ loading: false })
+            return
+          }
+          
           const { data: { session } } = await supabase.auth.getSession()
           
           if (session?.user) {
             set({ user: session.user, session })
             
             // Fetch user profile
-            const { data: profileData, error: profileError } = await supabase
+            const { data: profileData, error: profileError } = await supabase!
               .from('users')
               .select('*')
               .eq('id', session.user.id)
@@ -134,7 +165,7 @@ export const useAuthStore = create<AuthStore>()(
             if (!profileError && profileData) {
               const userWithOrg = profileData as UserWithOrganization
               // Fetch organization separately
-              const { data: orgData, error: orgError } = await supabase
+              const { data: orgData, error: orgError } = await supabase!
                 .from('organizations')
                 .select('*')
                 .eq('id', userWithOrg.organization_id)
@@ -148,7 +179,7 @@ export const useAuthStore = create<AuthStore>()(
           }
 
           // Listen for auth changes
-          supabase.auth.onAuthStateChange((event, session) => {
+          supabase!.auth.onAuthStateChange((event, session) => {
             if (event === 'SIGNED_IN' && session?.user) {
               set({ user: session.user, session })
             } else if (event === 'SIGNED_OUT') {

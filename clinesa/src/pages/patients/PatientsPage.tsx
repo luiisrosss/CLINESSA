@@ -162,7 +162,7 @@ export function PatientsPage() {
     try {
       await deletePatient(patient.id)
       toast.success('Paciente eliminado correctamente')
-    } catch (error) {
+    } catch {
       toast.error('Error al eliminar el paciente')
     }
   }
@@ -177,7 +177,7 @@ export function PatientsPage() {
     setShowEditModal(true)
   }
 
-  const handleCreatePatient = async (data: any) => {
+  const handleCreatePatient = async (data: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
     try {
       setFormLoading(true)
       await createPatient(data)
@@ -191,7 +191,7 @@ export function PatientsPage() {
     }
   }
 
-  const handleUpdatePatient = async (data: any) => {
+  const handleUpdatePatient = async (data: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
     if (!selectedPatient) return
     
     try {

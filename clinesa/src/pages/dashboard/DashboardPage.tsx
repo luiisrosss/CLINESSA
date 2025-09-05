@@ -1,4 +1,5 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import { 
   Calendar,
   Users,
@@ -85,6 +86,7 @@ function QuickAction({ title, description, icon: Icon, onClick, disabled }: Quic
 
 export function DashboardPage() {
   const { userProfile, isDoctor, canManagePatients } = useAuth()
+  const navigate = useNavigate()
   
   const currentHour = new Date().getHours()
   const greeting = currentHour < 12 ? 'Buenos días' : currentHour < 18 ? 'Buenas tardes' : 'Buenas noches'
@@ -125,28 +127,28 @@ export function DashboardPage() {
       title: 'Nueva Cita',
       description: 'Agendar cita para un paciente',
       icon: Calendar,
-      onClick: () => console.log('Nueva cita'),
+      onClick: () => navigate('/appointments'),
       disabled: false
     },
     {
       title: 'Nuevo Paciente',
       description: 'Registrar nuevo paciente',
       icon: Users,
-      onClick: () => console.log('Nuevo paciente'),
+      onClick: () => navigate('/patients'),
       disabled: !canManagePatients
     },
     {
       title: 'Historial Médico',
       description: 'Crear nuevo historial',
       icon: FileText,
-      onClick: () => console.log('Nuevo historial'),
+      onClick: () => navigate('/medical-records'),
       disabled: !isDoctor
     },
     {
       title: 'Reportes',
       description: 'Ver estadísticas y reportes',
       icon: TrendingUp,
-      onClick: () => console.log('Reportes'),
+      onClick: () => navigate('/settings'),
       disabled: false
     }
   ]
@@ -270,7 +272,11 @@ export function DashboardPage() {
               </div>
               
               <div className="mt-4 pt-4 border-t border-gray-200">
-                <Button variant="outline" className="w-full">
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => navigate('/appointments')}
+                >
                   Ver todas las citas
                 </Button>
               </div>

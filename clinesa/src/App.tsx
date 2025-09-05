@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
+import { hasValidSupabaseConfig } from '@/lib/supabase'
 
 // Layout Components
 import { DashboardLayout } from '@/components/layout/DashboardLayout'
@@ -7,17 +8,12 @@ import { ProtectedRoute } from '@/components/layout/ProtectedRoute'
 
 // Pages
 import { LoginPage } from '@/pages/auth/LoginPage'
+import { RegisterPage } from '@/pages/auth/RegisterPage'
+import { PlanSelectionPage } from '@/pages/auth/PlanSelectionPage'
 import { DashboardPage } from '@/pages/dashboard/DashboardPage'
 import { PatientsPage } from '@/pages/patients/PatientsPage'
-
-// Placeholder components for future development
-
-const AppointmentsPage = () => (
-  <div className="text-center py-12">
-    <h2 className="text-2xl font-semibold text-gray-900 mb-2">Sistema de Citas</h2>
-    <p className="text-gray-600">Módulo en desarrollo - Próximamente disponible</p>
-  </div>
-)
+import { AppointmentsPage } from '@/pages/appointments/AppointmentsPage'
+import { SetupPage } from '@/pages/SetupPage'
 
 const MedicalRecordsPage = () => (
   <div className="text-center py-12">
@@ -41,6 +37,11 @@ const SettingsPage = () => (
 )
 
 function App() {
+  // Si no hay configuración válida de Supabase, mostrar página de setup
+  if (!hasValidSupabaseConfig) {
+    return <SetupPage />;
+  }
+
   return (
     <Router>
       <div className="App">
@@ -64,6 +65,8 @@ function App() {
         <Routes>
           {/* Public Routes */}
           <Route path="/auth/login" element={<LoginPage />} />
+          <Route path="/auth/plans" element={<PlanSelectionPage />} />
+          <Route path="/auth/register" element={<RegisterPage />} />
           
           {/* Protected Routes */}
           <Route 

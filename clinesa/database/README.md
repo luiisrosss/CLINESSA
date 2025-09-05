@@ -6,7 +6,9 @@ This directory contains the SQL migrations and setup files for the CLINESA medic
 
 - `001_initial_schema.sql` - Creates all tables, indexes, and triggers
 - `002_row_level_security.sql` - Sets up RLS policies for multi-tenancy
-- `003_sample_data.sql` - Inserts sample data for development and testing
+- `003_sample_data.sql` - Inserts sample data for development and testing (optional)
+- `004_subscription_plans.sql` - Creates subscription plans and billing system
+- `001_initial_schema_production.sql` - Clean production schema without sample data
 
 ## Setup Instructions
 

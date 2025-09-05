@@ -1,5 +1,6 @@
 import { useAuthStore } from '@/stores/authStore'
 import { useEffect } from 'react'
+import toast from 'react-hot-toast'
 
 export function useAuth() {
   const {
@@ -15,11 +16,18 @@ export function useAuth() {
     setError
   } = useAuthStore()
 
+  const isAuthenticated = !!user && !!session
+
   useEffect(() => {
     initialize()
   }, [initialize])
 
-  const isAuthenticated = !!user && !!session
+  // Show success toast when user is authenticated
+  useEffect(() => {
+    if (isAuthenticated && userProfile) {
+      toast.success(`¡Bienvenido a CLINESA, ${userProfile.first_name}!`)
+    }
+  }, [isAuthenticated, userProfile])
   const isAdmin = userProfile?.role === 'admin'
   const isDoctor = userProfile?.role === 'doctor'
   const isNurse = userProfile?.role === 'nurse'

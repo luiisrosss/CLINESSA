@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useAuth } from '@/hooks/useAuth'
 import type { Patient } from '@/types/database.types'
@@ -9,8 +9,13 @@ export function usePatients() {
   const [error, setError] = useState<string | null>(null)
   const { organization } = useAuth()
 
-  const fetchPatients = async () => {
+  const fetchPatients = useCallback(async () => {
     if (!organization) return
+    
+    if (!supabase) {
+      setError('Configuración de Supabase no válida')
+      return
+    }
     
     try {
       setLoading(true)
@@ -31,10 +36,14 @@ export function usePatients() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [organization])
 
-  const createPatient = async (patientData: any) => {
+  const createPatient = async (patientData: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
     if (!organization) throw new Error('No organization found')
+    
+    if (!supabase) {
+      throw new Error('Configuración de Supabase no válida')
+    }
     
     try {
       setLoading(true)
@@ -49,7 +58,7 @@ export function usePatients() {
           ...patientData,
           organization_id: organization.id,
           patient_number: patientNumber,
-        })
+        } as any) // eslint-disable-line @typescript-eslint/no-explicit-any
         .select()
         .single()
 
@@ -66,13 +75,12 @@ export function usePatients() {
     }
   }
 
-  const updatePatient = async (id: string, patientData: any) => {
+  const updatePatient = async (id: string, patientData: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
     try {
       setLoading(true)
       setError(null)
 
-      const supabaseClient = supabase as any
-      const { data, error } = await supabaseClient
+      const { data, error } = await (supabase as any) // eslint-disable-line @typescript-eslint/no-explicit-any
         .from('patients')
         .update(patientData)
         .eq('id', id)
@@ -98,8 +106,7 @@ export function usePatients() {
       setError(null)
 
       // Soft delete by setting is_active to false
-      const supabaseClient = supabase as any
-      const { error } = await supabaseClient
+      const { error } = await (supabase as any) // eslint-disable-line @typescript-eslint/no-explicit-any
         .from('patients')
         .update({ is_active: false })
         .eq('id', id)
@@ -118,6 +125,11 @@ export function usePatients() {
 
   const searchPatients = async (query: string) => {
     if (!organization) return []
+    
+    if (!supabase) {
+      setError('Configuración de Supabase no válida')
+      return []
+    }
     
     try {
       setLoading(true)
@@ -143,6 +155,10 @@ export function usePatients() {
   }
 
   const getPatientById = async (id: string) => {
+    if (!supabase) {
+      throw new Error('Configuración de Supabase no válida')
+    }
+    
     try {
       setLoading(true)
       setError(null)
@@ -170,7 +186,7 @@ export function usePatients() {
   // Initialize patients on mount
   useEffect(() => {
     fetchPatients()
-  }, [organization])
+  }, [fetchPatients])
 
   return {
     patients,
@@ -188,6 +204,12 @@ export function usePatients() {
 
 // Helper function to generate patient number
 async function generatePatientNumber(organizationId: string): Promise<string> {
+  if (!supabase) {
+    // Fallback to timestamp-based number
+    const timestamp = Date.now().toString().slice(-6)
+    return `PAT-${timestamp}`
+  }
+  
   try {
     const { count } = await supabase
       .from('patients')
@@ -196,7 +218,7 @@ async function generatePatientNumber(organizationId: string): Promise<string> {
 
     const patientCount = (count || 0) + 1
     return `PAT-${patientCount.toString().padStart(4, '0')}`
-  } catch (error) {
+  } catch {
     // Fallback to timestamp-based number
     const timestamp = Date.now().toString().slice(-6)
     return `PAT-${timestamp}`

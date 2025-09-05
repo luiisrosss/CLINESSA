@@ -1,5 +1,5 @@
 import React from 'react'
-import { Navigate, useLocation } from 'react-router-dom'
+import { Navigate, useLocation, Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -47,9 +47,11 @@ export function LoginPage() {
   const onSubmit = async (data: LoginForm) => {
     try {
       await signIn(data.email, data.password)
-      toast.success('¡Bienvenido a CLINESA!')
-    } catch {
+      // Success toast will be shown only if authentication is successful
+      // The useAuth hook will handle the success state
+    } catch (error) {
       // Error is handled by the auth store and shown via toast above
+      console.error('Login error:', error)
     }
   }
 
@@ -103,7 +105,17 @@ export function LoginPage() {
               </Button>
             </form>
             
-            <div className="mt-6 text-center">
+            <div className="mt-6 text-center space-y-3">
+              <p className="text-sm text-gray-600">
+                ¿No tienes una cuenta?{' '}
+                <Link 
+                  to="/auth/plans" 
+                  className="text-medical-600 hover:text-medical-700 font-medium"
+                >
+                  Ver planes y registrarse
+                </Link>
+              </p>
+              
               <p className="text-sm text-gray-600">
                 ¿Problemas para acceder?{' '}
                 <button className="text-medical-600 hover:text-medical-700 font-medium">

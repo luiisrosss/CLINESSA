@@ -9,9 +9,11 @@
 
 ### 2. Ejecutar Migraciones (EN ORDEN)
 
-#### Paso 1: Ejecutar `001_initial_schema.sql`
+#### Paso 1: Ejecutar Schema de Base de Datos
 ```sql
--- Copia y pega TODO el contenido del archivo 001_initial_schema.sql
+-- Para PRODUCCIÓN: Usa 001_initial_schema_production.sql (sin datos de muestra)
+-- Para DESARROLLO: Usa 001_initial_schema.sql (con datos de muestra)
+-- Copia y pega TODO el contenido del archivo elegido
 -- Luego presiona "Run" (Ejecutar)
 ```
 ✅ **Resultado esperado**: Tablas creadas, triggers configurados
@@ -23,7 +25,14 @@
 ```
 ✅ **Resultado esperado**: RLS habilitado, políticas creadas
 
-#### Paso 3: Ejecutar `003_sample_data.sql` (OPCIONAL)
+#### Paso 3: Ejecutar `004_subscription_plans.sql`
+```sql
+-- Copia y pega TODO el contenido del archivo 004_subscription_plans.sql
+-- Luego presiona "Run" (Ejecutar)
+```
+✅ **Resultado esperado**: Planes de suscripción creados
+
+#### Paso 4: Ejecutar `003_sample_data.sql` (OPCIONAL)
 ```sql
 -- Copia y pega TODO el contenido del archivo 003_sample_data.sql
 -- Luego presiona "Run" (Ejecutar)
