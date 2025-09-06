@@ -1,10 +1,13 @@
-import { Bell, Search, LogOut, Settings } from 'lucide-react'
+import { Bell, Search, LogOut, Settings, User, Home, CreditCard } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { ConfigModal } from '@/components/ui/ConfigModal'
+import { NotificationsModal } from '@/components/ui/NotificationsModal'
+import { ProfileModal } from '@/components/ui/ProfileModal'
 import { useAuth } from '@/hooks/useAuth'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 interface HeaderProps {
   title?: string | undefined
@@ -14,6 +17,9 @@ interface HeaderProps {
 export function Header({ title, className }: HeaderProps) {
   const { userProfile, fullName, initials, signOut, loading } = useAuth()
   const [isConfigOpen, setIsConfigOpen] = useState(false)
+  const [isProfileOpen, setIsProfileOpen] = useState(false)
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
+  const navigate = useNavigate()
 
   return (
     <header className={cn(
@@ -41,8 +47,44 @@ export function Header({ title, className }: HeaderProps) {
         </div>
       </div>
 
-      {/* Actions */}
+      {/* Actions - Right Side */}
       <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-4 flex-shrink-0">
+        {/* Dashboard */}
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          className="p-2"
+          onClick={() => navigate('/dashboard')}
+          title="Dashboard"
+        >
+          <Home className="w-4 h-4 sm:w-5 sm:h-5" />
+        </Button>
+
+        {/* Billing */}
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          className="p-2"
+          onClick={() => navigate('/billing')}
+          title="Facturación"
+        >
+          <CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />
+        </Button>
+
+        {/* Notifications */}
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          className="relative p-2"
+          onClick={() => setIsNotificationsOpen(true)}
+          title="Notificaciones"
+        >
+          <Bell className="w-4 h-4 sm:w-5 sm:h-5" />
+          <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full text-xs flex items-center justify-center text-white">
+            3
+          </span>
+        </Button>
+
         {/* Settings */}
         <Button 
           variant="ghost" 
@@ -54,12 +96,15 @@ export function Header({ title, className }: HeaderProps) {
           <Settings className="w-4 h-4 sm:w-5 sm:h-5" />
         </Button>
 
-        {/* Notifications */}
-        <Button variant="ghost" size="sm" className="relative p-2">
-          <Bell className="w-4 h-4 sm:w-5 sm:h-5" />
-          <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full text-xs flex items-center justify-center text-white">
-            3
-          </span>
+        {/* User Profile */}
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          className="p-2"
+          onClick={() => setIsProfileOpen(true)}
+          title="Perfil"
+        >
+          <User className="w-4 h-4 sm:w-5 sm:h-5" />
         </Button>
 
         {/* User Menu */}
@@ -95,10 +140,18 @@ export function Header({ title, className }: HeaderProps) {
         </div>
       </div>
 
-      {/* Config Modal */}
+      {/* Modals */}
       <ConfigModal 
         isOpen={isConfigOpen} 
         onClose={() => setIsConfigOpen(false)} 
+      />
+      <NotificationsModal 
+        isOpen={isNotificationsOpen} 
+        onClose={() => setIsNotificationsOpen(false)} 
+      />
+      <ProfileModal 
+        isOpen={isProfileOpen} 
+        onClose={() => setIsProfileOpen(false)} 
       />
     </header>
   )

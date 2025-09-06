@@ -4,6 +4,7 @@ interface ConfigState {
   // Theme
   darkMode: boolean
   primaryColor: string
+  accentColor: string
   fontSize: string
   
   // Notifications
@@ -34,12 +35,18 @@ interface ConfigState {
   timeFormat: string
   autoLogout: boolean
   sessionTimeout: number
+  
+  // Plan Management
+  currentPlan: string
+  planStatus: string
+  planExpiry: string
 }
 
 const defaultConfig: ConfigState = {
   // Theme
   darkMode: false,
   primaryColor: 'blue',
+  accentColor: 'blue',
   fontSize: 'base',
   
   // Notifications
@@ -70,6 +77,11 @@ const defaultConfig: ConfigState = {
   timeFormat: '24h',
   autoLogout: false,
   sessionTimeout: 30,
+  
+  // Plan Management
+  currentPlan: 'enterprise',
+  planStatus: 'active',
+  planExpiry: '2025-12-31',
 }
 
 export function useConfig() {
@@ -111,10 +123,17 @@ export function useConfig() {
       red: '#dc2626',
       indigo: '#4f46e5',
       teal: '#0d9488',
+      orange: '#ea580c',
+      pink: '#db2777',
+      cyan: '#0891b2',
+      emerald: '#059669',
     }
     
     const primaryColor = colorMap[newConfig.primaryColor] || colorMap.blue
+    const accentColor = colorMap[newConfig.accentColor] || colorMap.blue
+    
     document.documentElement.style.setProperty('--primary-color', primaryColor)
+    document.documentElement.style.setProperty('--accent-color', accentColor)
 
     // Apply font size
     const fontSizeMap: { [key: string]: string } = {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { X, Moon, Sun, Palette, Bell, User, Shield, Database, Globe } from 'lucide-react'
+import { X, Moon, Sun, Palette, Bell, User, Shield, Database, Globe, CreditCard, AlertCircle } from 'lucide-react'
 import { Button } from './Button'
 import { Card, CardContent, CardHeader, CardTitle } from './Card'
 import { Input } from './Input'
@@ -17,6 +17,7 @@ interface ConfigState {
   // Theme
   darkMode: boolean
   primaryColor: string
+  accentColor: string
   fontSize: string
   
   // Notifications
@@ -47,15 +48,24 @@ interface ConfigState {
   timeFormat: string
   autoLogout: boolean
   sessionTimeout: number
+  
+  // Plan Management
+  currentPlan: string
+  planStatus: string
+  planExpiry: string
 }
 
 const colorOptions = [
-  { value: 'blue', label: 'Azul Médico', color: 'bg-blue-600' },
-  { value: 'green', label: 'Verde Salud', color: 'bg-green-600' },
-  { value: 'purple', label: 'Púrpura', color: 'bg-purple-600' },
-  { value: 'red', label: 'Rojo', color: 'bg-red-600' },
-  { value: 'indigo', label: 'Índigo', color: 'bg-indigo-600' },
-  { value: 'teal', label: 'Verde Azulado', color: 'bg-teal-600' },
+  { value: 'blue', label: 'Azul Médico', color: 'bg-blue-600', primary: 'bg-blue-500', accent: 'bg-blue-400' },
+  { value: 'green', label: 'Verde Salud', color: 'bg-green-600', primary: 'bg-green-500', accent: 'bg-green-400' },
+  { value: 'purple', label: 'Púrpura', color: 'bg-purple-600', primary: 'bg-purple-500', accent: 'bg-purple-400' },
+  { value: 'red', label: 'Rojo', color: 'bg-red-600', primary: 'bg-red-500', accent: 'bg-red-400' },
+  { value: 'indigo', label: 'Índigo', color: 'bg-indigo-600', primary: 'bg-indigo-500', accent: 'bg-indigo-400' },
+  { value: 'teal', label: 'Verde Azulado', color: 'bg-teal-600', primary: 'bg-teal-500', accent: 'bg-teal-400' },
+  { value: 'orange', label: 'Naranja', color: 'bg-orange-600', primary: 'bg-orange-500', accent: 'bg-orange-400' },
+  { value: 'pink', label: 'Rosa', color: 'bg-pink-600', primary: 'bg-pink-500', accent: 'bg-pink-400' },
+  { value: 'cyan', label: 'Cian', color: 'bg-cyan-600', primary: 'bg-cyan-500', accent: 'bg-cyan-400' },
+  { value: 'emerald', label: 'Esmeralda', color: 'bg-emerald-600', primary: 'bg-emerald-500', accent: 'bg-emerald-400' },
 ]
 
 const fontSizeOptions = [
@@ -114,6 +124,7 @@ export function ConfigModal({ isOpen, onClose }: ConfigModalProps) {
     { id: 'profile', label: 'Perfil', icon: User },
     { id: 'organization', label: 'Organización', icon: Shield },
     { id: 'system', label: 'Sistema', icon: Database },
+    { id: 'plans', label: 'Planes', icon: Globe },
   ]
 
   if (!isOpen) return null
@@ -192,20 +203,46 @@ export function ConfigModal({ isOpen, onClose }: ConfigModalProps) {
                   <label className="block text-sm font-medium text-gray-900 dark:text-white mb-3">
                     Color Principal
                   </label>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 sm:gap-3">
                     {colorOptions.map((color) => (
                       <button
                         key={color.value}
                         onClick={() => updateConfig('primaryColor', color.value)}
                         className={cn(
-                          'flex items-center space-x-2 p-2 sm:p-3 rounded-lg border-2 transition-all',
+                          'flex flex-col items-center space-y-2 p-2 sm:p-3 rounded-lg border-2 transition-all hover:scale-105',
                           config.primaryColor === color.value
-                            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900'
+                            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
                             : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'
                         )}
                       >
-                        <div className={cn('w-4 h-4 rounded-full flex-shrink-0', color.color)} />
-                        <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 truncate">
+                        <div className={cn('w-6 h-6 rounded-full flex-shrink-0', color.primary)} />
+                        <span className="text-xs text-gray-700 dark:text-gray-300 text-center">
+                          {color.label}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Accent Color */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-900 dark:text-white mb-3">
+                    Color de Acento
+                  </label>
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 sm:gap-3">
+                    {colorOptions.map((color) => (
+                      <button
+                        key={color.value}
+                        onClick={() => updateConfig('accentColor', color.value)}
+                        className={cn(
+                          'flex flex-col items-center space-y-2 p-2 sm:p-3 rounded-lg border-2 transition-all hover:scale-105',
+                          config.accentColor === color.value
+                            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                            : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'
+                        )}
+                      >
+                        <div className={cn('w-6 h-6 rounded-full flex-shrink-0', color.accent)} />
+                        <span className="text-xs text-gray-700 dark:text-gray-300 text-center">
                           {color.label}
                         </span>
                       </button>
@@ -451,6 +488,118 @@ export function ConfigModal({ isOpen, onClose }: ConfigModalProps) {
                         min="5"
                         max="120"
                       />
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Plans Tab */}
+            {activeTab === 'plans' && (
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                    Gestión de Planes
+                  </h3>
+                  
+                  {/* Current Plan Status */}
+                  <div className="bg-gradient-to-r from-medical-50 to-medical-100 dark:from-medical-900 dark:to-medical-800 rounded-lg p-4 mb-6">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h4 className="font-semibold text-gray-900 dark:text-white">
+                          Plan Actual: {config.currentPlan?.toUpperCase() || 'ENTERPRISE'}
+                        </h4>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          Estado: <span className="text-green-600 dark:text-green-400 font-medium">
+                            {config.planStatus === 'active' ? 'Activo' : 'Inactivo'}
+                          </span>
+                        </p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          Vence: {config.planExpiry || '2025-12-31'}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <div className="w-16 h-16 bg-medical-600 rounded-full flex items-center justify-center">
+                          <Globe className="w-8 h-8 text-white" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Plan Actions */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <Button
+                      variant="outline"
+                      className="h-20 flex flex-col items-center justify-center space-y-2"
+                      onClick={() => {
+                        // Navigate to billing page
+                        window.location.href = '/billing'
+                      }}
+                    >
+                      <CreditCard className="w-6 h-6" />
+                      <span>Gestionar Suscripción</span>
+                    </Button>
+                    
+                    <Button
+                      variant="outline"
+                      className="h-20 flex flex-col items-center justify-center space-y-2"
+                      onClick={() => {
+                        // Navigate to plans page
+                        window.location.href = '/plans'
+                      }}
+                    >
+                      <Globe className="w-6 h-6" />
+                      <span>Ver Planes Disponibles</span>
+                    </Button>
+                  </div>
+
+                  {/* Plan Features */}
+                  <div className="mt-6">
+                    <h4 className="font-semibold text-gray-900 dark:text-white mb-3">
+                      Características del Plan
+                    </h4>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span>Pacientes ilimitados</span>
+                      </div>
+                      <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span>Citas ilimitadas</span>
+                      </div>
+                      <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span>Historiales médicos</span>
+                      </div>
+                      <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span>Usuarios ilimitados</span>
+                      </div>
+                      <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span>Soporte 24/7</span>
+                      </div>
+                      <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
+                        <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span>Backup automático</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Upgrade Notice */}
+                  {config.currentPlan !== 'enterprise' && (
+                    <div className="mt-6 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+                      <div className="flex items-center space-x-2">
+                        <AlertCircle className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+                        <div>
+                          <h4 className="font-medium text-yellow-800 dark:text-yellow-200">
+                            Actualización Recomendada
+                          </h4>
+                          <p className="text-sm text-yellow-700 dark:text-yellow-300">
+                            Tu plan actual tiene limitaciones. Considera actualizar para obtener acceso completo a todas las funciones.
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   )}
                 </div>
