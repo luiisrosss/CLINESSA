@@ -54,7 +54,13 @@ export function Header({ title, className }: HeaderProps) {
           variant="ghost" 
           size="sm" 
           className="p-2"
-          onClick={() => navigate('/dashboard')}
+          onClick={() => {
+            try {
+              navigate('/dashboard')
+            } catch (error) {
+              window.location.href = '/dashboard'
+            }
+          }}
           title="Dashboard"
         >
           <Home className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -65,7 +71,13 @@ export function Header({ title, className }: HeaderProps) {
           variant="ghost" 
           size="sm" 
           className="p-2"
-          onClick={() => navigate('/billing')}
+          onClick={() => {
+            try {
+              navigate('/billing')
+            } catch (error) {
+              window.location.href = '/billing'
+            }
+          }}
           title="Facturación"
         >
           <CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />

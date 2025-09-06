@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { X, Moon, Sun, Palette, Bell, User, Shield, Database, Globe, CreditCard, AlertCircle } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { Button } from './Button'
 import { Card, CardContent, CardHeader, CardTitle } from './Card'
 import { Input } from './Input'
@@ -104,6 +105,7 @@ export function ConfigModal({ isOpen, onClose }: ConfigModalProps) {
   const [activeTab, setActiveTab] = useState('theme')
   const { config, updateConfig } = useConfig()
   const [saving, setSaving] = useState(false)
+  const navigate = useNavigate()
 
   const handleSave = async () => {
     setSaving(true)
@@ -532,8 +534,12 @@ export function ConfigModal({ isOpen, onClose }: ConfigModalProps) {
                       variant="outline"
                       className="h-20 flex flex-col items-center justify-center space-y-2"
                       onClick={() => {
-                        // Navigate to billing page
-                        window.location.href = '/billing'
+                        try {
+                          navigate('/billing')
+                          onClose()
+                        } catch (error) {
+                          window.location.href = '/billing'
+                        }
                       }}
                     >
                       <CreditCard className="w-6 h-6" />
@@ -544,8 +550,12 @@ export function ConfigModal({ isOpen, onClose }: ConfigModalProps) {
                       variant="outline"
                       className="h-20 flex flex-col items-center justify-center space-y-2"
                       onClick={() => {
-                        // Navigate to plans page
-                        window.location.href = '/plans'
+                        try {
+                          navigate('/plans')
+                          onClose()
+                        } catch (error) {
+                          window.location.href = '/plans'
+                        }
                       }}
                     >
                       <Globe className="w-6 h-6" />
