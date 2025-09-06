@@ -21,15 +21,15 @@ const plans = [
       { name: '1 usuario', included: true },
       { name: '200 pacientes', included: true },
       { name: '100 citas/mes', included: true },
-      { name: 'Historiales médicos', included: true },
+      { name: 'Historiales médicos básicos', included: true },
       { name: 'Calendario simple', included: true },
       { name: 'Soporte por email', included: true },
       { name: 'Backup básico', included: true },
-      { name: 'Gestión de usuarios', included: false },
-      { name: 'Reportes avanzados', included: false },
-      { name: 'Integración laboratorios', included: false },
-      { name: 'Soporte prioritario', included: false },
-      { name: 'Recordatorios SMS', included: false },
+      { name: 'Sin reportes avanzados', included: false },
+      { name: 'Sin integraciones', included: false },
+      { name: 'Sin recordatorios SMS', included: false },
+      { name: 'Sin facturación electrónica', included: false },
+      { name: 'Sin estadísticas detalladas', included: false },
     ],
     color: 'border-gray-200 dark:border-gray-700',
     gradient: 'from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900',
@@ -47,7 +47,6 @@ const plans = [
       { name: '1,000 pacientes', included: true },
       { name: '500 citas/mes', included: true },
       { name: 'Todo del plan Básico', included: true },
-      { name: 'Gestión de usuarios', included: true },
       { name: 'Reportes avanzados', included: true },
       { name: 'Integración laboratorios', included: true },
       { name: 'Soporte prioritario', included: true },
@@ -59,6 +58,7 @@ const plans = [
       { name: 'Soporte por chat', included: true },
       { name: 'API personalizada', included: false },
       { name: 'Soporte 24/7', included: false },
+      { name: 'Gestión de usuarios', included: false },
     ],
     color: 'border-blue-500 dark:border-blue-400',
     gradient: 'from-blue-50 to-blue-100 dark:from-blue-900 dark:to-blue-800',
@@ -72,10 +72,11 @@ const plans = [
     yearlyPrice: 999.99,
     description: 'Para hospitales y grandes organizaciones',
     features: [
-      { name: '50 usuarios', included: true },
+      { name: '5 usuarios', included: true },
       { name: '5,000 pacientes', included: true },
       { name: '2,000 citas/mes', included: true },
       { name: 'Todo del plan Profesional', included: true },
+      { name: 'Gestión de usuarios', included: true },
       { name: 'API personalizada', included: true },
       { name: 'Integraciones avanzadas', included: true },
       { name: 'Soporte 24/7', included: true },
@@ -281,7 +282,7 @@ export function PricingComparison({ onSelectPlan, loading = false, selectedPlan 
               ¿Por qué el plan Profesional es el más popular?
             </h4>
             <p className="text-gray-600 dark:text-gray-400 text-sm">
-              Ofrece la mejor relación calidad-precio con 5 usuarios, 1,000 pacientes y todas las funciones 
+              Ofrece la mejor relación calidad-precio con 1 usuario, 1,000 pacientes y todas las funciones 
               necesarias para una clínica en crecimiento por solo $39.99/mes.
             </p>
           </div>

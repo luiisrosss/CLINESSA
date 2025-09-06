@@ -66,7 +66,7 @@ INSERT INTO subscription_plans (name, type, description, price_monthly, price_ye
     1,
     200,
     100,
-    '["1 usuario", "200 pacientes", "100 citas/mes", "Historiales médicos", "Calendario simple", "Soporte por email", "Backup básico"]'
+    '["1 usuario", "200 pacientes", "100 citas/mes", "Historiales médicos básicos", "Calendario simple", "Soporte por email", "Backup básico", "Sin reportes avanzados", "Sin integraciones"]'
 ),
 (
     'Profesional',
@@ -77,7 +77,7 @@ INSERT INTO subscription_plans (name, type, description, price_monthly, price_ye
     1,
     1000,
     500,
-    '["1 usuario", "1,000 pacientes", "500 citas/mes", "Todo del plan Básico", "Gestión de usuarios", "Reportes avanzados", "Integración laboratorios", "Soporte prioritario", "Backup automático", "Recordatorios SMS", "Facturación electrónica"]'
+    '["1 usuario", "1,000 pacientes", "500 citas/mes", "Todo del plan Básico", "Reportes avanzados", "Integración laboratorios", "Soporte prioritario", "Backup automático", "Recordatorios SMS", "Facturación electrónica", "Estadísticas detalladas", "Exportación de datos", "Soporte por chat"]'
 ),
 (
     'Empresarial',
@@ -85,10 +85,10 @@ INSERT INTO subscription_plans (name, type, description, price_monthly, price_ye
     'Para hospitales y grandes organizaciones',
     99.99,
     999.99,
-    50,
+    5,
     5000,
     2000,
-    '["50 usuarios", "5,000 pacientes", "2,000 citas/mes", "Todo del plan Profesional", "API personalizada", "Integraciones avanzadas", "Soporte 24/7", "SLA garantizado", "Capacitación personalizada", "Múltiples sucursales", "Roles personalizados"]'
+    '["5 usuarios", "5,000 pacientes", "2,000 citas/mes", "Todo del plan Profesional", "Gestión de usuarios", "API personalizada", "Integraciones avanzadas", "Soporte 24/7", "SLA garantizado", "Capacitación personalizada", "Múltiples sucursales", "Roles personalizados", "Auditoría completa"]'
 );
 
 -- Function to get organization's current plan

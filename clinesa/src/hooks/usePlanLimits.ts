@@ -72,7 +72,7 @@ const PLAN_FEATURES = {
     backupLevel: 'automatic' as const,
   },
   enterprise: {
-    maxUsers: 50,
+    maxUsers: 5,
     maxPatients: 5000,
     maxAppointmentsPerMonth: 2000,
     canCreateMedicalRecords: true,

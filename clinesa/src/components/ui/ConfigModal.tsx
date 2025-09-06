@@ -583,7 +583,7 @@ export function ConfigModal({ isOpen, onClose }: ConfigModalProps) {
                       </div>
                       <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
                         <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        <span>50 usuarios</span>
+                        <span>5 usuarios</span>
                       </div>
                       <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
                         <div className="w-2 h-2 bg-green-500 rounded-full"></div>
