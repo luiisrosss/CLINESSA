@@ -1,5 +1,6 @@
 -- CLINESA Database Schema
 -- Multi-tenant medical practice management system
+-- Production-ready schema with all necessary features
 
 -- Enable necessary extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
@@ -7,17 +8,21 @@ CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- Create custom types
 CREATE TYPE user_role AS ENUM ('admin', 'doctor', 'nurse', 'receptionist');
-CREATE TYPE appointment_status AS ENUM ('scheduled', 'confirmed', 'cancelled', 'completed', 'no_show');
+CREATE TYPE organization_type AS ENUM ('clinic', 'hospital', 'private_practice');
 CREATE TYPE gender AS ENUM ('male', 'female', 'other');
+CREATE TYPE appointment_status AS ENUM ('scheduled', 'confirmed', 'cancelled', 'completed', 'no_show');
+CREATE TYPE medical_record_category AS ENUM ('allergy', 'chronic_condition', 'surgery', 'medication', 'vaccination', 'other');
+CREATE TYPE severity_level AS ENUM ('low', 'moderate', 'high', 'critical');
 
 -- Organizations table (tenants)
 CREATE TABLE organizations (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(255) NOT NULL,
-    type VARCHAR(100) NOT NULL DEFAULT 'clinic',
+    type organization_type NOT NULL DEFAULT 'clinic',
     address TEXT,
     phone VARCHAR(20),
     email VARCHAR(255),
+    website VARCHAR(255),
     logo_url TEXT,
     settings JSONB DEFAULT '{}',
     is_active BOOLEAN DEFAULT true,
@@ -95,7 +100,7 @@ CREATE TABLE appointments (
     title VARCHAR(200) NOT NULL,
     description TEXT,
     appointment_date TIMESTAMP WITH TIME ZONE NOT NULL,
-    duration INTEGER DEFAULT 30, -- Duration in minutes
+    duration INTEGER DEFAULT 30 CHECK (duration >= 15 AND duration <= 240), -- Duration in minutes
     status appointment_status DEFAULT 'scheduled',
     
     -- Additional information
@@ -107,7 +112,14 @@ CREATE TABLE appointments (
     -- System fields
     created_by UUID REFERENCES users(id),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    
+    CONSTRAINT appointments_doctor_role_check 
+        CHECK (EXISTS (
+            SELECT 1 FROM users 
+            WHERE id = doctor_id 
+            AND role IN ('doctor', 'admin')
+        ))
 );
 
 -- Medical records table
@@ -145,11 +157,12 @@ CREATE TABLE medical_history (
     organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
     patient_id UUID NOT NULL REFERENCES patients(id) ON DELETE CASCADE,
     
-    category VARCHAR(50) NOT NULL, -- 'allergy', 'chronic_condition', 'surgery', 'medication'
+    category medical_record_category NOT NULL, -- 'allergy', 'chronic_condition', 'surgery', 'medication'
     title VARCHAR(200) NOT NULL,
     description TEXT,
-    severity VARCHAR(20), -- 'mild', 'moderate', 'severe'
+    severity severity_level, -- 'low', 'moderate', 'high', 'critical'
     onset_date DATE,
+    resolved_date DATE,
     is_active BOOLEAN DEFAULT true,
     
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -161,6 +174,7 @@ CREATE INDEX idx_users_organization_id ON users(organization_id);
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_patients_organization_id ON patients(organization_id);
 CREATE INDEX idx_patients_patient_number ON patients(patient_number);
+CREATE INDEX idx_patients_name ON patients(first_name, last_name);
 CREATE INDEX idx_appointments_organization_id ON appointments(organization_id);
 CREATE INDEX idx_appointments_patient_id ON appointments(patient_id);
 CREATE INDEX idx_appointments_doctor_id ON appointments(doctor_id);
@@ -185,6 +199,39 @@ CREATE TRIGGER update_patients_updated_at BEFORE UPDATE ON patients FOR EACH ROW
 CREATE TRIGGER update_appointments_updated_at BEFORE UPDATE ON appointments FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_medical_records_updated_at BEFORE UPDATE ON medical_records FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_medical_history_updated_at BEFORE UPDATE ON medical_history FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- Function to generate patient numbers
+CREATE OR REPLACE FUNCTION generate_patient_number(org_id UUID)
+RETURNS VARCHAR AS $$
+DECLARE
+    patient_count INTEGER;
+    new_number VARCHAR;
+BEGIN
+    SELECT COUNT(*) + 1 INTO patient_count
+    FROM patients 
+    WHERE organization_id = org_id;
+    
+    new_number := 'PAT-' || LPAD(patient_count::TEXT, 4, '0');
+    
+    RETURN new_number;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Trigger to auto-generate patient numbers
+CREATE OR REPLACE FUNCTION set_patient_number()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.patient_number IS NULL OR NEW.patient_number = '' THEN
+        NEW.patient_number := generate_patient_number(NEW.organization_id);
+    END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_set_patient_number
+    BEFORE INSERT ON patients
+    FOR EACH ROW
+    EXECUTE FUNCTION set_patient_number();
 
 -- Function to validate appointment doctor role
 CREATE OR REPLACE FUNCTION validate_appointment_doctor()

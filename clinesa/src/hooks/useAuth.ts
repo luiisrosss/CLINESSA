@@ -1,7 +1,7 @@
 import { useAuthStore } from '@/stores/authStore'
 import { useEffect } from 'react'
-import { log } from '@/lib/logger'
-import { analytics } from '@/lib/analytics'
+// import { log } from '@/lib/logger'
+// import { analytics } from '@/lib/analytics'
 
 export function useAuth() {
   const {
