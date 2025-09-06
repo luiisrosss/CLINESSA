@@ -23,19 +23,31 @@ export function Header({ title, className }: HeaderProps) {
 
   return (
     <header className={cn(
-      'flex items-center justify-between h-16 px-4 sm:px-6 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700',
+      'w-full flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700',
       className
     )}>
-      {/* Title and Search */}
-      <div className="flex items-center space-x-2 sm:space-x-4 lg:space-x-6 flex-1 min-w-0">
+      {/* Left Section - Logo/Brand */}
+      <div className="flex items-center space-x-4 flex-shrink-0">
+        {/* Logo */}
+        <div className="flex items-center space-x-2">
+          <div className="w-8 h-8 bg-gradient-to-r from-medical-500 to-medical-600 rounded-lg flex items-center justify-center">
+            <span className="text-white font-bold text-sm">C</span>
+          </div>
+          <span className="text-lg font-bold text-gray-900 dark:text-white hidden sm:block">
+            CLINESA
+          </span>
+        </div>
+        
         {title && (
-          <h1 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white truncate">
+          <h1 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white truncate ml-4">
             {title}
           </h1>
         )}
-        
-        {/* Search - Hidden on mobile, visible on tablet+ */}
-        <div className="hidden sm:block flex-1 max-w-md">
+      </div>
+
+      {/* Center Section - Search */}
+      <div className="flex-1 flex justify-center px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-2xl">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
             <Input
@@ -47,13 +59,13 @@ export function Header({ title, className }: HeaderProps) {
         </div>
       </div>
 
-      {/* Actions - Right Side */}
-      <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-4 flex-shrink-0">
+      {/* Right Section - Actions and User */}
+      <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-3 flex-shrink-0">
         {/* Dashboard */}
         <Button 
           variant="ghost" 
           size="sm" 
-          className="p-2"
+          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700"
           onClick={() => {
             try {
               navigate('/dashboard')
@@ -70,7 +82,7 @@ export function Header({ title, className }: HeaderProps) {
         <Button 
           variant="ghost" 
           size="sm" 
-          className="p-2"
+          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700"
           onClick={() => {
             try {
               navigate('/billing')
@@ -87,7 +99,7 @@ export function Header({ title, className }: HeaderProps) {
         <Button 
           variant="ghost" 
           size="sm" 
-          className="relative p-2"
+          className="relative p-2 hover:bg-gray-100 dark:hover:bg-gray-700"
           onClick={() => setIsNotificationsOpen(true)}
           title="Notificaciones"
         >
@@ -101,7 +113,7 @@ export function Header({ title, className }: HeaderProps) {
         <Button 
           variant="ghost" 
           size="sm" 
-          className="p-2"
+          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700"
           onClick={() => setIsConfigOpen(true)}
           title="Configuración"
         >
@@ -112,7 +124,7 @@ export function Header({ title, className }: HeaderProps) {
         <Button 
           variant="ghost" 
           size="sm" 
-          className="p-2"
+          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700"
           onClick={() => setIsProfileOpen(true)}
           title="Perfil"
         >
@@ -120,7 +132,7 @@ export function Header({ title, className }: HeaderProps) {
         </Button>
 
         {/* User Menu */}
-        <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-3">
+        <div className="flex items-center space-x-2 sm:space-x-3 lg:space-x-4">
           {/* User info - Hidden on mobile, visible on tablet+ */}
           <div className="hidden sm:flex flex-col items-end">
             <span className="text-sm font-medium text-gray-900 dark:text-white truncate max-w-24 lg:max-w-none">
