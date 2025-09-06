@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ArrowLeft, CheckCircle } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { PricingComparison } from '@/components/billing/PricingComparison'
@@ -11,6 +11,23 @@ export function PlansPage() {
   const { createCheckoutSession, loading } = useStripe()
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null)
 
+  // Smooth scroll effect
+  useEffect(() => {
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault()
+      const container = document.querySelector('.scroll-container')
+      if (container) {
+        container.scrollLeft += e.deltaY
+      }
+    }
+
+    const container = document.querySelector('.scroll-container')
+    if (container) {
+      container.addEventListener('wheel', handleWheel, { passive: false })
+      return () => container.removeEventListener('wheel', handleWheel)
+    }
+  }, [])
+
   const handleSelectPlan = async (planId: string) => {
     try {
       setSelectedPlan(planId)
@@ -22,9 +39,9 @@ export function PlansPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 overflow-x-hidden scrollbar-hide">
       {/* Header */}
-      <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+      <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-4">
@@ -57,8 +74,8 @@ export function PlansPage() {
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      {/* Main Content - Smooth Scroll */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 scroll-smooth scroll-container">
         {/* Hero Section */}
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">

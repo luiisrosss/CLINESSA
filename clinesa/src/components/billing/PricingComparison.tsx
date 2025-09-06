@@ -101,7 +101,7 @@ export function PricingComparison({ onSelectPlan, loading = false, selectedPlan 
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 scroll-smooth">
       {/* Header */}
       <div className="text-center">
         <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
@@ -114,7 +114,7 @@ export function PricingComparison({ onSelectPlan, loading = false, selectedPlan 
       </div>
 
       {/* Pricing Cards */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 scroll-smooth">
         {plans.map((plan) => {
           const Icon = plan.icon
           const monthlySavings = calculateSavings(plan.monthlyPrice, plan.yearlyPrice)
@@ -234,7 +234,7 @@ export function PricingComparison({ onSelectPlan, loading = false, selectedPlan 
           Comparación detallada de características
         </h3>
         
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto scrollbar-hide">
           <table className="w-full border-collapse">
             <thead>
               <tr className="border-b border-gray-200 dark:border-gray-700">
