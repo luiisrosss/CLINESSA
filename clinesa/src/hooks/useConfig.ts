@@ -3,8 +3,6 @@ import { useState, useEffect } from 'react'
 interface ConfigState {
   // Theme
   darkMode: boolean
-  primaryColor: string
-  accentColor: string
   fontSize: string
   
   
@@ -40,9 +38,6 @@ interface ConfigState {
 const defaultConfig: ConfigState = {
   // Theme
   darkMode: false,
-  primaryColor: 'blue',
-  accentColor: 'blue',
-  fontSize: 'base',
   
   
   // User Profile
@@ -105,36 +100,9 @@ export function useConfig() {
       document.documentElement.classList.remove('dark')
     }
 
-    // Apply primary color
-    const colorMap: { [key: string]: string } = {
-      blue: '#2563eb',
-      green: '#16a34a',
-      purple: '#9333ea',
-      red: '#dc2626',
-      indigo: '#4f46e5',
-      teal: '#0d9488',
-      orange: '#ea580c',
-      pink: '#db2777',
-      cyan: '#0891b2',
-      emerald: '#059669',
-    }
-    
-    const primaryColor = colorMap[newConfig.primaryColor] || colorMap.blue
-    const accentColor = colorMap[newConfig.accentColor] || colorMap.blue
-    
-    document.documentElement.style.setProperty('--primary-color', primaryColor)
-    document.documentElement.style.setProperty('--accent-color', accentColor)
-
-    // Apply font size
-    const fontSizeMap: { [key: string]: string } = {
-      sm: '14px',
-      base: '16px',
-      lg: '18px',
-      xl: '20px',
-    }
-    
-    const fontSize = fontSizeMap[newConfig.fontSize] || fontSizeMap.base
-    document.documentElement.style.fontSize = fontSize
+    // Set default colors
+    document.documentElement.style.setProperty('--primary-color', '#3b82f6')
+    document.documentElement.style.setProperty('--accent-color', '#3b82f6')
   }
 
   const updateConfig = (key: keyof ConfigState, value: any) => {

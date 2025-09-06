@@ -17,9 +17,6 @@ interface ConfigModalProps {
 interface ConfigState {
   // Theme
   darkMode: boolean
-  primaryColor: string
-  accentColor: string
-  fontSize: string
   
   
   // User Profile
@@ -51,25 +48,7 @@ interface ConfigState {
   planExpiry: string
 }
 
-const colorOptions = [
-  { value: 'blue', label: 'Azul Médico', color: 'bg-blue-600', primary: 'bg-blue-500', accent: 'bg-blue-400' },
-  { value: 'green', label: 'Verde Salud', color: 'bg-green-600', primary: 'bg-green-500', accent: 'bg-green-400' },
-  { value: 'purple', label: 'Púrpura', color: 'bg-purple-600', primary: 'bg-purple-500', accent: 'bg-purple-400' },
-  { value: 'red', label: 'Rojo', color: 'bg-red-600', primary: 'bg-red-500', accent: 'bg-red-400' },
-  { value: 'indigo', label: 'Índigo', color: 'bg-indigo-600', primary: 'bg-indigo-500', accent: 'bg-indigo-400' },
-  { value: 'teal', label: 'Verde Azulado', color: 'bg-teal-600', primary: 'bg-teal-500', accent: 'bg-teal-400' },
-  { value: 'orange', label: 'Naranja', color: 'bg-orange-600', primary: 'bg-orange-500', accent: 'bg-orange-400' },
-  { value: 'pink', label: 'Rosa', color: 'bg-pink-600', primary: 'bg-pink-500', accent: 'bg-pink-400' },
-  { value: 'cyan', label: 'Cian', color: 'bg-cyan-600', primary: 'bg-cyan-500', accent: 'bg-cyan-400' },
-  { value: 'emerald', label: 'Esmeralda', color: 'bg-emerald-600', primary: 'bg-emerald-500', accent: 'bg-emerald-400' },
-]
 
-const fontSizeOptions = [
-  { value: 'sm', label: 'Pequeño' },
-  { value: 'base', label: 'Mediano' },
-  { value: 'lg', label: 'Grande' },
-  { value: 'xl', label: 'Extra Grande' },
-]
 
 const languageOptions = [
   { value: 'es', label: 'Español' },
@@ -194,57 +173,7 @@ export function ConfigModal({ isOpen, onClose }: ConfigModalProps) {
                   />
                 </div>
 
-                {/* Primary Color */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-900 dark:text-white mb-3">
-                    Color Principal
-                  </label>
-                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 sm:gap-3">
-                    {colorOptions.map((color) => (
-                      <button
-                        key={color.value}
-                        onClick={() => updateConfig('primaryColor', color.value)}
-                        className={cn(
-                          'flex flex-col items-center space-y-2 p-2 sm:p-3 rounded-lg border-2 transition-all hover:scale-105',
-                          config.primaryColor === color.value
-                            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                            : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'
-                        )}
-                      >
-                        <div className={cn('w-6 h-6 rounded-full flex-shrink-0', color.primary)} />
-                        <span className="text-xs text-gray-700 dark:text-gray-300 text-center">
-                          {color.label}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
 
-                {/* Accent Color */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-900 dark:text-white mb-3">
-                    Color de Acento
-                  </label>
-                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 sm:gap-3">
-                    {colorOptions.map((color) => (
-                      <button
-                        key={color.value}
-                        onClick={() => updateConfig('accentColor', color.value)}
-                        className={cn(
-                          'flex flex-col items-center space-y-2 p-2 sm:p-3 rounded-lg border-2 transition-all hover:scale-105',
-                          config.accentColor === color.value
-                            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
-                            : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'
-                        )}
-                      >
-                        <div className={cn('w-6 h-6 rounded-full flex-shrink-0', color.accent)} />
-                        <span className="text-xs text-gray-700 dark:text-gray-300 text-center">
-                          {color.label}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
 
                 {/* Font Size */}
                 <div>
