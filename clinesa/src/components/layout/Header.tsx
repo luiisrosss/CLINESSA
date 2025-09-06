@@ -1,8 +1,7 @@
-import { Bell, Search, LogOut, Settings, User, Home, CreditCard } from 'lucide-react'
+import { Search, LogOut, Settings, User, Home, CreditCard } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { ConfigModal } from '@/components/ui/ConfigModal'
-import { NotificationsModal } from '@/components/ui/NotificationsModal'
 import { ProfileModal } from '@/components/ui/ProfileModal'
 import { useAuth } from '@/hooks/useAuth'
 import { cn } from '@/lib/utils'
@@ -18,7 +17,6 @@ export function Header({ title, className }: HeaderProps) {
   const { userProfile, fullName, initials, signOut, loading } = useAuth()
   const [isConfigOpen, setIsConfigOpen] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
-  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false)
   const navigate = useNavigate()
 
   return (
@@ -95,19 +93,6 @@ export function Header({ title, className }: HeaderProps) {
           <CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />
         </Button>
 
-        {/* Notifications */}
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          className="relative p-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-          onClick={() => setIsNotificationsOpen(true)}
-          title="Notificaciones"
-        >
-          <Bell className="w-4 h-4 sm:w-5 sm:h-5" />
-          <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full text-xs flex items-center justify-center text-white">
-            3
-          </span>
-        </Button>
 
         {/* Settings */}
         <Button 
@@ -168,10 +153,6 @@ export function Header({ title, className }: HeaderProps) {
       <ConfigModal 
         isOpen={isConfigOpen} 
         onClose={() => setIsConfigOpen(false)} 
-      />
-      <NotificationsModal 
-        isOpen={isNotificationsOpen} 
-        onClose={() => setIsNotificationsOpen(false)} 
       />
       <ProfileModal 
         isOpen={isProfileOpen} 

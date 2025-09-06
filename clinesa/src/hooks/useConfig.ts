@@ -7,11 +7,6 @@ interface ConfigState {
   accentColor: string
   fontSize: string
   
-  // Notifications
-  emailNotifications: boolean
-  pushNotifications: boolean
-  appointmentReminders: boolean
-  reminderTime: string
   
   // User Profile
   firstName: string
@@ -49,11 +44,6 @@ const defaultConfig: ConfigState = {
   accentColor: 'blue',
   fontSize: 'base',
   
-  // Notifications
-  emailNotifications: true,
-  pushNotifications: true,
-  appointmentReminders: true,
-  reminderTime: '15',
   
   // User Profile
   firstName: 'Luis',

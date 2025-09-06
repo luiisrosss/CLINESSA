@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { X, Moon, Sun, Palette, Bell, User, Shield, Database, Globe, CreditCard, AlertCircle } from 'lucide-react'
+import { X, Moon, Sun, Palette, User, Shield, Database, Globe, CreditCard, AlertCircle } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { Button } from './Button'
 import { Card, CardContent, CardHeader, CardTitle } from './Card'
@@ -21,11 +21,6 @@ interface ConfigState {
   accentColor: string
   fontSize: string
   
-  // Notifications
-  emailNotifications: boolean
-  pushNotifications: boolean
-  appointmentReminders: boolean
-  reminderTime: string
   
   // User Profile
   firstName: string
@@ -122,7 +117,6 @@ export function ConfigModal({ isOpen, onClose }: ConfigModalProps) {
 
   const tabs = [
     { id: 'theme', label: 'Apariencia', icon: Palette },
-    { id: 'notifications', label: 'Notificaciones', icon: Bell },
     { id: 'profile', label: 'Perfil', icon: User },
     { id: 'organization', label: 'Organización', icon: Shield },
     { id: 'system', label: 'Sistema', icon: Database },
@@ -266,71 +260,6 @@ export function ConfigModal({ isOpen, onClose }: ConfigModalProps) {
               </div>
             )}
 
-            {activeTab === 'notifications' && (
-              <div className="space-y-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Notificaciones
-                </h3>
-                
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium text-gray-900 dark:text-white">Notificaciones por Email</p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        Recibir notificaciones por correo electrónico
-                      </p>
-                    </div>
-                    <Switch
-                      checked={config.emailNotifications}
-                      onCheckedChange={(checked) => updateConfig('emailNotifications', checked)}
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium text-gray-900 dark:text-white">Notificaciones Push</p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        Recibir notificaciones en el navegador
-                      </p>
-                    </div>
-                    <Switch
-                      checked={config.pushNotifications}
-                      onCheckedChange={(checked) => updateConfig('pushNotifications', checked)}
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium text-gray-900 dark:text-white">Recordatorios de Citas</p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        Recordar citas próximas
-                      </p>
-                    </div>
-                    <Switch
-                      checked={config.appointmentReminders}
-                      onCheckedChange={(checked) => updateConfig('appointmentReminders', checked)}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                      Tiempo de Recordatorio (minutos antes)
-                    </label>
-                    <Select
-                      value={config.reminderTime}
-                      onValueChange={(value) => updateConfig('reminderTime', value)}
-                      options={[
-                        { value: '5', label: '5 minutos' },
-                        { value: '15', label: '15 minutos' },
-                        { value: '30', label: '30 minutos' },
-                        { value: '60', label: '1 hora' },
-                        { value: '120', label: '2 horas' },
-                      ]}
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
 
             {activeTab === 'profile' && (
               <div className="space-y-6">
