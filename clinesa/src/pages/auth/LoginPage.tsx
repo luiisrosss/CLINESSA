@@ -109,7 +109,7 @@ export function LoginPage() {
               <p className="text-sm text-gray-600">
                 ¿No tienes una cuenta?{' '}
                 <Link 
-                  to="/auth/plans" 
+                  to="/plans" 
                   className="text-medical-600 hover:text-medical-700 font-medium"
                 >
                   Ver planes y registrarse

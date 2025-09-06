@@ -218,14 +218,28 @@ export function RegisterPage() {
               Configura tu consulta médica en minutos
             </p>
             {selectedPlan && (
-              <div className="mt-4 p-3 bg-medical-50 rounded-lg border border-medical-200">
-                <p className="text-sm text-medical-800">
-                  <strong>Plan seleccionado:</strong> {selectedPlan.charAt(0).toUpperCase() + selectedPlan.slice(1)} 
-                  {' '}({billingCycle === 'monthly' ? 'Mensual' : 'Anual'})
-                </p>
-                <p className="text-xs text-medical-600 mt-1">
-                  Incluye 14 días de prueba gratuita
-                </p>
+              <div className="mt-4 p-4 bg-gradient-to-r from-medical-50 to-blue-50 rounded-lg border border-medical-200">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-semibold text-medical-800">
+                      Plan {selectedPlan.charAt(0).toUpperCase() + selectedPlan.slice(1)} 
+                      {' '}({billingCycle === 'monthly' ? 'Mensual' : 'Anual'})
+                    </p>
+                    <p className="text-xs text-medical-600 mt-1">
+                      Incluye 14 días de prueba gratuita
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-lg font-bold text-medical-800">
+                      ${selectedPlan === 'basic' ? (billingCycle === 'monthly' ? '19.99' : '199.99') : 
+                        selectedPlan === 'professional' ? (billingCycle === 'monthly' ? '39.99' : '399.99') : 
+                        (billingCycle === 'monthly' ? '99.99' : '999.99')}
+                    </p>
+                    <p className="text-xs text-medical-600">
+                      {billingCycle === 'yearly' ? 'Ahorra 17%' : 'por mes'}
+                    </p>
+                  </div>
+                </div>
               </div>
             )}
           </CardHeader>
