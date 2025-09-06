@@ -54,7 +54,7 @@ const PLAN_FEATURES = {
     backupLevel: 'basic' as const,
   },
   professional: {
-    maxUsers: 5,
+    maxUsers: 1,
     maxPatients: 1000,
     maxAppointmentsPerMonth: 500,
     canCreateMedicalRecords: true,

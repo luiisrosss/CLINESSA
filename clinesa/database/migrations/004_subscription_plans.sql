@@ -60,35 +60,35 @@ INSERT INTO subscription_plans (name, type, description, price_monthly, price_ye
 (
     'Básico',
     'basic',
-    'Perfecto para consultorios pequeños y médicos independientes',
-    29.99,
-    299.99,
-    2,
-    500,
+    'Para médicos independientes',
+    19.99,
+    199.99,
+    1,
     200,
-    '["Gestión de pacientes", "Calendario de citas", "Historiales médicos básicos", "Soporte por email"]'
+    100,
+    '["1 usuario", "200 pacientes", "100 citas/mes", "Historiales médicos", "Calendario simple", "Soporte por email", "Backup básico"]'
 ),
 (
     'Profesional',
     'professional',
-    'Ideal para clínicas medianas con múltiples profesionales',
-    79.99,
-    799.99,
-    10,
-    2000,
+    '⭐ MÁS POPULAR - Para clínicas en crecimiento',
+    39.99,
+    399.99,
+    1,
     1000,
-    '["Todo lo del plan Básico", "Gestión de usuarios", "Reportes avanzados", "Integración con laboratorios", "Soporte prioritario", "Backup automático"]'
+    500,
+    '["1 usuario", "1,000 pacientes", "500 citas/mes", "Todo del plan Básico", "Gestión de usuarios", "Reportes avanzados", "Integración laboratorios", "Soporte prioritario", "Backup automático", "Recordatorios SMS", "Facturación electrónica"]'
 ),
 (
     'Empresarial',
     'enterprise',
-    'Para hospitales y grandes organizaciones médicas',
-    199.99,
-    1999.99,
-    100,
-    10000,
+    'Para hospitales y grandes organizaciones',
+    99.99,
+    999.99,
+    50,
     5000,
-    '["Todo lo del plan Profesional", "API personalizada", "Integraciones avanzadas", "Soporte 24/7", "SLA garantizado", "Capacitación personalizada"]'
+    2000,
+    '["50 usuarios", "5,000 pacientes", "2,000 citas/mes", "Todo del plan Profesional", "API personalizada", "Integraciones avanzadas", "Soporte 24/7", "SLA garantizado", "Capacitación personalizada", "Múltiples sucursales", "Roles personalizados"]'
 );
 
 -- Function to get organization's current plan

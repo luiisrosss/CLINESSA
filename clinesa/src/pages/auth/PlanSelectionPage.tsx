@@ -50,11 +50,11 @@ const plans: Plan[] = [
     description: '⭐ MÁS POPULAR - Para clínicas en crecimiento',
     priceMonthly: 39.99,
     priceYearly: 399.99,
-    maxUsers: 5,
+    maxUsers: 1,
     maxPatients: 1000,
     maxAppointments: 500,
     features: [
-      '5 usuarios',
+      '1 usuario',
       '1,000 pacientes',
       '500 citas/mes',
       'Todo del plan Básico',

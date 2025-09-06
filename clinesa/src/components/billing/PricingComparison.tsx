@@ -43,7 +43,7 @@ const plans = [
     yearlyPrice: 399.99,
     description: '⭐ MÁS POPULAR - Para clínicas en crecimiento',
     features: [
-      { name: '5 usuarios', included: true },
+      { name: '1 usuario', included: true },
       { name: '1,000 pacientes', included: true },
       { name: '500 citas/mes', included: true },
       { name: 'Todo del plan Básico', included: true },

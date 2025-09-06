@@ -571,11 +571,11 @@ export function ConfigModal({ isOpen, onClose }: ConfigModalProps) {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
                         <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        <span>Pacientes ilimitados</span>
+                        <span>5,000 pacientes</span>
                       </div>
                       <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
                         <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        <span>Citas ilimitadas</span>
+                        <span>2,000 citas/mes</span>
                       </div>
                       <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
                         <div className="w-2 h-2 bg-green-500 rounded-full"></div>
@@ -583,7 +583,7 @@ export function ConfigModal({ isOpen, onClose }: ConfigModalProps) {
                       </div>
                       <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
                         <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                        <span>Usuarios ilimitados</span>
+                        <span>50 usuarios</span>
                       </div>
                       <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
                         <div className="w-2 h-2 bg-green-500 rounded-full"></div>
