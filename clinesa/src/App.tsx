@@ -25,6 +25,8 @@ import AccountPage from '@/pages/account/AccountPage'
 import { SetupPage } from '@/pages/SetupPage'
 import BlogPage from '@/pages/blog/BlogPage'
 import ArticlePage from '@/pages/blog/ArticlePage'
+import PlatformPage from '@/pages/platform/PlatformPage'
+import ResourcesPage from '@/pages/resources/ResourcesPage'
 
 function App() {
   // Si no hay configuración válida de Supabase, mostrar página de setup
@@ -62,6 +64,8 @@ function App() {
           <Route path="/support" element={<SupportPage />} />
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/blog/:slug" element={<ArticlePage />} />
+          <Route path="/platform" element={<PlatformPage />} />
+          <Route path="/resources" element={<ResourcesPage />} />
           
           {/* Protected Routes */}
           <Route 

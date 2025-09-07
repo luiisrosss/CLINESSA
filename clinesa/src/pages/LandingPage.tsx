@@ -25,7 +25,8 @@ import {
   Workflow,
   Target,
   BarChart,
-  Settings
+  Settings,
+  Play
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
@@ -127,86 +128,103 @@ const LandingPage = () => {
                 onMouseEnter={() => setHoveredPlatform(true)}
                 onMouseLeave={() => setHoveredPlatform(false)}
               >
-                <button className="flex items-center space-x-1 text-gray-600 hover:text-gray-900 transition-colors">
-                  <span>Platform</span>
-                  <ChevronDown className="w-4 h-4" />
+                <button className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors group">
+                  <span className="text-base font-medium">Platform</span>
+                  <ChevronDown className="w-5 h-5 group-hover:rotate-180 transition-transform duration-200" />
                 </button>
                 
                 {hoveredPlatform && (
                   <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    className="absolute top-full left-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 p-6"
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    transition={{ duration: 0.2, ease: "easeOut" }}
+                    className="absolute top-full left-0 mt-2 w-96 bg-white rounded-xl shadow-2xl border border-gray-200 p-8 z-50"
                   >
-                    <div className="grid grid-cols-2 gap-6">
+                    <div className="grid grid-cols-2 gap-8">
                       <div>
-                        <h3 className="text-sm font-semibold text-gray-900 mb-3">CRM PLATFORM</h3>
-                        <div className="space-y-3">
-                          <div className="flex items-center space-x-3">
-                            <Database className="w-4 h-4 text-gray-600" />
+                        <h3 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wide">CRM PLATFORM</h3>
+                        <div className="space-y-4">
+                          <a href="/platform/data-model" className="flex items-center space-x-4 group hover:bg-gray-50 p-2 rounded-lg transition-colors">
+                            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors">
+                              <Database className="w-5 h-5 text-blue-600" />
+                            </div>
                             <div>
-                              <div className="text-sm font-medium text-gray-900">Data model</div>
+                              <div className="text-sm font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">Data model</div>
                               <div className="text-xs text-gray-600">Sync and enrich your data</div>
                             </div>
-                          </div>
-                          <div className="flex items-center space-x-3">
-                            <Users className="w-4 h-4 text-gray-600" />
+                          </a>
+                          <a href="/platform/productivity" className="flex items-center space-x-4 group hover:bg-gray-50 p-2 rounded-lg transition-colors">
+                            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition-colors">
+                              <Users className="w-5 h-5 text-green-600" />
+                            </div>
                             <div>
-                              <div className="text-sm font-medium text-gray-900">Productivity & collaboration</div>
+                              <div className="text-sm font-semibold text-gray-900 group-hover:text-green-600 transition-colors">Productivity & collaboration</div>
                               <div className="text-xs text-gray-600">Context for your team operations</div>
                             </div>
-                          </div>
-                          <div className="flex items-center space-x-3">
-                            <Zap className="w-4 h-4 text-gray-600" />
+                          </a>
+                          <a href="/platform/ai" className="flex items-center space-x-4 group hover:bg-gray-50 p-2 rounded-lg transition-colors">
+                            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center group-hover:bg-purple-200 transition-colors">
+                              <Zap className="w-5 h-5 text-purple-600" />
+                            </div>
                             <div>
-                              <div className="text-sm font-medium text-gray-900">AI</div>
+                              <div className="text-sm font-semibold text-gray-900 group-hover:text-purple-600 transition-colors">AI</div>
                               <div className="text-xs text-gray-600">Native to your CRM</div>
                             </div>
-                          </div>
-                          <div className="flex items-center space-x-3">
-                            <Settings className="w-4 h-4 text-gray-600" />
+                          </a>
+                          <a href="/platform/integrations" className="flex items-center space-x-4 group hover:bg-gray-50 p-2 rounded-lg transition-colors">
+                            <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center group-hover:bg-orange-200 transition-colors">
+                              <Settings className="w-5 h-5 text-orange-600" />
+                            </div>
                             <div>
-                              <div className="text-sm font-medium text-gray-900">Apps & integrations</div>
+                              <div className="text-sm font-semibold text-gray-900 group-hover:text-orange-600 transition-colors">Apps & integrations</div>
                               <div className="text-xs text-gray-600">Connect all your favorite tools</div>
                             </div>
-                          </div>
+                          </a>
                         </div>
                       </div>
                       <div>
-                        <h3 className="text-sm font-semibold text-gray-900 mb-3">AUTOMATIONS</h3>
-                        <div className="space-y-3">
-                          <div className="flex items-center space-x-3">
-                            <Workflow className="w-4 h-4 text-gray-600" />
+                        <h3 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wide">AUTOMATIONS</h3>
+                        <div className="space-y-4">
+                          <a href="/platform/workflows" className="flex items-center space-x-4 group hover:bg-gray-50 p-2 rounded-lg transition-colors">
+                            <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center group-hover:bg-indigo-200 transition-colors">
+                              <Workflow className="w-5 h-5 text-indigo-600" />
+                            </div>
                             <div>
-                              <div className="text-sm font-medium text-gray-900">Workflows</div>
+                              <div className="text-sm font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">Workflows</div>
                               <div className="text-xs text-gray-600">Automate any process</div>
                             </div>
-                          </div>
-                          <div className="flex items-center space-x-3">
-                            <Target className="w-4 h-4 text-gray-600" />
+                          </a>
+                          <a href="/platform/sequences" className="flex items-center space-x-4 group hover:bg-gray-50 p-2 rounded-lg transition-colors">
+                            <div className="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center group-hover:bg-pink-200 transition-colors">
+                              <Target className="w-5 h-5 text-pink-600" />
+                            </div>
                             <div>
-                              <div className="text-sm font-medium text-gray-900">Sequences</div>
+                              <div className="text-sm font-semibold text-gray-900 group-hover:text-pink-600 transition-colors">Sequences</div>
                               <div className="text-xs text-gray-600">Personalized outreach</div>
                             </div>
-                          </div>
+                          </a>
                         </div>
-                        <h3 className="text-sm font-semibold text-gray-900 mb-3 mt-6">INSIGHTS</h3>
-                        <div className="space-y-3">
-                          <div className="flex items-center space-x-3">
-                            <Activity className="w-4 h-4 text-gray-600" />
+                        <h3 className="text-sm font-semibold text-gray-900 mb-4 mt-8 uppercase tracking-wide">INSIGHTS</h3>
+                        <div className="space-y-4">
+                          <a href="/platform/call-intelligence" className="flex items-center space-x-4 group hover:bg-gray-50 p-2 rounded-lg transition-colors">
+                            <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center group-hover:bg-teal-200 transition-colors">
+                              <Activity className="w-5 h-5 text-teal-600" />
+                            </div>
                             <div>
-                              <div className="text-sm font-medium text-gray-900">Call intelligence</div>
+                              <div className="text-sm font-semibold text-gray-900 group-hover:text-teal-600 transition-colors">Call intelligence</div>
                               <div className="text-xs text-gray-600">Record and analyze meetings</div>
                             </div>
-                          </div>
-                          <div className="flex items-center space-x-3">
-                            <BarChart className="w-4 h-4 text-gray-600" />
+                          </a>
+                          <a href="/platform/reporting" className="flex items-center space-x-4 group hover:bg-gray-50 p-2 rounded-lg transition-colors">
+                            <div className="w-10 h-10 bg-cyan-100 rounded-lg flex items-center justify-center group-hover:bg-cyan-200 transition-colors">
+                              <BarChart className="w-5 h-5 text-cyan-600" />
+                            </div>
                             <div>
-                              <div className="text-sm font-medium text-gray-900">Reporting</div>
+                              <div className="text-sm font-semibold text-gray-900 group-hover:text-cyan-600 transition-colors">Reporting</div>
                               <div className="text-xs text-gray-600">Insights in real time</div>
                             </div>
-                          </div>
+                          </a>
                         </div>
                       </div>
                     </div>
@@ -220,39 +238,40 @@ const LandingPage = () => {
                 onMouseEnter={() => setHoveredResources(true)}
                 onMouseLeave={() => setHoveredResources(false)}
               >
-                <button className="flex items-center space-x-1 text-gray-600 hover:text-gray-900 transition-colors">
-                  <span>Resources</span>
-                  <ChevronDown className="w-4 h-4" />
+                <button className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors group">
+                  <span className="text-base font-medium">Resources</span>
+                  <ChevronDown className="w-5 h-5 group-hover:rotate-180 transition-transform duration-200" />
                 </button>
                 
                 {hoveredResources && (
                   <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 p-6"
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    transition={{ duration: 0.2, ease: "easeOut" }}
+                    className="absolute top-full left-0 mt-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-200 p-6 z-50"
                   >
-                    <div className="space-y-4">
+                    <div className="space-y-6">
                       <div>
-                        <h3 className="text-sm font-semibold text-gray-900 mb-3">Platform</h3>
-                        <div className="space-y-2">
-                          <a href="#" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors">Refer a team</a>
-                          <a href="#" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors">Changelog</a>
-                          <a href="#" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors">Gmail extension</a>
-                          <a href="#" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors">iOS app</a>
-                          <a href="#" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors">Android app</a>
-                          <a href="#" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors">Security</a>
+                        <h3 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wide">Platform</h3>
+                        <div className="space-y-3">
+                          <a href="/resources/refer-team" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors py-1">Refer a team</a>
+                          <a href="/resources/changelog" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors py-1">Changelog</a>
+                          <a href="/resources/gmail-extension" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors py-1">Gmail extension</a>
+                          <a href="/resources/ios-app" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors py-1">iOS app</a>
+                          <a href="/resources/android-app" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors py-1">Android app</a>
+                          <a href="/resources/security" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors py-1">Security</a>
                         </div>
                       </div>
                       <div>
-                        <h3 className="text-sm font-semibold text-gray-900 mb-3">Company</h3>
-                        <div className="space-y-2">
-                          <a href="#" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors">Customers</a>
-                          <a href="#" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors">Announcements</a>
-                          <a href="#" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors">Engineering blog</a>
-                          <a href="#" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors">Careers</a>
-                          <a href="#" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors">Manifesto</a>
-                          <a href="#" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors">Become a partner</a>
+                        <h3 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wide">Company</h3>
+                        <div className="space-y-3">
+                          <a href="/resources/customers" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors py-1">Customers</a>
+                          <a href="/resources/announcements" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors py-1">Announcements</a>
+                          <a href="/resources/engineering-blog" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors py-1">Engineering blog</a>
+                          <a href="/resources/careers" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors py-1">Careers</a>
+                          <a href="/resources/manifesto" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors py-1">Manifesto</a>
+                          <a href="/resources/partners" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors py-1">Become a partner</a>
                         </div>
                       </div>
                     </div>
@@ -260,17 +279,17 @@ const LandingPage = () => {
                 )}
               </div>
 
-              <a href="#customers" className="text-gray-600 hover:text-gray-900 transition-colors">Customers</a>
-              <a href="#pricing" className="text-gray-600 hover:text-gray-900 transition-colors">Pricing</a>
-              <a href="/blog" className="text-gray-600 hover:text-gray-900 transition-colors">Blog</a>
+              <a href="#customers" className="text-gray-600 hover:text-gray-900 transition-colors text-base font-medium">Customers</a>
+              <a href="#pricing" className="text-gray-600 hover:text-gray-900 transition-colors text-base font-medium">Pricing</a>
+              <a href="/blog" className="text-gray-600 hover:text-gray-900 transition-colors text-base font-medium">Blog</a>
             </div>
 
             <div className="hidden md:flex items-center space-x-4">
-              <Button variant="outline" size="sm" className="text-sm px-4 py-2 border-gray-300 text-gray-700 hover:bg-gray-50">
-                Sign in
+              <Button variant="outline" size="sm" className="text-sm px-4 py-2 border-gray-300 text-gray-700 hover:bg-gray-50 font-medium">
+                Log in
               </Button>
-              <Button size="sm" className="text-sm px-4 py-2 bg-gray-900 text-white hover:bg-gray-800">
-                Start for free
+              <Button size="sm" className="text-sm px-4 py-2 bg-gray-900 text-white hover:bg-gray-800 font-medium">
+                Sign up
               </Button>
             </div>
 
@@ -312,11 +331,12 @@ const LandingPage = () => {
               transition={{ duration: 0.8, delay: 0.3 }}
               className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
             >
-              <Button size="lg" className="text-lg px-6 py-3 bg-gray-900 text-white hover:bg-gray-800 rounded-lg">
-                Start for free
+              <Button size="lg" className="text-lg px-6 py-3 bg-gray-900 text-white hover:bg-gray-800 rounded-lg font-medium">
+                Get started
               </Button>
-              <Button variant="outline" size="lg" className="text-lg px-6 py-3 border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg">
-                Send me a demo
+              <Button variant="outline" size="lg" className="text-lg px-6 py-3 border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg font-medium">
+                <Play className="w-5 h-5 mr-2" />
+                Watch demo
               </Button>
             </motion.div>
 
@@ -387,7 +407,7 @@ const LandingPage = () => {
                   <div className="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center">
                     <Heart className="w-5 h-5 text-white" />
                   </div>
-                  <h3 className="text-2xl font-semibold text-gray-900">Dashboard</h3>
+                  <h3 className="text-2xl font-bold text-gray-900">Dashboard</h3>
                 </div>
                 <div className="flex items-center space-x-4">
                   <div className="relative">
@@ -670,11 +690,11 @@ const LandingPage = () => {
               Comienza tu prueba gratuita de 14 días. Sin compromisos, sin tarjeta de crédito.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button size="lg" className="text-lg px-6 py-3 bg-white text-gray-900 hover:bg-gray-100 rounded-lg">
-                Start for free
+              <Button size="lg" className="text-lg px-6 py-3 bg-white text-gray-900 hover:bg-gray-100 rounded-lg font-medium">
+                Get started
               </Button>
-              <Button variant="outline" size="lg" className="text-lg px-6 py-3 border-white text-white hover:bg-white hover:text-gray-900 rounded-lg">
-                Send me a demo
+              <Button variant="outline" size="lg" className="text-lg px-6 py-3 border-white text-white hover:bg-white hover:text-gray-900 rounded-lg font-medium">
+                Watch demo
               </Button>
             </div>
           </motion.div>
