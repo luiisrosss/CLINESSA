@@ -27,6 +27,9 @@ import BlogPage from '@/pages/blog/BlogPage'
 import ArticlePage from '@/pages/blog/ArticlePage'
 import PlatformPage from '@/pages/platform/PlatformPage'
 import ResourcesPage from '@/pages/resources/ResourcesPage'
+import DataModelPage from '@/pages/platform/DataModelPage'
+import ProductivityPage from '@/pages/platform/ProductivityPage'
+import ReferTeamPage from '@/pages/resources/ReferTeamPage'
 
 function App() {
   // Si no hay configuración válida de Supabase, mostrar página de setup
@@ -65,7 +68,10 @@ function App() {
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/blog/:slug" element={<ArticlePage />} />
           <Route path="/platform" element={<PlatformPage />} />
+          <Route path="/platform/data-model" element={<DataModelPage />} />
+          <Route path="/platform/productivity" element={<ProductivityPage />} />
           <Route path="/resources" element={<ResourcesPage />} />
+          <Route path="/resources/refer-team" element={<ReferTeamPage />} />
           
           {/* Protected Routes */}
           <Route 
