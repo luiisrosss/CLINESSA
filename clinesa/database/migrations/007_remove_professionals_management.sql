@@ -55,7 +55,13 @@ SET type = 'private_practice'
 WHERE type = 'clinic' OR type = 'hospital';
 
 -- Update role enum to focus on psychology
+-- First, remove any default value from the role column
+ALTER TABLE users ALTER COLUMN role DROP DEFAULT;
+
+-- Rename the old enum type
 ALTER TYPE user_role RENAME TO user_role_old;
+
+-- Create new enum type
 CREATE TYPE user_role AS ENUM ('psychologist', 'admin');
 
 -- Update users table to use new role enum
@@ -65,6 +71,9 @@ ALTER TABLE users ALTER COLUMN role TYPE user_role USING
     WHEN role::text IN ('doctor', 'nurse', 'receptionist') THEN 'psychologist'::user_role
     ELSE 'psychologist'::user_role
   END;
+
+-- Set new default value
+ALTER TABLE users ALTER COLUMN role SET DEFAULT 'psychologist';
 
 -- Drop old enum
 DROP TYPE user_role_old;
