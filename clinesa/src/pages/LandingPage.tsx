@@ -159,11 +159,15 @@ const LandingPage = () => {
               {/* Platform Dropdown */}
               <div 
                 className="relative"
-                onMouseEnter={() => setHoveredPlatform(true)}
+                onMouseEnter={() => {
+                  setHoveredPlatform(true);
+                  setHoveredResources(false);
+                }}
+                onMouseLeave={() => setHoveredPlatform(false)}
               >
-                <button className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors group">
+                <button className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-all duration-200 group">
                   <span className="text-base font-medium">Plataforma</span>
-                  <ChevronDown className="w-5 h-5 group-hover:rotate-180 transition-transform duration-200" />
+                  <ChevronDown className={`w-5 h-5 transition-transform duration-200 ${hoveredPlatform ? 'rotate-180' : ''}`} />
                 </button>
                 
                 {hoveredPlatform && (
@@ -171,7 +175,7 @@ const LandingPage = () => {
                     initial={{ opacity: 0, y: 10, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    transition={{ duration: 0.2, ease: "easeOut" }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
                     className="absolute top-full left-0 mt-2 w-96 bg-white rounded-xl shadow-2xl border border-gray-200 p-8 z-50"
                   >
                     <div className="grid grid-cols-2 gap-8">
@@ -268,11 +272,15 @@ const LandingPage = () => {
               {/* Resources Dropdown */}
               <div 
                 className="relative"
-                onMouseEnter={() => setHoveredResources(true)}
+                onMouseEnter={() => {
+                  setHoveredResources(true);
+                  setHoveredPlatform(false);
+                }}
+                onMouseLeave={() => setHoveredResources(false)}
               >
-                <button className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors group">
+                <button className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-all duration-200 group">
                   <span className="text-base font-medium">Recursos</span>
-                  <ChevronDown className="w-5 h-5 group-hover:rotate-180 transition-transform duration-200" />
+                  <ChevronDown className={`w-5 h-5 transition-transform duration-200 ${hoveredResources ? 'rotate-180' : ''}`} />
                 </button>
                 
                 {hoveredResources && (
@@ -280,7 +288,7 @@ const LandingPage = () => {
                     initial={{ opacity: 0, y: 10, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                    transition={{ duration: 0.2, ease: "easeOut" }}
+                    transition={{ duration: 0.3, ease: "easeOut" }}
                     className="absolute top-full left-0 mt-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-200 p-6 z-50"
                   >
                     <div className="space-y-6">
