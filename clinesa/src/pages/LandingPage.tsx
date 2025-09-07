@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { 
   Heart, 
   Users, 
@@ -35,6 +35,21 @@ const LandingPage = () => {
   const [hoveredPlatform, setHoveredPlatform] = useState(false);
   const [hoveredResources, setHoveredResources] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Cerrar dropdowns al hacer click fuera
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setHoveredPlatform(false);
+        setHoveredResources(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const features = [
     {
@@ -159,11 +174,10 @@ const LandingPage = () => {
               {/* Platform Dropdown */}
               <div 
                 className="relative"
-                onMouseEnter={() => {
-                  setHoveredPlatform(true);
+                onClick={() => {
+                  setHoveredPlatform(!hoveredPlatform);
                   setHoveredResources(false);
                 }}
-                onMouseLeave={() => setHoveredPlatform(false)}
               >
                 <button className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-all duration-200 group">
                   <span className="text-base font-medium">Plataforma</span>
@@ -272,11 +286,10 @@ const LandingPage = () => {
               {/* Resources Dropdown */}
               <div 
                 className="relative"
-                onMouseEnter={() => {
-                  setHoveredResources(true);
+                onClick={() => {
+                  setHoveredResources(!hoveredResources);
                   setHoveredPlatform(false);
                 }}
-                onMouseLeave={() => setHoveredResources(false)}
               >
                 <button className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-all duration-200 group">
                   <span className="text-base font-medium">Recursos</span>
@@ -357,10 +370,10 @@ const LandingPage = () => {
                 <ArrowRight className="w-4 h-4" />
               </div>
               
-              <h1 className="text-6xl md:text-8xl font-bold text-gray-900 mb-6 leading-tight tracking-tight">
+              <h1 className="text-6xl md:text-8xl font-bold text-gray-900 mb-6">
                 Magia en las relaciones médicas.
               </h1>
-              <p className="text-2xl text-gray-600 mb-8 max-w-3xl mx-auto font-light">
+              <p className="text-large text-gray-600 mb-8 max-w-3xl mx-auto">
                 CLINESA es la plataforma nativa de IA para profesionales médicos.
               </p>
             </motion.div>
@@ -412,10 +425,10 @@ const LandingPage = () => {
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 tracking-tight">
+            <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
               Así es por dentro
             </h2>
-            <p className="text-2xl text-gray-600 max-w-4xl mx-auto font-light">
+            <p className="text-large text-gray-600 max-w-4xl mx-auto">
               Una interfaz intuitiva y moderna que hace que la gestión médica sea simple y eficiente
             </p>
           </motion.div>
@@ -596,10 +609,10 @@ const LandingPage = () => {
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 tracking-tight">
+            <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
               Todo lo que necesitas para tu clínica
             </h2>
-            <p className="text-2xl text-gray-600 max-w-4xl mx-auto font-light">
+            <p className="text-large text-gray-600 max-w-4xl mx-auto">
               Una plataforma completa diseñada específicamente para profesionales de la salud
             </p>
           </motion.div>
