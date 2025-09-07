@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Plus, Search, Filter, Users, UserPlus, Shield, Eye, Edit, Trash2, Mail, Phone } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { Plus, Search, Filter, Users, UserPlus, Shield, Eye, Edit, Trash2, Mail, Phone, Download, SortAsc, SortDesc } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
@@ -66,8 +67,12 @@ function UserCard({ user, onView, onEdit, onDelete, onToggleStatus }: UserCardPr
   }
 
   return (
-    <Card className="hover:shadow-lg transition-shadow duration-200 cursor-pointer group">
-      <CardContent className="p-4 sm:p-6">
+    <motion.div
+      whileHover={{ y: -2 }}
+      transition={{ duration: 0.2 }}
+    >
+      <Card className="notion-card hover:shadow-notion-md transition-all duration-200 cursor-pointer group">
+        <CardContent className="p-6">
         <div className="flex flex-col sm:flex-row sm:items-start justify-between space-y-4 sm:space-y-0">
           <div className="flex items-start space-x-3 sm:space-x-4 flex-1 min-w-0">
             {/* Avatar */}
@@ -182,6 +187,7 @@ function UserCard({ user, onView, onEdit, onDelete, onToggleStatus }: UserCardPr
         </div>
       </CardContent>
     </Card>
+    </motion.div>
   )
 }
 
@@ -197,6 +203,13 @@ export function UsersPage() {
   const [showEditModal, setShowEditModal] = useState(false)
   const [showViewModal, setShowViewModal] = useState(false)
   const [formLoading, setFormLoading] = useState(false)
+  
+  // Advanced features
+  const [sortBy, setSortBy] = useState<'name' | 'role' | 'date'>('date')
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
+  const [roleFilter, setRoleFilter] = useState('')
+  const [statusFilter, setStatusFilter] = useState('')
+  const [showFilters, setShowFilters] = useState(false)
 
   // Fetch users
   useEffect(() => {
@@ -229,23 +242,84 @@ export function UsersPage() {
     }
   }
 
-  // Filter users based on search query
+  // Filter and sort users
   useEffect(() => {
-    if (!searchQuery.trim()) {
-      setFilteredUsers(users)
-      return
+    let filtered = [...users]
+
+    // Apply search filter
+    if (searchQuery.trim()) {
+      filtered = filtered.filter(user => 
+        `${user.first_name} ${user.last_name}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.specialization?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.license_number?.toLowerCase().includes(searchQuery.toLowerCase())
+      )
     }
 
-    const filtered = users.filter(user => 
-      `${user.first_name} ${user.last_name}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.role.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.specialization?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.license_number?.toLowerCase().includes(searchQuery.toLowerCase())
-    )
+    // Apply role filter
+    if (roleFilter) {
+      filtered = filtered.filter(user => user.role === roleFilter)
+    }
+
+    // Apply status filter
+    if (statusFilter) {
+      const isActive = statusFilter === 'active'
+      filtered = filtered.filter(user => user.is_active === isActive)
+    }
+
+    // Apply sorting
+    filtered.sort((a, b) => {
+      let comparison = 0
+      
+      switch (sortBy) {
+        case 'name':
+          comparison = `${a.first_name} ${a.last_name}`.localeCompare(`${b.first_name} ${b.last_name}`)
+          break
+        case 'role':
+          comparison = a.role.localeCompare(b.role)
+          break
+        case 'date':
+          comparison = new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+          break
+      }
+      
+      return sortOrder === 'asc' ? comparison : -comparison
+    })
     
     setFilteredUsers(filtered)
-  }, [users, searchQuery])
+  }, [users, searchQuery, roleFilter, statusFilter, sortBy, sortOrder])
+
+  // Export users to CSV
+  const exportToCSV = () => {
+    const headers = ['Nombre', 'Apellido', 'Email', 'Teléfono', 'Rol', 'Especialización', 'Licencia', 'Estado', 'Fecha de Registro']
+    const csvContent = [
+      headers.join(','),
+      ...filteredUsers.map(user => [
+        user.first_name,
+        user.last_name,
+        user.email,
+        user.phone || '',
+        user.role,
+        user.specialization || '',
+        user.license_number || '',
+        user.is_active ? 'Activo' : 'Inactivo',
+        format(new Date(user.created_at), 'dd/MM/yyyy')
+      ].join(','))
+    ].join('\n')
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    const url = URL.createObjectURL(blob)
+    link.setAttribute('href', url)
+    link.setAttribute('download', `profesionales_${new Date().toISOString().split('T')[0]}.csv`)
+    link.style.visibility = 'hidden'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    
+    toast.success('Lista de profesionales exportada correctamente')
+  }
 
   const handleDeleteUser = async (user: User) => {
     if (!window.confirm(`¿Está seguro que desea eliminar al usuario ${user.first_name} ${user.last_name}?`)) {
@@ -353,12 +427,17 @@ export function UsersPage() {
   }
 
   return (
-    <div className="space-y-4 sm:space-y-6">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between space-y-4 sm:space-y-0">
+      <motion.div 
+        className="flex flex-col sm:flex-row sm:items-center justify-between space-y-3 sm:space-y-0"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Gestión de Profesionales</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">
+          <h1 className="text-xl font-normal text-primary-1000 dark:text-primary-0">Gestión de Profesionales</h1>
+          <p className="text-primary-600 dark:text-primary-400 mt-1">
             Administra los profesionales y usuarios del sistema
           </p>
         </div>
@@ -366,93 +445,196 @@ export function UsersPage() {
           <Plus className="w-4 h-4" />
           <span>Nuevo Profesional</span>
         </Button>
-      </div>
+      </motion.div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        <Card>
-          <CardContent className="p-4 sm:p-6">
-            <div className="flex items-center">
-              <div className="flex items-center justify-center w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg">
-                <Users className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Usuarios</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">{users.length}</p>
-              </div>
+      <motion.div 
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.1 }}
+      >
+        <div className="notion-card p-4">
+          <div className="flex items-center">
+            <div className="flex items-center justify-center w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded">
+              <Users className="w-5 h-5 text-blue-600 dark:text-blue-400" />
             </div>
-          </CardContent>
-        </Card>
+            <div className="ml-3">
+              <p className="text-sm font-normal text-primary-600 dark:text-primary-400">Total Usuarios</p>
+              <p className="text-xl font-normal text-primary-1000 dark:text-primary-0">{users.length}</p>
+            </div>
+          </div>
+        </div>
 
-        <Card>
-          <CardContent className="p-4 sm:p-6">
-            <div className="flex items-center">
-              <div className="flex items-center justify-center w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg">
-                <Shield className="w-6 h-6 text-green-600 dark:text-green-400" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Activos</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {users.filter(u => u.is_active).length}
-                </p>
-              </div>
+        <div className="notion-card p-4">
+          <div className="flex items-center">
+            <div className="flex items-center justify-center w-10 h-10 bg-green-100 dark:bg-green-900 rounded">
+              <Shield className="w-5 h-5 text-green-600 dark:text-green-400" />
             </div>
-          </CardContent>
-        </Card>
+            <div className="ml-3">
+              <p className="text-sm font-normal text-primary-600 dark:text-primary-400">Activos</p>
+              <p className="text-xl font-normal text-primary-1000 dark:text-primary-0">
+                {users.filter(u => u.is_active).length}
+              </p>
+            </div>
+          </div>
+        </div>
 
-        <Card>
-          <CardContent className="p-4 sm:p-6">
-            <div className="flex items-center">
-              <div className="flex items-center justify-center w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg">
-                <UserPlus className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Médicos</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {users.filter(u => u.role === 'doctor').length}
-                </p>
-              </div>
+        <div className="notion-card p-4">
+          <div className="flex items-center">
+            <div className="flex items-center justify-center w-10 h-10 bg-purple-100 dark:bg-purple-900 rounded">
+              <UserPlus className="w-5 h-5 text-purple-600 dark:text-purple-400" />
             </div>
-          </CardContent>
-        </Card>
+            <div className="ml-3">
+              <p className="text-sm font-normal text-primary-600 dark:text-primary-400">Médicos</p>
+              <p className="text-xl font-normal text-primary-1000 dark:text-primary-0">
+                {users.filter(u => u.role === 'doctor').length}
+              </p>
+            </div>
+          </div>
+        </div>
 
-        <Card>
-          <CardContent className="p-4 sm:p-6">
-            <div className="flex items-center">
-              <div className="flex items-center justify-center w-12 h-12 bg-orange-100 dark:bg-orange-900 rounded-lg">
-                <Users className="w-6 h-6 text-orange-600 dark:text-orange-400" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Enfermeros</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {users.filter(u => u.role === 'nurse').length}
-                </p>
-              </div>
+        <div className="notion-card p-4">
+          <div className="flex items-center">
+            <div className="flex items-center justify-center w-10 h-10 bg-orange-100 dark:bg-orange-900 rounded">
+              <Users className="w-5 h-5 text-orange-600 dark:text-orange-400" />
             </div>
-          </CardContent>
-        </Card>
-      </div>
+            <div className="ml-3">
+              <p className="text-sm font-normal text-primary-600 dark:text-primary-400">Enfermeros</p>
+              <p className="text-xl font-normal text-primary-1000 dark:text-primary-0">
+                {users.filter(u => u.role === 'nurse').length}
+              </p>
+            </div>
+          </div>
+        </div>
+      </motion.div>
 
       {/* Search and Filters */}
-      <Card>
-        <CardContent className="p-4 sm:p-6">
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <Input
+      <motion.div 
+        className="notion-card p-6"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+      >
+        <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+          <div className="flex items-center gap-4">
+            {/* Search */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary-400 w-4 h-4" />
+              <input
+                type="text"
                 placeholder="Buscar profesionales por nombre, email, especialización..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
+                className="notion-input pl-10 w-80"
               />
             </div>
-            <Button variant="outline" className="flex items-center space-x-2 w-full sm:w-auto">
-              <Filter className="w-4 h-4" />
-              <span>Filtros</span>
-            </Button>
+            
+            {/* Sort */}
+            <div className="flex items-center space-x-1">
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as 'name' | 'role' | 'date')}
+                className="notion-input text-sm"
+              >
+                <option value="date">Fecha</option>
+                <option value="name">Nombre</option>
+                <option value="role">Rol</option>
+              </select>
+              <button
+                onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                className="p-2 text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-100 hover:bg-primary-100 dark:hover:bg-primary-900 rounded-md transition-colors"
+                title={`Ordenar ${sortOrder === 'asc' ? 'descendente' : 'ascendente'}`}
+              >
+                {sortOrder === 'asc' ? <SortAsc className="w-4 h-4" /> : <SortDesc className="w-4 h-4" />}
+              </button>
+            </div>
           </div>
-        </CardContent>
-      </Card>
+
+          <div className="flex items-center gap-3">
+            {/* Filters */}
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className={`p-2 rounded-md transition-colors flex items-center space-x-1 ${
+                showFilters 
+                  ? 'bg-primary-100 dark:bg-primary-900 text-primary-900 dark:text-primary-100' 
+                  : 'text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-100 hover:bg-primary-100 dark:hover:bg-primary-900'
+              }`}
+            >
+              <Filter className="w-4 h-4" />
+              <span className="text-sm">Filtros</span>
+            </button>
+            
+            {/* Export */}
+            <button
+              onClick={exportToCSV}
+              className="p-2 text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-100 hover:bg-primary-100 dark:hover:bg-primary-900 rounded-md transition-colors"
+              title="Exportar a CSV"
+            >
+              <Download className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+        
+        {/* Advanced Filters */}
+        {showFilters && (
+          <motion.div 
+            className="mt-4 pt-4 border-t border-primary-200 dark:border-primary-800"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-primary-700 dark:text-primary-300 mb-2">
+                  Rol
+                </label>
+                <select
+                  value={roleFilter}
+                  onChange={(e) => setRoleFilter(e.target.value)}
+                  className="notion-input"
+                >
+                  <option value="">Todos los roles</option>
+                  <option value="admin">Administrador</option>
+                  <option value="doctor">Médico</option>
+                  <option value="nurse">Enfermero/a</option>
+                  <option value="receptionist">Recepcionista</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-primary-700 dark:text-primary-300 mb-2">
+                  Estado
+                </label>
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="notion-input"
+                >
+                  <option value="">Todos los estados</option>
+                  <option value="active">Activos</option>
+                  <option value="inactive">Inactivos</option>
+                </select>
+              </div>
+              
+              <div className="flex items-end">
+                <button
+                  onClick={() => {
+                    setSearchQuery('')
+                    setRoleFilter('')
+                    setStatusFilter('')
+                    setSortBy('date')
+                    setSortOrder('desc')
+                  }}
+                  className="notion-button-outline text-sm"
+                >
+                  Limpiar Filtros
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </motion.div>
 
       {/* Users List */}
       <div className="space-y-4">
@@ -488,24 +670,35 @@ export function UsersPage() {
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-4">
-            {filteredUsers.map((user) => (
-              <UserCard
+          <motion.div 
+            className="grid grid-cols-1 gap-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            {filteredUsers.map((user, index) => (
+              <motion.div
                 key={user.id}
-                user={user}
-                onView={(user) => {
-                  setSelectedUser(user)
-                  setShowViewModal(true)
-                }}
-                onEdit={(user) => {
-                  setSelectedUser(user)
-                  setShowEditModal(true)
-                }}
-                onDelete={handleDeleteUser}
-                onToggleStatus={handleToggleStatus}
-              />
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
+              >
+                <UserCard
+                  user={user}
+                  onView={(user) => {
+                    setSelectedUser(user)
+                    setShowViewModal(true)
+                  }}
+                  onEdit={(user) => {
+                    setSelectedUser(user)
+                    setShowEditModal(true)
+                  }}
+                  onDelete={handleDeleteUser}
+                  onToggleStatus={handleToggleStatus}
+                />
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         )}
       </div>
 
