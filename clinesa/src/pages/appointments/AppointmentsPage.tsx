@@ -10,6 +10,8 @@ import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { AppointmentForm } from '@/components/forms/AppointmentForm';
 import { AppointmentCard } from '@/components/dashboard/AppointmentCard';
 import { useAppointments, type Appointment, type CreateAppointmentData } from '@/hooks/useAppointments';
+import { NotificationService } from '@/lib/notificationService';
+import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
 import toast from 'react-hot-toast';
 
@@ -17,6 +19,7 @@ type ViewMode = 'week' | 'day' | 'list';
 
 export function AppointmentsPage() {
   const { appointments, loading, createAppointment, updateAppointment, deleteAppointment, updateAppointmentStatus } = useAppointments();
+  const { organization } = useAuth();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [viewMode, setViewMode] = useState<ViewMode>('week');
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
@@ -61,22 +64,56 @@ export function AppointmentsPage() {
   ).filter(Boolean);
 
   const handleCreateAppointment = async (data: CreateAppointmentData) => {
-    await createAppointment(data);
-    setIsCreateModalOpen(false);
+    try {
+      const newAppointment = await createAppointment(data);
+      setIsCreateModalOpen(false);
+      
+      // Send notification
+      if (organization && newAppointment) {
+        await NotificationService.notifyAppointmentCreated(newAppointment, {
+          first_name: data.patient_name || 'Paciente',
+          last_name: ''
+        });
+      }
+    } catch (error) {
+      console.error('Error creating appointment:', error);
+    }
   };
 
   const handleUpdateAppointment = async (data: Partial<CreateAppointmentData>) => {
     if (selectedAppointment) {
-      await updateAppointment(selectedAppointment.id, data);
-      setIsEditModalOpen(false);
-      setSelectedAppointment(null);
+      try {
+        const updatedAppointment = await updateAppointment(selectedAppointment.id, data);
+        setIsEditModalOpen(false);
+        setSelectedAppointment(null);
+        
+        // Send notification
+        if (organization && updatedAppointment) {
+          await NotificationService.notifyAppointmentUpdated(updatedAppointment, {
+            first_name: data.patient_name || selectedAppointment.patient_name || 'Paciente',
+            last_name: ''
+          });
+        }
+      } catch (error) {
+        console.error('Error updating appointment:', error);
+      }
     }
   };
 
   const handleDeleteAppointment = async (id: string) => {
     if (confirm('¿Está seguro que desea eliminar esta cita?')) {
       try {
+        const appointment = appointments.find(apt => apt.id === id);
         await deleteAppointment(id);
+        
+        // Send notification
+        if (organization && appointment) {
+          await NotificationService.notifyAppointmentCancelled(appointment, {
+            first_name: appointment.patient_name || 'Paciente',
+            last_name: ''
+          });
+        }
+        
         toast.success('Cita eliminada correctamente');
       } catch (error) {
         toast.error('Error al eliminar la cita');

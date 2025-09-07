@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { ConfigModal } from '@/components/ui/ConfigModal'
 import { ProfileModal } from '@/components/ui/ProfileModal'
+import { NotificationCenter } from '@/components/ui/NotificationCenter'
 import { useAuth } from '@/hooks/useAuth'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
@@ -46,6 +47,9 @@ export function Header({ title, className }: HeaderProps) {
 
       {/* Right Section - Minimal User */}
       <div className="flex items-center space-x-2 flex-shrink-0">
+        {/* Notifications */}
+        <NotificationCenter />
+        
         {/* User info - Hidden on mobile, visible on tablet+ */}
         <div className="hidden sm:flex flex-col items-end">
           <span className="text-xs font-medium text-primary-1000 dark:text-primary-0 truncate max-w-24 lg:max-w-none">
