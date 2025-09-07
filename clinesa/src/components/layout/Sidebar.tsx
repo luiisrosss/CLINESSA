@@ -6,7 +6,6 @@ import {
   Calendar, 
   FileText, 
   Settings, 
-  UserPlus,
   Stethoscope,
   Activity,
   CreditCard,
@@ -53,12 +52,6 @@ const navigation: NavItem[] = [
     href: '/app/medical-records',
     icon: FileText,
     permissions: ['canViewMedicalRecords']
-  },
-  {
-    label: 'Profesionales',
-    href: '/app/users',
-    icon: UserPlus,
-    permissions: ['canManageUsers']
   },
   {
     label: 'Reportes',

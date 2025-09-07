@@ -123,24 +123,24 @@ const LandingPage = () => {
 
   const testimonials = [
     {
-      name: "Dr. María González",
-      role: "Directora Médica",
-      company: "Clínica San Rafael",
-      content: "CLINESA ha revolucionado completamente nuestra práctica. La eficiencia que hemos ganado es increíble.",
+      name: "Dra. María González",
+      role: "Psicóloga Clínica",
+      company: "Consultorio Privado",
+      content: "CLINESA ha revolucionado completamente mi práctica. La eficiencia que he ganado es increíble.",
       avatar: "/avatars/maria-gonzalez.jpg"
     },
     {
       name: "Dr. Carlos Ruiz",
-      role: "Cardiólogo",
-      company: "Centro Cardiovascular",
-      content: "La interfaz es intuitiva y las funcionalidades son exactamente lo que necesitábamos para nuestro centro.",
+      role: "Psicólogo",
+      company: "Centro de Psicología",
+      content: "La interfaz es intuitiva y las funcionalidades son exactamente lo que necesitaba para mi consulta.",
       avatar: "/avatars/carlos-ruiz.jpg"
     },
     {
       name: "Dra. Ana Martínez",
-      role: "Pediatra",
-      company: "Clínica Infantil",
-      content: "Nuestros pacientes están encantados con la facilidad para programar citas y acceder a sus historiales.",
+      role: "Psicóloga Infantil",
+      company: "Consultorio Privado",
+      content: "Mis pacientes están encantados con la facilidad para programar citas y acceder a sus historiales.",
       avatar: "/avatars/ana-martinez.jpg"
     }
   ];
@@ -464,10 +464,10 @@ const LandingPage = () => {
               </div>
               
               <h1 className="text-6xl md:text-8xl font-bold text-gray-900 mb-6">
-                Magia en las relaciones médicas.
+                Magia en la psicología clínica.
               </h1>
               <p className="text-large text-gray-600 mb-8 max-w-3xl mx-auto">
-                CLINESA es la plataforma nativa de IA para profesionales médicos.
+                CLINESA es la plataforma nativa de IA para psicólogos.
               </p>
             </motion.div>
 
@@ -712,10 +712,10 @@ const LandingPage = () => {
             viewport={{ once: true }}
           >
             <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-              Todo lo que necesitas para tu clínica
+              Todo lo que necesitas para tu consulta
             </h2>
             <p className="text-large text-gray-600 max-w-4xl mx-auto">
-              Una plataforma completa diseñada específicamente para profesionales de la salud
+              Una plataforma completa diseñada específicamente para psicólogos
             </p>
           </motion.div>
 
@@ -760,7 +760,7 @@ const LandingPage = () => {
               Resultados que hablan por sí solos
             </h2>
             <p className="text-2xl text-gray-600 max-w-4xl mx-auto font-light">
-              Únete a cientos de profesionales que ya han transformado su práctica médica
+              Únete a cientos de psicólogos que ya han transformado su práctica
             </p>
           </motion.div>
 
@@ -798,7 +798,7 @@ const LandingPage = () => {
               Lo que dicen nuestros usuarios
             </h2>
             <p className="text-2xl text-gray-600 max-w-4xl mx-auto font-light">
-              Profesionales de la salud que han transformado su práctica con CLINESA
+              Psicólogos que han transformado su práctica con CLINESA
             </p>
           </motion.div>
 
@@ -839,7 +839,7 @@ const LandingPage = () => {
             viewport={{ once: true }}
           >
             <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">
-              ¿Listo para transformar tu práctica médica?
+              ¿Listo para transformar tu práctica psicológica?
             </h2>
             <p className="text-large text-gray-200 mb-8">
               Comienza tu prueba gratuita de 14 días. Sin compromisos, sin tarjeta de crédito.

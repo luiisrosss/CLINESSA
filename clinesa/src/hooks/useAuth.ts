@@ -31,7 +31,6 @@ export function useAuth() {
   const isNurse = userProfile?.role === 'nurse'
   const isReceptionist = userProfile?.role === 'receptionist'
 
-  const canManageUsers = isAdmin
   const canManagePatients = isAdmin || isDoctor || isNurse || isReceptionist
   const canViewMedicalRecords = isAdmin || isDoctor || isNurse
   const canCreateMedicalRecords = isAdmin || isDoctor
@@ -62,7 +61,6 @@ export function useAuth() {
     isReceptionist,
     
     // Permission checks
-    canManageUsers,
     canManagePatients,
     canViewMedicalRecords,
     canCreateMedicalRecords,
