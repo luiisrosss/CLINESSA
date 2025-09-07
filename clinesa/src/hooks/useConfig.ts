@@ -3,8 +3,6 @@ import { useState, useEffect } from 'react'
 interface ConfigState {
   // Theme
   darkMode: boolean
-  fontSize: string
-  
   
   // User Profile
   firstName: string
@@ -38,7 +36,6 @@ interface ConfigState {
 const defaultConfig: ConfigState = {
   // Theme
   darkMode: false,
-  
   
   // User Profile
   firstName: 'Luis',

@@ -106,37 +106,37 @@ export function Sidebar({ className, isOpen = true, onClose }: SidebarProps) {
 
       {/* Sidebar */}
       <div className={cn(
-        'flex flex-col w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 h-full',
+        'flex flex-col w-64 bg-primary-0 dark:bg-primary-1000 border-r border-primary-200 dark:border-primary-800 h-full',
         'lg:relative lg:translate-x-0 lg:z-auto',
         isOpen ? 'fixed inset-y-0 left-0 z-50' : 'hidden lg:flex',
         className
       )}>
         {/* Mobile Header */}
-        <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200 dark:border-gray-700 lg:hidden">
+        <div className="flex items-center justify-between h-16 px-4 border-b border-primary-200 dark:border-primary-800 lg:hidden">
           <div className="flex items-center space-x-3">
-            <div className="flex items-center justify-center w-8 h-8 bg-medical-600 rounded-lg">
-              <Stethoscope className="w-5 h-5 text-white" />
+            <div className="flex items-center justify-center w-8 h-8 bg-warm-500 rounded-md">
+              <Stethoscope className="w-5 h-5 text-primary-0" />
             </div>
-            <span className="text-lg font-semibold text-gray-900 dark:text-white">CLINESA</span>
+            <span className="text-lg font-light text-primary-1000 dark:text-primary-0">CLINESA</span>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+            className="p-2 rounded-md text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-200 transition-colors duration-200"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Logo and Organization */}
-        <div className="hidden lg:flex items-center justify-center h-16 px-6 border-b border-gray-200 dark:border-gray-700">
+        <div className="hidden lg:flex items-center justify-center h-16 px-6 border-b border-primary-200 dark:border-primary-800">
           <div className="flex items-center space-x-3">
-            <div className="flex items-center justify-center w-8 h-8 bg-medical-600 rounded-lg">
-              <Stethoscope className="w-5 h-5 text-white" />
+            <div className="flex items-center justify-center w-8 h-8 bg-warm-500 rounded-md">
+              <Stethoscope className="w-5 h-5 text-primary-0" />
             </div>
             <div className="flex flex-col">
-              <span className="text-lg font-semibold text-gray-900 dark:text-white">CLINESA</span>
+              <span className="text-lg font-light text-primary-1000 dark:text-primary-0">CLINESA</span>
               {organization && (
-                <span className="text-xs text-gray-500 dark:text-gray-400 truncate max-w-32">
+                <span className="text-xs text-primary-600 dark:text-primary-400 truncate max-w-32 font-normal">
                   {organization.name}
                 </span>
               )}
@@ -157,7 +157,7 @@ export function Sidebar({ className, isOpen = true, onClose }: SidebarProps) {
                 to={item.href}
                 onClick={handleNavClick}
                 className={cn(
-                  'sidebar-link',
+                  'minimal-sidebar-link',
                   isActive && 'active'
                 )}
               >
@@ -169,22 +169,22 @@ export function Sidebar({ className, isOpen = true, onClose }: SidebarProps) {
         </nav>
 
         {/* User Profile Section */}
-        <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+        <div className="p-4 border-t border-primary-200 dark:border-primary-800">
           <div className="flex items-center space-x-3">
-            <div className="flex items-center justify-center w-8 h-8 bg-medical-100 dark:bg-medical-900 rounded-full flex-shrink-0">
-              <span className="text-sm font-medium text-medical-600 dark:text-medical-400">
+            <div className="flex items-center justify-center w-8 h-8 bg-warm-100 dark:bg-warm-900/30 rounded-full flex-shrink-0">
+              <span className="text-sm font-normal text-warm-700 dark:text-warm-300">
                 {userProfile?.first_name?.charAt(0)}{userProfile?.last_name?.charAt(0)}
               </span>
             </div>
             <div className="flex flex-col min-w-0 flex-1">
-              <span className="text-sm font-medium text-gray-900 dark:text-white truncate">
+              <span className="text-sm font-normal text-primary-1000 dark:text-primary-0 truncate">
                 {userProfile?.first_name} {userProfile?.last_name}
               </span>
-              <span className="text-xs text-gray-500 dark:text-gray-400 capitalize">
+              <span className="text-xs text-primary-600 dark:text-primary-400 capitalize font-normal">
                 {userProfile?.role}
               </span>
             </div>
-            <div className="flex items-center justify-center w-2 h-2 bg-green-400 rounded-full flex-shrink-0">
+            <div className="flex items-center justify-center w-2 h-2 bg-warm-500 rounded-full flex-shrink-0">
               <Activity className="w-1 h-1" />
             </div>
           </div>

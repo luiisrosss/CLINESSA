@@ -1,0 +1,165 @@
+[1mdiff --git a/README.md b/README.md[m
+[1mdeleted file mode 100644[m
+[1mindex 263ab37..0000000[m
+Binary files a/README.md and /dev/null differ
+[1mdiff --git a/clinesa/src/components/ui/ConfigModal.tsx b/clinesa/src/components/ui/ConfigModal.tsx[m
+[1mindex db4f6b1..07ea04c 100644[m
+[1m--- a/clinesa/src/components/ui/ConfigModal.tsx[m
+[1m+++ b/clinesa/src/components/ui/ConfigModal.tsx[m
+[36m@@ -17,9 +17,6 @@[m [minterface ConfigModalProps {[m
+ interface ConfigState {[m
+   // Theme[m
+   darkMode: boolean[m
+[31m-  primaryColor: string[m
+[31m-  accentColor: string[m
+[31m-  fontSize: string[m
+   [m
+   [m
+   // User Profile[m
+[36m@@ -51,25 +48,7 @@[m [minterface ConfigState {[m
+   planExpiry: string[m
+ }[m
+ [m
+[31m-const colorOptions = [[m
+[31m-  { value: 'blue', label: 'Azul Médico', color: 'bg-blue-600', primary: 'bg-blue-500', accent: 'bg-blue-400' },[m
+[31m-  { value: 'green', label: 'Verde Salud', color: 'bg-green-600', primary: 'bg-green-500', accent: 'bg-green-400' },[m
+[31m-  { value: 'purple', label: 'Púrpura', color: 'bg-purple-600', primary: 'bg-purple-500', accent: 'bg-purple-400' },[m
+[31m-  { value: 'red', label: 'Rojo', color: 'bg-red-600', primary: 'bg-red-500', accent: 'bg-red-400' },[m
+[31m-  { value: 'indigo', label: 'Índigo', color: 'bg-indigo-600', primary: 'bg-indigo-500', accent: 'bg-indigo-400' },[m
+[31m-  { value: 'teal', label: 'Verde Azulado', color: 'bg-teal-600', primary: 'bg-teal-500', accent: 'bg-teal-400' },[m
+[31m-  { value: 'orange', label: 'Naranja', color: 'bg-orange-600', primary: 'bg-orange-500', accent: 'bg-orange-400' },[m
+[31m-  { value: 'pink', label: 'Rosa', color: 'bg-pink-600', primary: 'bg-pink-500', accent: 'bg-pink-400' },[m
+[31m-  { value: 'cyan', label: 'Cian', color: 'bg-cyan-600', primary: 'bg-cyan-500', accent: 'bg-cyan-400' },[m
+[31m-  { value: 'emerald', label: 'Esmeralda', color: 'bg-emerald-600', primary: 'bg-emerald-500', accent: 'bg-emerald-400' },[m
+[31m-][m
+ [m
+[31m-const fontSizeOptions = [[m
+[31m-  { value: 'sm', label: 'Pequeño' },[m
+[31m-  { value: 'base', label: 'Mediano' },[m
+[31m-  { value: 'lg', label: 'Grande' },[m
+[31m-  { value: 'xl', label: 'Extra Grande' },[m
+[31m-][m
+ [m
+ const languageOptions = [[m
+   { value: 'es', label: 'Español' },[m
+[36m@@ -194,57 +173,7 @@[m [mexport function ConfigModal({ isOpen, onClose }: ConfigModalProps) {[m
+                   />[m
+                 </div>[m
+ [m
+[31m-                {/* Primary Color */}[m
+[31m-                <div>[m
+[31m-                  <label className="block text-sm font-medium text-gray-900 dark:text-white mb-3">[m
+[31m-                    Color Principal[m
+[31m-                  </label>[m
+[31m-                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 sm:gap-3">[m
+[31m-                    {colorOptions.map((color) => ([m
+[31m-                      <button[m
+[31m-                        key={color.value}[m
+[31m-                        onClick={() => updateConfig('primaryColor', color.value)}[m
+[31m-                        className={cn([m
+[31m-                          'flex flex-col items-center space-y-2 p-2 sm:p-3 rounded-lg border-2 transition-all hover:scale-105',[m
+[31m-                          config.primaryColor === color.value[m
+[31m-                            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'[m
+[31m-                            : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'[m
+[31m-                        )}[m
+[31m-                      >[m
+[31m-                        <div className={cn('w-6 h-6 rounded-full flex-shrink-0', color.primary)} />[m
+[31m-                        <span className="text-xs text-gray-700 dark:text-gray-300 text-center">[m
+[31m-                          {color.label}[m
+[31m-                        </span>[m
+[31m-                      </button>[m
+[31m-                    ))}[m
+[31m-                  </div>[m
+[31m-                </div>[m
+ [m
+[31m-                {/* Accent Color */}[m
+[31m-                <div>[m
+[31m-                  <label className="block text-sm font-medium text-gray-900 dark:text-white mb-3">[m
+[31m-                    Color de Acento[m
+[31m-                  </label>[m
+[31m-                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 sm:gap-3">[m
+[31m-                    {colorOptions.map((color) => ([m
+[31m-                      <button[m
+[31m-                        key={color.value}[m
+[31m-                        onClick={() => updateConfig('accentColor', color.value)}[m
+[31m-                        className={cn([m
+[31m-                          'flex flex-col items-center space-y-2 p-2 sm:p-3 rounded-lg border-2 transition-all hover:scale-105',[m
+[31m-                          config.accentColor === color.value[m
+[31m-                            ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'[m
+[31m-                            : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'[m
+[31m-                        )}[m
+[31m-                      >[m
+[31m-                        <div className={cn('w-6 h-6 rounded-full flex-shrink-0', color.accent)} />[m
+[31m-                        <span className="text-xs text-gray-700 dark:text-gray-300 text-center">[m
+[31m-                          {color.label}[m
+[31m-                        </span>[m
+[31m-                      </button>[m
+[31m-                    ))}[m
+[31m-                  </div>[m
+[31m-                </div>[m
+ [m
+                 {/* Font Size */}[m
+                 <div>[m
+[1mdiff --git a/clinesa/src/hooks/useConfig.ts b/clinesa/src/hooks/useConfig.ts[m
+[1mindex 90d842a..8bedddb 100644[m
+[1m--- a/clinesa/src/hooks/useConfig.ts[m
+[1m+++ b/clinesa/src/hooks/useConfig.ts[m
+[36m@@ -3,8 +3,6 @@[m [mimport { useState, useEffect } from 'react'[m
+ interface ConfigState {[m
+   // Theme[m
+   darkMode: boolean[m
+[31m-  primaryColor: string[m
+[31m-  accentColor: string[m
+   fontSize: string[m
+   [m
+   [m
+[36m@@ -40,9 +38,6 @@[m [minterface ConfigState {[m
+ const defaultConfig: ConfigState = {[m
+   // Theme[m
+   darkMode: false,[m
+[31m-  primaryColor: 'blue',[m
+[31m-  accentColor: 'blue',[m
+[31m-  fontSize: 'base',[m
+   [m
+   [m
+   // User Profile[m
+[36m@@ -105,36 +100,9 @@[m [mexport function useConfig() {[m
+       document.documentElement.classList.remove('dark')[m
+     }[m
+ [m
+[31m-    // Apply primary color[m
+[31m-    const colorMap: { [key: string]: string } = {[m
+[31m-      blue: '#2563eb',[m
+[31m-      green: '#16a34a',[m
+[31m-      purple: '#9333ea',[m
+[31m-      red: '#dc2626',[m
+[31m-      indigo: '#4f46e5',[m
+[31m-      teal: '#0d9488',[m
+[31m-      orange: '#ea580c',[m
+[31m-      pink: '#db2777',[m
+[31m-      cyan: '#0891b2',[m
+[31m-      emerald: '#059669',[m
+[31m-    }[m
+[31m-    [m
+[31m-    const primaryColor = colorMap[newConfig.primaryColor] || colorMap.blue[m
+[31m-    const accentColor = colorMap[newConfig.accentColor] || colorMap.blue[m
+[31m-    [m
+[31m-    document.documentElement.style.setProperty('--primary-color', primaryColor)[m
+[31m-    document.documentElement.style.setProperty('--accent-color', accentColor)[m
+[31m-[m
+[31m-    // Apply font size[m
+[31m-    const fontSizeMap: { [key: string]: string } = {[m
+[31m-      sm: '14px',[m
+[31m-      base: '16px',[m
+[31m-      lg: '18px',[m
+[31m-      xl: '20px',[m
+[31m-    }[m
+[31m-    [m
+[31m-    const fontSize = fontSizeMap[newConfig.fontSize] || fontSizeMap.base[m
+[31m-    document.documentElement.style.fontSize = fontSize[m
+[32m+[m[32m    // Set default colors[m
+[32m+[m[32m    document.documentElement.style.setProperty('--primary-color', '#3b82f6')[m
+[32m+[m[32m    document.documentElement.style.setProperty('--accent-color', '#3b82f6')[m
+   }[m
+ [m
+   const updateConfig = (key: keyof ConfigState, value: any) => {[m

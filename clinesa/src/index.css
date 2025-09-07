@@ -5,17 +5,30 @@
 
 @layer base {
   * {
-    @apply border-gray-200 dark:border-gray-700;
+    @apply border-primary-200 dark:border-primary-800;
   }
   
   body {
-    @apply bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans;
+    @apply bg-primary-0 dark:bg-primary-1000 text-primary-1000 dark:text-primary-0 font-sans;
     font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: 400;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold text-gray-900 dark:text-gray-100;
+    @apply font-medium text-primary-1000 dark:text-primary-0;
+    letter-spacing: -0.02em;
+    font-weight: 500;
   }
+  
+  /* Ultra minimal typography */
+  h1 { @apply text-4xl font-light; }
+  h2 { @apply text-3xl font-light; }
+  h3 { @apply text-2xl font-light; }
+  h4 { @apply text-xl font-normal; }
+  h5 { @apply text-lg font-normal; }
+  h6 { @apply text-base font-normal; }
   
   /* Smooth scrolling */
   html {
@@ -24,55 +37,141 @@
   
   /* Hide scrollbar but keep functionality */
   .scrollbar-hide {
-    -ms-overflow-style: none;  /* Internet Explorer 10+ */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
   
   .scrollbar-hide::-webkit-scrollbar {
-    display: none;  /* Safari and Chrome */
+    display: none;
   }
   
-  /* Custom scrollbar for webkit browsers */
-  .scrollbar-custom::-webkit-scrollbar {
-    width: 6px;
+  /* Ultra minimal scrollbar */
+  .scrollbar-minimal::-webkit-scrollbar {
+    width: 2px;
   }
   
-  .scrollbar-custom::-webkit-scrollbar-track {
+  .scrollbar-minimal::-webkit-scrollbar-track {
     background: transparent;
   }
   
-  .scrollbar-custom::-webkit-scrollbar-thumb {
-    background: rgba(156, 163, 175, 0.3);
-    border-radius: 3px;
+  .scrollbar-minimal::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 1px;
   }
   
-  .scrollbar-custom::-webkit-scrollbar-thumb:hover {
-    background: rgba(156, 163, 175, 0.5);
+  .scrollbar-minimal::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Minimal focus styles */
+  *:focus-visible {
+    @apply outline-none ring-1 ring-warm-500 ring-offset-1 ring-offset-primary-0 dark:ring-offset-primary-1000;
   }
 }
 
 @layer components {
+  /* Ultra minimal card styles */
+  .minimal-card {
+    @apply bg-primary-0 dark:bg-primary-1000 rounded-lg border border-primary-200 dark:border-primary-800 shadow-minimal hover:shadow-minimal-sm transition-all duration-300 ease-out;
+  }
+  
+  .minimal-card-interactive {
+    @apply minimal-card cursor-pointer hover:border-warm-300 dark:hover:border-warm-700 hover:shadow-warm-sm;
+  }
+  
+  /* Ultra minimal button styles */
+  .minimal-button-primary {
+    @apply bg-primary-1000 dark:bg-primary-0 text-primary-0 dark:text-primary-1000 font-normal px-6 py-3 rounded-md transition-all duration-200 ease-out focus:outline-none focus:ring-1 focus:ring-warm-500 focus:ring-offset-1 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-primary-900 dark:hover:bg-primary-100;
+  }
+  
+  .minimal-button-secondary {
+    @apply bg-primary-100 dark:bg-primary-900 hover:bg-primary-200 dark:hover:bg-primary-800 text-primary-1000 dark:text-primary-0 font-normal px-6 py-3 rounded-md transition-all duration-200 ease-out focus:outline-none focus:ring-1 focus:ring-warm-500 focus:ring-offset-1 disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+  
+  .minimal-button-ghost {
+    @apply bg-transparent hover:bg-primary-100 dark:hover:bg-primary-900 text-primary-800 dark:text-primary-200 font-normal px-6 py-3 rounded-md transition-all duration-200 ease-out focus:outline-none focus:ring-1 focus:ring-warm-500 focus:ring-offset-1 disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+  
+  .minimal-button-warm {
+    @apply bg-warm-500 hover:bg-warm-600 text-primary-0 font-normal px-6 py-3 rounded-md transition-all duration-200 ease-out focus:outline-none focus:ring-1 focus:ring-warm-500 focus:ring-offset-1 disabled:opacity-40 disabled:cursor-not-allowed;
+  }
+  
+  /* Ultra minimal input styles */
+  .minimal-input {
+    @apply block w-full px-4 py-3 border border-primary-300 dark:border-primary-700 rounded-md shadow-minimal placeholder-primary-600 dark:placeholder-primary-400 focus:outline-none focus:ring-1 focus:ring-warm-500 focus:border-warm-500 text-sm bg-primary-0 dark:bg-primary-1000 text-primary-1000 dark:text-primary-0 transition-all duration-200 ease-out;
+  }
+  
+  /* Ultra minimal sidebar styles */
+  .minimal-sidebar-link {
+    @apply flex items-center px-4 py-3 text-sm font-normal text-primary-700 dark:text-primary-300 rounded-md hover:bg-primary-100 dark:hover:bg-primary-900 hover:text-primary-1000 dark:hover:text-primary-0 transition-all duration-200 ease-out;
+  }
+  
+  .minimal-sidebar-link.active {
+    @apply bg-warm-50 dark:bg-warm-900/20 text-warm-700 dark:text-warm-300 border-r border-warm-500;
+  }
+  
+  /* Ultra minimal badge styles */
+  .minimal-badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-normal bg-primary-200 dark:bg-primary-800 text-primary-800 dark:text-primary-200;
+  }
+  
+  .minimal-badge-warm {
+    @apply minimal-badge bg-warm-100 dark:bg-warm-900/30 text-warm-800 dark:text-warm-200;
+  }
+  
+  .minimal-badge-terracotta {
+    @apply minimal-badge bg-terracotta-100 dark:bg-terracotta-900/30 text-terracotta-800 dark:text-terracotta-200;
+  }
+  
+  .minimal-badge-beige {
+    @apply minimal-badge bg-beige-200 dark:bg-beige-800/30 text-beige-800 dark:text-beige-200;
+  }
+  
+  /* Ultra minimal modal styles */
+  .minimal-modal-overlay {
+    @apply fixed inset-0 bg-primary-1000/20 backdrop-blur-sm z-50 flex items-center justify-center p-6;
+  }
+  
+  .minimal-modal-content {
+    @apply bg-primary-0 dark:bg-primary-1000 rounded-lg shadow-minimal-xl border border-primary-200 dark:border-primary-800 max-w-lg w-full max-h-[90vh] overflow-y-auto;
+  }
+  
+  /* Ultra minimal loading states */
+  .minimal-skeleton {
+    @apply animate-pulse bg-primary-200 dark:bg-primary-800 rounded;
+  }
+  
+  /* Ultra minimal hover effects */
+  .minimal-hover-lift {
+    @apply transition-transform duration-200 ease-out hover:-translate-y-0.5;
+  }
+  
+  .minimal-hover-scale {
+    @apply transition-transform duration-200 ease-out hover:scale-102;
+  }
+  
+  /* Keep medical styles for compatibility */
   .medical-card {
-    @apply bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-medical hover:shadow-medical-lg transition-shadow duration-200;
+    @apply minimal-card;
   }
   
   .medical-button-primary {
-    @apply bg-medical-600 hover:bg-medical-700 text-white font-medium px-4 py-2 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-medical-500 focus:ring-offset-2;
+    @apply minimal-button-primary;
   }
   
   .medical-button-secondary {
-    @apply bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-medium px-4 py-2 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2;
+    @apply minimal-button-secondary;
   }
   
   .medical-input {
-    @apply block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-medical-500 focus:border-medical-500 sm:text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100;
+    @apply minimal-input;
   }
   
   .sidebar-link {
-    @apply flex items-center px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 hover:text-medical-600 transition-colors duration-200;
+    @apply minimal-sidebar-link;
   }
   
   .sidebar-link.active {
-    @apply bg-medical-50 dark:bg-medical-900 text-medical-600 border-r-2 border-medical-600;
+    @apply bg-warm-50 dark:bg-warm-900/20 text-warm-700 dark:text-warm-300 border-r border-warm-500;
   }
 }

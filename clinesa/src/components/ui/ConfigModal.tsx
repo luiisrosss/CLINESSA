@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
-import { X, Moon, Sun, Palette, User, Shield, Database, Globe, CreditCard, AlertCircle } from 'lucide-react'
-import { useNavigate } from 'react-router-dom'
+import { X, Moon, Sun, Palette, User, Shield, Database, Globe, CreditCard, AlertCircle, Save, RefreshCw } from 'lucide-react'
 import { Button } from './Button'
 import { Card, CardContent, CardHeader, CardTitle } from './Card'
 import { Input } from './Input'
@@ -77,9 +76,8 @@ const timeFormatOptions = [
 
 export function ConfigModal({ isOpen, onClose }: ConfigModalProps) {
   const [activeTab, setActiveTab] = useState('theme')
-  const { config, updateConfig } = useConfig()
+  const { config, updateConfig, resetConfig } = useConfig()
   const [saving, setSaving] = useState(false)
-  const navigate = useNavigate()
 
   const handleSave = async () => {
     setSaving(true)
@@ -192,240 +190,496 @@ export function ConfigModal({ isOpen, onClose }: ConfigModalProps) {
 
             {activeTab === 'profile' && (
               <div className="space-y-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Perfil de Usuario
-                </h3>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <Input
-                    label="Nombre"
-                    value={config.firstName}
-                    onChange={(e) => updateConfig('firstName', e.target.value)}
-                  />
-                  <Input
-                    label="Apellido"
-                    value={config.lastName}
-                    onChange={(e) => updateConfig('lastName', e.target.value)}
-                  />
-                  <Input
-                    label="Email"
-                    type="email"
-                    value={config.email}
-                    onChange={(e) => updateConfig('email', e.target.value)}
-                  />
-                  <Input
-                    label="Teléfono"
-                    value={config.phone}
-                    onChange={(e) => updateConfig('phone', e.target.value)}
-                  />
-                  <Input
-                    label="Rol"
-                    value={config.role}
-                    onChange={(e) => updateConfig('role', e.target.value)}
-                    disabled
-                  />
-                  <Input
-                    label="Especialización"
-                    value={config.specialization}
-                    onChange={(e) => updateConfig('specialization', e.target.value)}
-                  />
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    Perfil de Usuario
+                  </h3>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                    Última actualización: {new Date().toLocaleDateString()}
+                  </div>
                 </div>
+                
+                {/* Información Personal */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Información Personal</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <Input
+                        label="Nombre"
+                        value={config.firstName}
+                        onChange={(e) => updateConfig('firstName', e.target.value)}
+                        placeholder="Ingresa tu nombre"
+                      />
+                      <Input
+                        label="Apellido"
+                        value={config.lastName}
+                        onChange={(e) => updateConfig('lastName', e.target.value)}
+                        placeholder="Ingresa tu apellido"
+                      />
+                      <Input
+                        label="Email"
+                        type="email"
+                        value={config.email}
+                        onChange={(e) => updateConfig('email', e.target.value)}
+                        placeholder="tu@email.com"
+                      />
+                      <Input
+                        label="Teléfono"
+                        value={config.phone}
+                        onChange={(e) => updateConfig('phone', e.target.value)}
+                        placeholder="+1234567890"
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Información Profesional */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Información Profesional</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Rol
+                        </label>
+                        <Select
+                          value={config.role}
+                          onValueChange={(value) => updateConfig('role', value)}
+                          options={[
+                            { value: 'admin', label: 'Administrador' },
+                            { value: 'doctor', label: 'Médico' },
+                            { value: 'nurse', label: 'Enfermero/a' },
+                            { value: 'receptionist', label: 'Recepcionista' },
+                            { value: 'manager', label: 'Gerente' }
+                          ]}
+                        />
+                      </div>
+                      <Input
+                        label="Especialización"
+                        value={config.specialization}
+                        onChange={(e) => updateConfig('specialization', e.target.value)}
+                        placeholder="Ej: Cardiología, Pediatría, etc."
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Preferencias de Usuario */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Preferencias</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          Notificaciones por Email
+                        </label>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          Recibir notificaciones importantes por correo
+                        </p>
+                      </div>
+                      <Switch
+                        checked={true}
+                        onCheckedChange={(checked) => console.log('Email notifications:', checked)}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          Modo Oscuro
+                        </label>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          Usar tema oscuro por defecto
+                        </p>
+                      </div>
+                      <Switch
+                        checked={config.darkMode}
+                        onCheckedChange={(checked) => updateConfig('darkMode', checked)}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             )}
 
             {activeTab === 'organization' && (
               <div className="space-y-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Organización
-                </h3>
-                
-                <div className="space-y-4">
-                  <Input
-                    label="Nombre de la Organización"
-                    value={config.organizationName}
-                    onChange={(e) => updateConfig('organizationName', e.target.value)}
-                  />
-                  <Input
-                    label="Tipo de Organización"
-                    value={config.organizationType}
-                    onChange={(e) => updateConfig('organizationType', e.target.value)}
-                    disabled
-                  />
-                  <Input
-                    label="Dirección"
-                    value={config.organizationAddress}
-                    onChange={(e) => updateConfig('organizationAddress', e.target.value)}
-                  />
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <Input
-                      label="Teléfono"
-                      value={config.organizationPhone}
-                      onChange={(e) => updateConfig('organizationPhone', e.target.value)}
-                    />
-                    <Input
-                      label="Email"
-                      type="email"
-                      value={config.organizationEmail}
-                      onChange={(e) => updateConfig('organizationEmail', e.target.value)}
-                    />
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    Información de la Organización
+                  </h3>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                    ID: ORG-{Math.random().toString(36).substr(2, 9).toUpperCase()}
                   </div>
                 </div>
+                
+                {/* Información Básica */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Información Básica</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <Input
+                      label="Nombre de la Organización"
+                      value={config.organizationName}
+                      onChange={(e) => updateConfig('organizationName', e.target.value)}
+                      placeholder="Ej: Clínica San Rafael"
+                    />
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Tipo de Organización
+                      </label>
+                      <Select
+                        value={config.organizationType}
+                        onValueChange={(value) => updateConfig('organizationType', value)}
+                        options={[
+                          { value: 'clinic', label: 'Clínica' },
+                          { value: 'hospital', label: 'Hospital' },
+                          { value: 'center', label: 'Centro Médico' },
+                          { value: 'consultory', label: 'Consultorio' },
+                          { value: 'laboratory', label: 'Laboratorio' },
+                          { value: 'pharmacy', label: 'Farmacia' }
+                        ]}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Información de Contacto */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Información de Contacto</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <Input
+                      label="Dirección"
+                      value={config.organizationAddress}
+                      onChange={(e) => updateConfig('organizationAddress', e.target.value)}
+                      placeholder="Calle, número, colonia, ciudad, estado"
+                    />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <Input
+                        label="Teléfono"
+                        value={config.organizationPhone}
+                        onChange={(e) => updateConfig('organizationPhone', e.target.value)}
+                        placeholder="+1234567890"
+                      />
+                      <Input
+                        label="Email"
+                        type="email"
+                        value={config.organizationEmail}
+                        onChange={(e) => updateConfig('organizationEmail', e.target.value)}
+                        placeholder="contacto@organizacion.com"
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Configuración de la Organización */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Configuración</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          Horario de Atención
+                        </label>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          Configurar horarios de operación
+                        </p>
+                      </div>
+                      <Button variant="outline" size="sm">
+                        Configurar
+                      </Button>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                          Políticas de Privacidad
+                        </label>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          Gestionar políticas de datos
+                        </p>
+                      </div>
+                      <Button variant="outline" size="sm">
+                        Gestionar
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             )}
 
             {activeTab === 'system' && (
               <div className="space-y-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Configuración del Sistema
-                </h3>
-                
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                      Idioma
-                    </label>
-                    <Select
-                      value={config.language}
-                      onValueChange={(value) => updateConfig('language', value)}
-                      options={languageOptions}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                      Zona Horaria
-                    </label>
-                    <Select
-                      value={config.timezone}
-                      onValueChange={(value) => updateConfig('timezone', value)}
-                      options={timezoneOptions}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                      Formato de Fecha
-                    </label>
-                    <Select
-                      value={config.dateFormat}
-                      onValueChange={(value) => updateConfig('dateFormat', value)}
-                      options={dateFormatOptions}
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                      Formato de Hora
-                    </label>
-                    <Select
-                      value={config.timeFormat}
-                      onValueChange={(value) => updateConfig('timeFormat', value)}
-                      options={timeFormatOptions}
-                    />
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    Configuración del Sistema
+                  </h3>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                    v1.0.0 - Última actualización: {new Date().toLocaleDateString()}
                   </div>
                 </div>
-
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium text-gray-900 dark:text-white">Cierre Automático de Sesión</p>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        Cerrar sesión automáticamente por inactividad
-                      </p>
+                
+                {/* Configuración Regional */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Configuración Regional</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Idioma
+                        </label>
+                        <Select
+                          value={config.language}
+                          onValueChange={(value) => updateConfig('language', value)}
+                          options={languageOptions}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Zona Horaria
+                        </label>
+                        <Select
+                          value={config.timezone}
+                          onValueChange={(value) => updateConfig('timezone', value)}
+                          options={timezoneOptions}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Formato de Fecha
+                        </label>
+                        <Select
+                          value={config.dateFormat}
+                          onValueChange={(value) => updateConfig('dateFormat', value)}
+                          options={dateFormatOptions}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Formato de Hora
+                        </label>
+                        <Select
+                          value={config.timeFormat}
+                          onValueChange={(value) => updateConfig('timeFormat', value)}
+                          options={timeFormatOptions}
+                        />
+                      </div>
                     </div>
-                    <Switch
-                      checked={config.autoLogout}
-                      onCheckedChange={(checked) => updateConfig('autoLogout', checked)}
-                    />
-                  </div>
+                  </CardContent>
+                </Card>
 
-                  {config.autoLogout && (
-                    <div>
-                      <label className="block text-sm font-medium text-gray-900 dark:text-white mb-2">
-                        Tiempo de Inactividad (minutos)
-                      </label>
-                      <Input
-                        type="number"
-                        value={config.sessionTimeout}
-                        onChange={(e) => updateConfig('sessionTimeout', parseInt(e.target.value))}
-                        min="5"
-                        max="120"
+                {/* Configuración de Seguridad */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Seguridad</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium text-gray-900 dark:text-white">Cierre Automático de Sesión</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          Cerrar sesión automáticamente por inactividad
+                        </p>
+                      </div>
+                      <Switch
+                        checked={config.autoLogout}
+                        onCheckedChange={(checked) => updateConfig('autoLogout', checked)}
                       />
                     </div>
-                  )}
-                </div>
+
+                    {config.autoLogout && (
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                          Tiempo de Inactividad (minutos)
+                        </label>
+                        <Input
+                          type="number"
+                          value={config.sessionTimeout}
+                          onChange={(e) => updateConfig('sessionTimeout', parseInt(e.target.value))}
+                          min="5"
+                          max="120"
+                          placeholder="30"
+                        />
+                      </div>
+                    )}
+
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium text-gray-900 dark:text-white">Autenticación de Dos Factores</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          Requerir código adicional para iniciar sesión
+                        </p>
+                      </div>
+                      <Switch
+                        checked={false}
+                        onCheckedChange={(checked) => console.log('2FA:', checked)}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Configuración de Rendimiento */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Rendimiento</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium text-gray-900 dark:text-white">Caché de Datos</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          Almacenar datos temporalmente para mejor rendimiento
+                        </p>
+                      </div>
+                      <Switch
+                        checked={true}
+                        onCheckedChange={(checked) => console.log('Cache:', checked)}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium text-gray-900 dark:text-white">Sincronización Automática</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          Sincronizar datos automáticamente en segundo plano
+                        </p>
+                      </div>
+                      <Switch
+                        checked={true}
+                        onCheckedChange={(checked) => console.log('Auto-sync:', checked)}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Herramientas de Sistema */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Herramientas</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <Button variant="outline" className="justify-start">
+                        <RefreshCw className="w-4 h-4 mr-2" />
+                        Limpiar Caché
+                      </Button>
+                      <Button variant="outline" className="justify-start">
+                        <Database className="w-4 h-4 mr-2" />
+                        Verificar Base de Datos
+                      </Button>
+                      <Button variant="outline" className="justify-start">
+                        <AlertCircle className="w-4 h-4 mr-2" />
+                        Ver Logs del Sistema
+                      </Button>
+                      <Button variant="outline" className="justify-start">
+                        <Shield className="w-4 h-4 mr-2" />
+                        Auditoría de Seguridad
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             )}
 
             {/* Plans Tab */}
             {activeTab === 'plans' && (
               <div className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                     Gestión de Planes
                   </h3>
-                  
-                  {/* Current Plan Status */}
-                  <div className="bg-gradient-to-r from-medical-50 to-medical-100 dark:from-medical-900 dark:to-medical-800 rounded-lg p-4 mb-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h4 className="font-semibold text-gray-900 dark:text-white">
-                          Plan Actual: {config.currentPlan?.toUpperCase() || 'ENTERPRISE'}
-                        </h4>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                          Estado: <span className="text-green-600 dark:text-green-400 font-medium">
-                            {config.planStatus === 'active' ? 'Activo' : 'Inactivo'}
-                          </span>
-                        </p>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                          Vence: {config.planExpiry || '2025-12-31'}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <div className="w-16 h-16 bg-medical-600 rounded-full flex items-center justify-center">
-                          <Globe className="w-8 h-8 text-white" />
+                  <div className="text-sm text-gray-500 dark:text-gray-400">
+                    Última actualización: {new Date().toLocaleDateString()}
+                  </div>
+                </div>
+                
+                {/* Current Plan Status */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Plan Actual</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="bg-gradient-to-r from-blue-50 to-blue-100 dark:from-blue-900 dark:to-blue-800 rounded-lg p-4">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h4 className="font-semibold text-gray-900 dark:text-white text-lg">
+                            {config.currentPlan?.toUpperCase() || 'ENTERPRISE'}
+                          </h4>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                            Estado: <span className="text-green-600 dark:text-green-400 font-medium">
+                              {config.planStatus === 'active' ? 'Activo' : 'Inactivo'}
+                            </span>
+                          </p>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                            Vence: {config.planExpiry || '2025-12-31'}
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center">
+                            <Globe className="w-8 h-8 text-white" />
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </CardContent>
+                </Card>
 
-                  {/* Plan Actions */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <Button
-                      variant="outline"
-                      className="h-20 flex flex-col items-center justify-center space-y-2"
-                      onClick={() => {
-                        try {
-                          navigate('/billing')
-                          onClose()
-                        } catch (error) {
-                          window.location.href = '/billing'
-                        }
-                      }}
-                    >
-                      <CreditCard className="w-6 h-6" />
-                      <span>Gestionar Suscripción</span>
-                    </Button>
+                {/* Plan Actions */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Acciones de Plan</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <Button
+                        variant="outline"
+                        className="h-20 flex flex-col items-center justify-center space-y-2"
+                        onClick={() => {
+                          try {
+                            window.location.href = '/billing'
+                          } catch (error) {
+                            console.error('Navigation error:', error)
+                          }
+                        }}
+                      >
+                        <CreditCard className="w-6 h-6" />
+                        <span>Gestionar Suscripción</span>
+                      </Button>
                     
-                    <Button
-                      variant="outline"
-                      className="h-20 flex flex-col items-center justify-center space-y-2"
-                      onClick={() => {
-                        try {
-                          navigate('/plans')
-                          onClose()
-                        } catch (error) {
-                          window.location.href = '/plans'
-                        }
-                      }}
-                    >
-                      <Globe className="w-6 h-6" />
-                      <span>Ver Planes Disponibles</span>
-                    </Button>
-                  </div>
+                      <Button
+                        variant="outline"
+                        className="h-20 flex flex-col items-center justify-center space-y-2"
+                        onClick={() => {
+                          try {
+                            window.location.href = '/plans'
+                          } catch (error) {
+                            console.error('Navigation error:', error)
+                          }
+                        }}
+                      >
+                        <Globe className="w-6 h-6" />
+                        <span>Ver Planes Disponibles</span>
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
 
-                  {/* Plan Features */}
-                  <div className="mt-6">
-                    <h4 className="font-semibold text-gray-900 dark:text-white mb-3">
-                      Características del Plan
-                    </h4>
+                {/* Plan Features */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Características del Plan</CardTitle>
+                  </CardHeader>
+                  <CardContent>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
                         <div className="w-2 h-2 bg-green-500 rounded-full"></div>
@@ -452,11 +706,13 @@ export function ConfigModal({ isOpen, onClose }: ConfigModalProps) {
                         <span>Backup automático</span>
                       </div>
                     </div>
-                  </div>
+                  </CardContent>
+                </Card>
 
-                  {/* Upgrade Notice */}
-                  {config.currentPlan !== 'enterprise' && (
-                    <div className="mt-6 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+                {/* Upgrade Notice */}
+                {config.currentPlan !== 'enterprise' && (
+                  <Card>
+                    <CardContent className="p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800">
                       <div className="flex items-center space-x-2">
                         <AlertCircle className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
                         <div>
@@ -468,22 +724,43 @@ export function ConfigModal({ isOpen, onClose }: ConfigModalProps) {
                           </p>
                         </div>
                       </div>
-                    </div>
-                  )}
-                </div>
+                    </CardContent>
+                  </Card>
+                )}
               </div>
             )}
           </div>
         </div>
 
         {/* Footer */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end space-y-2 sm:space-y-0 sm:space-x-3 p-4 sm:p-6 border-t border-gray-200 dark:border-gray-700">
-          <Button variant="outline" onClick={onClose} className="w-full sm:w-auto">
-            Cancelar
-          </Button>
-          <Button onClick={handleSave} loading={saving} className="w-full sm:w-auto">
-            Guardar Cambios
-          </Button>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between space-y-2 sm:space-y-0 p-4 sm:p-6 border-t border-gray-200 dark:border-gray-700">
+          <div className="flex space-x-2">
+            <Button 
+              variant="outline" 
+              onClick={() => resetConfig()}
+              className="w-full sm:w-auto"
+            >
+              <RefreshCw className="w-4 h-4 mr-2" />
+              Restaurar
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={onClose} 
+              className="w-full sm:w-auto"
+            >
+              Cancelar
+            </Button>
+          </div>
+          <div className="flex space-x-2">
+            <Button 
+              onClick={handleSave} 
+              loading={saving}
+              className="w-full sm:w-auto"
+            >
+              <Save className="w-4 h-4 mr-2" />
+              {saving ? 'Guardando...' : 'Guardar Cambios'}
+            </Button>
+          </div>
         </div>
       </div>
     </div>

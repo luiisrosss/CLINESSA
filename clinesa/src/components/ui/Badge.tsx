@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils'
 
 interface BadgeProps {
   children: React.ReactNode
-  variant?: 'default' | 'secondary' | 'destructive' | 'outline'
+  variant?: 'default' | 'warm' | 'terracotta' | 'beige' | 'outline'
   size?: 'sm' | 'md' | 'lg'
   className?: string
 }
@@ -14,19 +14,20 @@ export function Badge({
   size = 'md',
   className 
 }: BadgeProps) {
-  const baseClasses = 'inline-flex items-center rounded-full font-medium'
+  const baseClasses = 'inline-flex items-center rounded-full font-normal transition-colors duration-200'
   
   const variantClasses = {
-    default: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-    secondary: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200',
-    destructive: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
-    outline: 'border border-gray-200 text-gray-800 dark:border-gray-700 dark:text-gray-200',
+    default: 'minimal-badge',
+    warm: 'minimal-badge-warm',
+    terracotta: 'minimal-badge-terracotta',
+    beige: 'minimal-badge-beige',
+    outline: 'border border-primary-300 dark:border-primary-700 text-primary-700 dark:text-primary-300 bg-transparent',
   }
   
   const sizeClasses = {
     sm: 'px-2 py-0.5 text-xs',
-    md: 'px-2.5 py-0.5 text-sm',
-    lg: 'px-3 py-1 text-base',
+    md: 'px-3 py-1 text-sm',
+    lg: 'px-4 py-1.5 text-base',
   }
 
   return (

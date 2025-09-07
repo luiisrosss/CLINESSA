@@ -1,3 +1,4 @@
+
 # Configuración de Stripe para CLINESA
 
 ## 🚀 Pasos para Configurar Stripe

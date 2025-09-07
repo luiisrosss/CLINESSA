@@ -4,6 +4,7 @@ import { Menu } from 'lucide-react'
 import { Sidebar } from './Sidebar'
 import { Header } from './Header'
 import { Button } from '@/components/ui/Button'
+import { AnimatedContainer } from '@/components/ui/AnimatedContainer'
 import { cn } from '@/lib/utils'
 
 interface DashboardLayoutProps {
@@ -15,7 +16,7 @@ export function DashboardLayout({ title, className }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
-    <div className={cn('flex h-screen bg-gray-50 dark:bg-gray-900', className)}>
+    <div className={cn('flex h-screen bg-primary-0 dark:bg-primary-1000', className)}>
       {/* Sidebar */}
       <Sidebar 
         isOpen={sidebarOpen} 
@@ -25,12 +26,12 @@ export function DashboardLayout({ title, className }: DashboardLayoutProps) {
       {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Header */}
-        <div className="flex items-center">
+        <div className="flex items-center bg-primary-0 dark:bg-primary-1000 border-b border-primary-200 dark:border-primary-800">
           {/* Mobile Menu Button */}
           <Button
             variant="ghost"
             size="sm"
-            className="lg:hidden p-2 ml-2"
+            className="lg:hidden p-2 ml-2 hover:bg-primary-100 dark:hover:bg-primary-900"
             onClick={() => setSidebarOpen(true)}
             title="Abrir menú"
           >
@@ -41,8 +42,10 @@ export function DashboardLayout({ title, className }: DashboardLayoutProps) {
         </div>
         
         {/* Page Content */}
-        <main className="flex-1 overflow-auto p-4 sm:p-6">
-          <Outlet />
+        <main className="flex-1 overflow-auto p-8 bg-primary-0 dark:bg-primary-1000">
+          <AnimatedContainer animation="fade-in" delay={100}>
+            <Outlet />
+          </AnimatedContainer>
         </main>
       </div>
     </div>
