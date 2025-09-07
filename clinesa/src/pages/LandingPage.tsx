@@ -830,7 +830,7 @@ const LandingPage = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-32 bg-gray-900">
+      <section className="py-32 bg-black">
         <div className="max-w-4xl mx-auto text-center px-6">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -838,16 +838,16 @@ const LandingPage = () => {
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-5xl md:text-6xl font-bold text-white mb-6 tracking-tight">
+            <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">
               ¿Listo para transformar tu práctica médica?
             </h2>
-            <p className="text-2xl text-gray-300 mb-8 font-light">
+            <p className="text-large text-gray-200 mb-8">
               Comienza tu prueba gratuita de 14 días. Sin compromisos, sin tarjeta de crédito.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button 
                 size="lg" 
-                className="text-lg px-6 py-3 bg-white text-gray-900 hover:bg-gray-100 rounded-lg font-medium"
+                className="text-lg px-8 py-4 bg-white text-black hover:bg-gray-100 rounded-lg font-semibold transition-all duration-200 hover:scale-105"
                 onClick={handleStartTrial}
               >
                 Comenzar
@@ -855,7 +855,7 @@ const LandingPage = () => {
               <Button 
                 variant="outline" 
                 size="lg" 
-                className="text-lg px-6 py-3 border-white text-white hover:bg-white hover:text-gray-900 rounded-lg font-medium"
+                className="text-lg px-8 py-4 border-2 border-white text-white hover:bg-white hover:text-black rounded-lg font-semibold transition-all duration-200 hover:scale-105"
                 onClick={handleViewDemo}
               >
                 Ver demo
