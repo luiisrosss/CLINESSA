@@ -105,9 +105,43 @@ const LandingPage = () => {
 
   return (
     <div ref={containerRef} className="w-full bg-white">
+      {/* Announcement Banner */}
+      <motion.div 
+        className="fixed top-0 left-0 right-0 z-50 bg-gray-900 text-white py-3"
+        initial={{ y: -50 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+      >
+        <div className="max-w-7xl mx-auto px-6">
+          <a 
+            href="/blog/attio-raises-52m-series-b" 
+            className="group relative flex size-full items-center justify-center gap-1.5 text-white max-md:justify-start hover:opacity-90 transition-opacity"
+          >
+            <span className="relative truncate text-[13px] font-medium underline decoration-white/50 underline-offset-4 group-hover:decoration-white group-hover:underline-offset-2 transition-all duration-300">
+              Anunciamos nuestra Serie B de $52M, liderada por Google Ventures
+            </span>
+            <svg 
+              width="14" 
+              height="14" 
+              viewBox="0 0 14 14" 
+              fill="none" 
+              className="transition-[translate] duration-400 ease-in-out group-hover:translate-x-0.25 group-hover:duration-150 group-active:translate-x-0.25 group-active:duration-50"
+            >
+              <path 
+                stroke="currentColor" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth="1.1" 
+                d="M2.25 7h9.5m0 0L8.357 3.5M11.75 7l-3.393 3.5"
+              />
+            </svg>
+          </a>
+        </div>
+      </motion.div>
+
       {/* Navigation */}
       <motion.nav 
-        className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200"
+        className="fixed top-12 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200"
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.6 }}
@@ -126,10 +160,9 @@ const LandingPage = () => {
               <div 
                 className="relative"
                 onMouseEnter={() => setHoveredPlatform(true)}
-                onMouseLeave={() => setHoveredPlatform(false)}
               >
                 <button className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors group">
-                  <span className="text-base font-medium">Platform</span>
+                  <span className="text-base font-medium">Plataforma</span>
                   <ChevronDown className="w-5 h-5 group-hover:rotate-180 transition-transform duration-200" />
                 </button>
                 
@@ -236,10 +269,9 @@ const LandingPage = () => {
               <div 
                 className="relative"
                 onMouseEnter={() => setHoveredResources(true)}
-                onMouseLeave={() => setHoveredResources(false)}
               >
                 <button className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors group">
-                  <span className="text-base font-medium">Resources</span>
+                  <span className="text-base font-medium">Recursos</span>
                   <ChevronDown className="w-5 h-5 group-hover:rotate-180 transition-transform duration-200" />
                 </button>
                 
@@ -279,17 +311,17 @@ const LandingPage = () => {
                 )}
               </div>
 
-              <a href="#customers" className="text-gray-600 hover:text-gray-900 transition-colors text-base font-medium">Customers</a>
-              <a href="#pricing" className="text-gray-600 hover:text-gray-900 transition-colors text-base font-medium">Pricing</a>
+              <a href="#customers" className="text-gray-600 hover:text-gray-900 transition-colors text-base font-medium">Clientes</a>
+              <a href="#pricing" className="text-gray-600 hover:text-gray-900 transition-colors text-base font-medium">Precios</a>
               <a href="/blog" className="text-gray-600 hover:text-gray-900 transition-colors text-base font-medium">Blog</a>
             </div>
 
             <div className="hidden md:flex items-center space-x-4">
               <Button variant="outline" size="sm" className="text-sm px-4 py-2 border-gray-300 text-gray-700 hover:bg-gray-50 font-medium">
-                Log in
+                Iniciar sesión
               </Button>
               <Button size="sm" className="text-sm px-4 py-2 bg-gray-900 text-white hover:bg-gray-800 font-medium">
-                Sign up
+                Registrarse
               </Button>
             </div>
 
@@ -304,7 +336,7 @@ const LandingPage = () => {
       </motion.nav>
 
       {/* Hero Section */}
-      <section className="pt-24 pb-16 bg-white min-h-screen flex items-center">
+      <section className="pt-36 pb-16 bg-white min-h-screen flex items-center">
         <div className="max-w-7xl mx-auto px-6 w-full">
           <div className="text-center max-w-4xl mx-auto">
             <motion.div
@@ -313,15 +345,15 @@ const LandingPage = () => {
               transition={{ duration: 0.8 }}
             >
               <div className="inline-flex items-center space-x-2 bg-gray-100 rounded-full px-4 py-2 text-sm text-gray-600 mb-8">
-                <span>Preview our fall release</span>
+                <span>Vista previa de nuestra versión de otoño</span>
                 <ArrowRight className="w-4 h-4" />
               </div>
               
               <h1 className="text-6xl md:text-8xl font-bold text-gray-900 mb-6 leading-tight tracking-tight">
-                Medical relationship magic.
+                Magia en las relaciones médicas.
               </h1>
               <p className="text-2xl text-gray-600 mb-8 max-w-3xl mx-auto font-light">
-                CLINESA is the AI-native platform for medical professionals.
+                CLINESA es la plataforma nativa de IA para profesionales médicos.
               </p>
             </motion.div>
 
@@ -332,11 +364,11 @@ const LandingPage = () => {
               className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
             >
               <Button size="lg" className="text-lg px-6 py-3 bg-gray-900 text-white hover:bg-gray-800 rounded-lg font-medium">
-                Get started
+                Comenzar
               </Button>
               <Button variant="outline" size="lg" className="text-lg px-6 py-3 border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg font-medium">
                 <Play className="w-5 h-5 mr-2" />
-                Watch demo
+                Ver demo
               </Button>
             </motion.div>
 
@@ -407,7 +439,7 @@ const LandingPage = () => {
                   <div className="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center">
                     <Heart className="w-5 h-5 text-white" />
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900">Dashboard</h3>
+                  <h3 className="text-2xl font-bold text-gray-900">Panel de Control</h3>
                 </div>
                 <div className="flex items-center space-x-4">
                   <div className="relative">
@@ -691,10 +723,10 @@ const LandingPage = () => {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button size="lg" className="text-lg px-6 py-3 bg-white text-gray-900 hover:bg-gray-100 rounded-lg font-medium">
-                Get started
+                Comenzar
               </Button>
               <Button variant="outline" size="lg" className="text-lg px-6 py-3 border-white text-white hover:bg-white hover:text-gray-900 rounded-lg font-medium">
-                Watch demo
+                Ver demo
               </Button>
             </div>
           </motion.div>
