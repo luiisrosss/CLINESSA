@@ -55,7 +55,12 @@ SET type = 'private_practice'
 WHERE type = 'clinic' OR type = 'hospital';
 
 -- Update role enum to focus on psychology
--- First, remove any default value from the role column
+-- First, drop any views or materialized views that depend on the role column
+DROP MATERIALIZED VIEW IF EXISTS user_activity_stats CASCADE;
+DROP VIEW IF EXISTS user_stats CASCADE;
+DROP VIEW IF EXISTS organization_user_stats CASCADE;
+
+-- Remove any default value from the role column
 ALTER TABLE users ALTER COLUMN role DROP DEFAULT;
 
 -- Rename the old enum type
@@ -77,6 +82,31 @@ ALTER TABLE users ALTER COLUMN role SET DEFAULT 'psychologist';
 
 -- Drop old enum
 DROP TYPE user_role_old;
+
+-- Recreate the materialized view with updated role references
+CREATE MATERIALIZED VIEW user_activity_stats AS
+SELECT 
+  u.id,
+  u.first_name,
+  u.last_name,
+  u.role,
+  u.organization_id,
+  COUNT(DISTINCT p.id) as total_patients,
+  COUNT(DISTINCT a.id) as total_appointments,
+  COUNT(DISTINCT CASE WHEN a.appointment_date >= CURRENT_DATE THEN a.id END) as upcoming_appointments,
+  COUNT(DISTINCT CASE WHEN a.appointment_date < CURRENT_DATE THEN a.id END) as completed_appointments,
+  COALESCE(SUM(a.amount), 0) as total_revenue,
+  MAX(a.appointment_date) as last_appointment_date,
+  u.created_at as user_created_at
+FROM users u
+LEFT JOIN patients p ON p.psychologist_id = u.id
+LEFT JOIN appointments a ON a.psychologist_id = u.id
+WHERE u.role = 'psychologist'
+GROUP BY u.id, u.first_name, u.last_name, u.role, u.organization_id, u.created_at;
+
+-- Create index on the materialized view
+CREATE INDEX idx_user_activity_stats_org_id ON user_activity_stats(organization_id);
+CREATE INDEX idx_user_activity_stats_role ON user_activity_stats(role);
 
 -- Update RLS policies to focus on individual practice
 DROP POLICY IF EXISTS "Users can view their own profile" ON users;
