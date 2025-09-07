@@ -74,47 +74,52 @@ const LandingPage = () => {
   return (
     <div className="min-h-screen bg-white dark:bg-primary-1000">
       {/* Header */}
-      <motion.header 
-        className="border-b border-primary-200 dark:border-primary-800"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
+      <header className="bg-white dark:bg-primary-1000 border-b border-gray-200 dark:border-primary-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
+            {/* Logo */}
             <div className="flex items-center">
-              <h1 className="text-xl font-semibold text-primary-1000 dark:text-primary-0">
-                CLINESA
-              </h1>
+              <div className="flex items-center space-x-2">
+                <div className="w-8 h-8 bg-black dark:bg-white rounded-md flex items-center justify-center">
+                  <span className="text-white dark:text-black font-bold text-sm">C</span>
+                </div>
+                <span className="text-xl font-bold text-black dark:text-white">
+                  CLINESA
+                </span>
+              </div>
             </div>
+            
+            {/* Navigation */}
             <nav className="hidden md:flex space-x-8">
-              <a href="#features" className="text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-100 transition-colors">
+              <a href="#features" className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">
                 Características
               </a>
-              <a href="#testimonials" className="text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-100 transition-colors">
+              <a href="#testimonials" className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">
                 Testimonios
               </a>
-              <a href="#pricing" className="text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-100 transition-colors">
+              <a href="#pricing" className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors">
                 Precios
               </a>
             </nav>
+            
+            {/* Actions */}
             <div className="flex items-center space-x-4">
               <Link 
                 to="/auth/login"
-                className="text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-100 transition-colors"
+                className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white transition-colors"
               >
                 Iniciar Sesión
               </Link>
               <Link 
                 to="/auth/register"
-                className="notion-button-primary"
+                className="bg-black dark:bg-white text-white dark:text-black px-4 py-2 rounded-md hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors"
               >
                 Comenzar Gratis
               </Link>
             </div>
           </div>
         </div>
-      </motion.header>
+      </header>
 
       {/* Hero Section */}
       <motion.section 
