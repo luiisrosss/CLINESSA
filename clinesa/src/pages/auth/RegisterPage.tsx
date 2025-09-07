@@ -3,7 +3,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Stethoscope, Eye, EyeOff } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { Stethoscope, Eye, EyeOff, ArrowRight, Check } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
@@ -201,119 +202,231 @@ export function RegisterPage() {
     }
   }
 
+  const fadeInUp = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.6, ease: "easeOut" }
+  }
+
+  const staggerContainer = {
+    animate: {
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-medical-50 to-blue-100 px-4 py-8">
-      <div className="w-full max-w-2xl">
-        <Card>
-          <CardHeader className="text-center pb-6">
-            <div className="flex justify-center mb-4">
-              <div className="flex items-center justify-center w-16 h-16 bg-medical-600 rounded-xl">
-                <Stethoscope className="w-8 h-8 text-white" />
-              </div>
+    <div className="min-h-screen bg-white dark:bg-primary-1000 px-4 py-8">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <motion.div 
+          className="text-center mb-8"
+          {...fadeInUp}
+        >
+          <div className="flex justify-center mb-6">
+            <div className="flex items-center justify-center w-12 h-12 bg-primary-1000 dark:bg-primary-0 rounded-md">
+              <Stethoscope className="w-6 h-6 text-primary-0 dark:text-primary-1000" />
             </div>
-            <CardTitle className="text-2xl font-bold text-gray-900">
-              Crear Cuenta en CLINESA
-            </CardTitle>
-            <p className="text-gray-600 mt-2">
-              Configura tu consulta médica en minutos
-            </p>
-            {selectedPlan && (
-              <div className="mt-4 p-4 bg-gradient-to-r from-medical-50 to-blue-50 rounded-lg border border-medical-200">
-                <div className="flex items-center justify-between">
+          </div>
+          <h1 className="text-3xl font-normal text-primary-1000 dark:text-primary-0 mb-2">
+            Crear Cuenta en CLINESA
+          </h1>
+          <p className="text-lg text-primary-600 dark:text-primary-400">
+            Configura tu consulta médica en minutos
+          </p>
+        </motion.div>
+
+        {/* Plan Selection */}
+        {selectedPlan && (
+          <motion.div 
+            className="mb-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+          >
+            <div className="notion-card p-6 bg-primary-50 dark:bg-primary-950">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <Check className="w-5 h-5 text-green-600 dark:text-green-400" />
                   <div>
-                    <p className="text-sm font-semibold text-medical-800">
+                    <p className="font-medium text-primary-1000 dark:text-primary-0">
                       Plan {selectedPlan.charAt(0).toUpperCase() + selectedPlan.slice(1)} 
                       {' '}({billingCycle === 'monthly' ? 'Mensual' : 'Anual'})
                     </p>
-                    <p className="text-xs text-medical-600 mt-1">
+                    <p className="text-sm text-primary-600 dark:text-primary-400">
                       Incluye 14 días de prueba gratuita
                     </p>
                   </div>
-                  <div className="text-right">
-                    <p className="text-lg font-bold text-medical-800">
-                      ${selectedPlan === 'basic' ? (billingCycle === 'monthly' ? '19.99' : '199.99') : 
-                        selectedPlan === 'professional' ? (billingCycle === 'monthly' ? '39.99' : '399.99') : 
-                        (billingCycle === 'monthly' ? '99.99' : '999.99')}
-                    </p>
-                    <p className="text-xs text-medical-600">
-                      {billingCycle === 'yearly' ? 'Ahorra 17%' : 'por mes'}
-                    </p>
-                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-xl font-medium text-primary-1000 dark:text-primary-0">
+                    €{selectedPlan === 'basic' ? (billingCycle === 'monthly' ? '19' : '199') : 
+                      selectedPlan === 'professional' ? (billingCycle === 'monthly' ? '39' : '399') : 
+                      (billingCycle === 'monthly' ? '99' : '999')}
+                  </p>
+                  <p className="text-sm text-primary-600 dark:text-primary-400">
+                    {billingCycle === 'yearly' ? 'Ahorra 17%' : 'por mes'}
+                  </p>
                 </div>
               </div>
-            )}
-          </CardHeader>
-          
-          <CardContent>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-              {/* Personal Information */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">
+            </div>
+          </motion.div>
+        )}
+
+        {/* Form */}
+        <motion.div 
+          className="notion-card p-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+            {/* Personal Information */}
+            <motion.div 
+              className="space-y-6"
+              variants={staggerContainer}
+              initial="initial"
+              animate="animate"
+            >
+              <motion.div 
+                className="section-divider-thick"
+                variants={fadeInUp}
+              >
+                <h3 className="text-lg font-medium text-primary-1000 dark:text-primary-0 mb-6">
                   Información Personal
                 </h3>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Input
-                    label="Nombre"
+              </motion.div>
+              
+              <motion.div 
+                className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                variants={fadeInUp}
+              >
+                <div>
+                  <label className="block text-sm font-medium text-primary-700 dark:text-primary-300 mb-2">
+                    Nombre
+                  </label>
+                  <input
+                    type="text"
                     placeholder="Tu nombre"
-                    error={errors.firstName?.message}
+                    className="notion-input"
                     {...register('firstName')}
                   />
-                  
-                  <Input
-                    label="Apellido"
+                  {errors.firstName && (
+                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                      {errors.firstName.message}
+                    </p>
+                  )}
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-primary-700 dark:text-primary-300 mb-2">
+                    Apellido
+                  </label>
+                  <input
+                    type="text"
                     placeholder="Tu apellido"
-                    error={errors.lastName?.message}
+                    className="notion-input"
                     {...register('lastName')}
                   />
+                  {errors.lastName && (
+                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                      {errors.lastName.message}
+                    </p>
+                  )}
                 </div>
+              </motion.div>
 
-                <Input
-                  label="Email"
+              <motion.div variants={fadeInUp}>
+                <label className="block text-sm font-medium text-primary-700 dark:text-primary-300 mb-2">
+                  Email
+                </label>
+                <input
                   type="email"
                   placeholder="tu@email.com"
-                  error={errors.email?.message}
+                  className="notion-input"
                   {...register('email')}
                 />
+                {errors.email && (
+                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                    {errors.email.message}
+                  </p>
+                )}
+              </motion.div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="relative">
-                    <Input
-                      label="Contraseña"
-                      type={showPassword ? 'text' : 'password'}
-                      placeholder="••••••••"
-                      error={errors.password?.message}
-                      {...register('password')}
-                    />
-                    <button
-                      type="button"
-                      className="absolute right-3 top-8 text-gray-400 hover:text-gray-600"
-                      onClick={() => setShowPassword(!showPassword)}
-                    >
-                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
-                  </div>
-                  
-                  <Input
-                    label="Confirmar Contraseña"
+              <motion.div 
+                className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                variants={fadeInUp}
+              >
+                <div className="relative">
+                  <label className="block text-sm font-medium text-primary-700 dark:text-primary-300 mb-2">
+                    Contraseña
+                  </label>
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="••••••••"
+                    className="notion-input pr-10"
+                    {...register('password')}
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-3 top-8 text-primary-400 hover:text-primary-600 dark:hover:text-primary-300 transition-colors"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                  {errors.password && (
+                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                      {errors.password.message}
+                    </p>
+                  )}
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-primary-700 dark:text-primary-300 mb-2">
+                    Confirmar Contraseña
+                  </label>
+                  <input
                     type="password"
                     placeholder="••••••••"
-                    error={errors.confirmPassword?.message}
+                    className="notion-input"
                     {...register('confirmPassword')}
                   />
+                  {errors.confirmPassword && (
+                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                      {errors.confirmPassword.message}
+                    </p>
+                  )}
                 </div>
-              </div>
+              </motion.div>
+            </motion.div>
 
-              {/* Professional Information */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">
+            {/* Professional Information */}
+            <motion.div 
+              className="space-y-6"
+              variants={staggerContainer}
+              initial="initial"
+              animate="animate"
+            >
+              <motion.div 
+                className="section-divider-thick"
+                variants={fadeInUp}
+              >
+                <h3 className="text-lg font-medium text-primary-1000 dark:text-primary-0 mb-6">
                   Información Profesional
                 </h3>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Select
-                    label="Rol"
-                    error={errors.role?.message}
+              </motion.div>
+              
+              <motion.div 
+                className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                variants={fadeInUp}
+              >
+                <div>
+                  <label className="block text-sm font-medium text-primary-700 dark:text-primary-300 mb-2">
+                    Rol
+                  </label>
+                  <select
+                    className="notion-input"
                     {...register('role')}
                   >
                     <option value="">Selecciona un rol</option>
@@ -321,134 +434,275 @@ export function RegisterPage() {
                     <option value="doctor">Médico</option>
                     <option value="nurse">Enfermero/a</option>
                     <option value="receptionist">Recepcionista</option>
-                  </Select>
-
-                  <Input
-                    label="Teléfono"
-                    placeholder="+54 11 1234-5678"
-                    error={errors.phone?.message}
-                    {...register('phone')}
-                  />
+                  </select>
+                  {errors.role && (
+                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                      {errors.role.message}
+                    </p>
+                  )}
                 </div>
 
-                {selectedRole === 'doctor' && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Input
-                      label="Número de Matrícula"
+                <div>
+                  <label className="block text-sm font-medium text-primary-700 dark:text-primary-300 mb-2">
+                    Teléfono
+                  </label>
+                  <input
+                    type="tel"
+                    placeholder="+34 612 345 678"
+                    className="notion-input"
+                    {...register('phone')}
+                  />
+                  {errors.phone && (
+                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                      {errors.phone.message}
+                    </p>
+                  )}
+                </div>
+              </motion.div>
+
+              {selectedRole === 'doctor' && (
+                <motion.div 
+                  className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                  variants={fadeInUp}
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <div>
+                    <label className="block text-sm font-medium text-primary-700 dark:text-primary-300 mb-2">
+                      Número de Matrícula
+                    </label>
+                    <input
+                      type="text"
                       placeholder="MP-12345"
-                      error={errors.licenseNumber?.message}
+                      className="notion-input"
                       {...register('licenseNumber')}
                     />
-                    
-                    <Input
-                      label="Especialización"
+                    {errors.licenseNumber && (
+                      <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                        {errors.licenseNumber.message}
+                      </p>
+                    )}
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium text-primary-700 dark:text-primary-300 mb-2">
+                      Especialización
+                    </label>
+                    <input
+                      type="text"
                       placeholder="Medicina General"
-                      error={errors.specialization?.message}
+                      className="notion-input"
                       {...register('specialization')}
                     />
+                    {errors.specialization && (
+                      <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                        {errors.specialization.message}
+                      </p>
+                    )}
                   </div>
-                )}
+                </motion.div>
+              )}
 
-                {selectedRole === 'nurse' && (
-                  <Input
-                    label="Número de Matrícula"
+              {selectedRole === 'nurse' && (
+                <motion.div 
+                  variants={fadeInUp}
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <label className="block text-sm font-medium text-primary-700 dark:text-primary-300 mb-2">
+                    Número de Matrícula
+                  </label>
+                  <input
+                    type="text"
                     placeholder="ENF-123"
-                    error={errors.licenseNumber?.message}
+                    className="notion-input"
                     {...register('licenseNumber')}
                   />
-                )}
-              </div>
+                  {errors.licenseNumber && (
+                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                      {errors.licenseNumber.message}
+                    </p>
+                  )}
+                </motion.div>
+              )}
+            </motion.div>
 
-              {/* Organization Information */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">
+            {/* Organization Information */}
+            <motion.div 
+              className="space-y-6"
+              variants={staggerContainer}
+              initial="initial"
+              animate="animate"
+            >
+              <motion.div 
+                className="section-divider-thick"
+                variants={fadeInUp}
+              >
+                <h3 className="text-lg font-medium text-primary-1000 dark:text-primary-0 mb-6">
                   Información de la Organización
                 </h3>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Input
-                    label="Nombre de la Organización"
+              </motion.div>
+              
+              <motion.div 
+                className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                variants={fadeInUp}
+              >
+                <div>
+                  <label className="block text-sm font-medium text-primary-700 dark:text-primary-300 mb-2">
+                    Nombre de la Organización
+                  </label>
+                  <input
+                    type="text"
                     placeholder="Clínica San Rafael"
-                    error={errors.organizationName?.message}
+                    className="notion-input"
                     {...register('organizationName')}
                   />
-                  
-                  <Select
-                    label="Tipo de Organización"
-                    error={errors.organizationType?.message}
+                  {errors.organizationName && (
+                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                      {errors.organizationName.message}
+                    </p>
+                  )}
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-primary-700 dark:text-primary-300 mb-2">
+                    Tipo de Organización
+                  </label>
+                  <select
+                    className="notion-input"
                     {...register('organizationType')}
                   >
                     <option value="">Selecciona el tipo</option>
                     <option value="clinic">Clínica</option>
                     <option value="hospital">Hospital</option>
                     <option value="private_practice">Consultorio Privado</option>
-                  </Select>
+                  </select>
+                  {errors.organizationType && (
+                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                      {errors.organizationType.message}
+                    </p>
+                  )}
                 </div>
+              </motion.div>
 
-                <Input
-                  label="Dirección"
-                  placeholder="Av. Libertador 1234, Buenos Aires"
-                  error={errors.organizationAddress?.message}
+              <motion.div variants={fadeInUp}>
+                <label className="block text-sm font-medium text-primary-700 dark:text-primary-300 mb-2">
+                  Dirección
+                </label>
+                <input
+                  type="text"
+                  placeholder="Calle Mayor 123, Madrid"
+                  className="notion-input"
                   {...register('organizationAddress')}
                 />
+                {errors.organizationAddress && (
+                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                    {errors.organizationAddress.message}
+                  </p>
+                )}
+              </motion.div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Input
-                    label="Teléfono de la Organización"
-                    placeholder="+54 11 4567-8900"
-                    error={errors.organizationPhone?.message}
+              <motion.div 
+                className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                variants={fadeInUp}
+              >
+                <div>
+                  <label className="block text-sm font-medium text-primary-700 dark:text-primary-300 mb-2">
+                    Teléfono de la Organización
+                  </label>
+                  <input
+                    type="tel"
+                    placeholder="+34 91 123 45 67"
+                    className="notion-input"
                     {...register('organizationPhone')}
                   />
-                  
-                  <Input
-                    label="Email de la Organización"
+                  {errors.organizationPhone && (
+                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                      {errors.organizationPhone.message}
+                    </p>
+                  )}
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-primary-700 dark:text-primary-300 mb-2">
+                    Email de la Organización
+                  </label>
+                  <input
                     type="email"
                     placeholder="info@clinica.com"
-                    error={errors.organizationEmail?.message}
+                    className="notion-input"
                     {...register('organizationEmail')}
                   />
+                  {errors.organizationEmail && (
+                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+                      {errors.organizationEmail.message}
+                    </p>
+                  )}
                 </div>
-              </div>
+              </motion.div>
+            </motion.div>
 
-              <Button
+            <motion.div 
+              className="pt-6"
+              variants={fadeInUp}
+            >
+              <button
                 type="submit"
-                className="w-full"
-                loading={loading}
+                className="notion-button-primary w-full flex items-center justify-center"
                 disabled={loading}
               >
-                Crear Cuenta
-              </Button>
-            </form>
+                {loading ? (
+                  <div className="w-5 h-5 border-2 border-primary-0 dark:border-primary-1000 border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <>
+                    Crear Cuenta
+                    <ArrowRight className="ml-2 w-4 h-4" />
+                  </>
+                )}
+              </button>
+            </motion.div>
+          </form>
+          
+          <motion.div 
+            className="mt-8 text-center space-y-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            <p className="text-sm text-primary-600 dark:text-primary-400">
+              ¿Quieres cambiar de plan?{' '}
+              <Link 
+                to="/auth/plans" 
+                className="text-primary-1000 dark:text-primary-0 hover:text-primary-600 dark:hover:text-primary-400 font-medium transition-colors"
+              >
+                Ver planes disponibles
+              </Link>
+            </p>
             
-            <div className="mt-6 text-center space-y-3">
-              <p className="text-sm text-gray-600">
-                ¿Quieres cambiar de plan?{' '}
-                <Link 
-                  to="/auth/plans" 
-                  className="text-medical-600 hover:text-medical-700 font-medium"
-                >
-                  Ver planes disponibles
-                </Link>
-              </p>
-              
-              <p className="text-sm text-gray-600">
-                ¿Ya tienes una cuenta?{' '}
-                <Link 
-                  to="/auth/login" 
-                  className="text-medical-600 hover:text-medical-700 font-medium"
-                >
-                  Inicia sesión aquí
-                </Link>
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+            <p className="text-sm text-primary-600 dark:text-primary-400">
+              ¿Ya tienes una cuenta?{' '}
+              <Link 
+                to="/auth/login" 
+                className="text-primary-1000 dark:text-primary-0 hover:text-primary-600 dark:hover:text-primary-400 font-medium transition-colors"
+              >
+                Inicia sesión aquí
+              </Link>
+            </p>
+          </motion.div>
+        </motion.div>
         
-        <div className="mt-8 text-center">
-          <p className="text-xs text-gray-500">
-            © 2025 CLINESA - Gestión Médica Profesional
+        <motion.div 
+          className="mt-8 text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+        >
+          <p className="text-xs text-primary-500 dark:text-primary-500">
+            © 2024 CLINESA - Gestión Médica Profesional
           </p>
-        </div>
+        </motion.div>
       </div>
     </div>
   )

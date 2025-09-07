@@ -23,13 +23,13 @@ function PatientCard({ patient, onView, onEdit, onDelete }: PatientCardProps) {
   const age = calculateAge(patient.birth_date)
   
   return (
-    <Card className="hover:shadow-lg transition-shadow duration-200 cursor-pointer group">
-      <CardContent className="p-4 sm:p-6">
-        <div className="flex flex-col sm:flex-row sm:items-start justify-between space-y-4 sm:space-y-0">
-          <div className="flex items-start space-x-3 sm:space-x-4 flex-1 min-w-0">
+    <Card className="hover:shadow-notion-sm transition-shadow duration-200 cursor-pointer group">
+      <CardContent className="p-4">
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between space-y-3 sm:space-y-0">
+          <div className="flex items-start space-x-3 flex-1 min-w-0">
             {/* Avatar */}
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-medical-100 dark:bg-medical-900 rounded-full flex items-center justify-center flex-shrink-0">
-              <span className="text-medical-600 dark:text-medical-400 font-medium text-sm">
+            <div className="w-10 h-10 bg-primary-100 dark:bg-primary-900 rounded flex items-center justify-center flex-shrink-0">
+              <span className="text-primary-600 dark:text-primary-400 font-normal text-sm">
                 {getInitials(`${patient.first_name} ${patient.last_name}`)}
               </span>
             </div>
@@ -37,17 +37,17 @@ function PatientCard({ patient, onView, onEdit, onDelete }: PatientCardProps) {
             {/* Patient Info */}
             <div className="flex-1 min-w-0">
               <div className="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-2 mb-2">
-                <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white truncate">
+                <h3 className="text-base font-normal text-primary-1000 dark:text-primary-0 truncate">
                   {patient.first_name} {patient.last_name}
                 </h3>
-                <span className="text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-2 py-1 rounded-full w-fit">
+                <span className="text-xs bg-primary-100 dark:bg-primary-900 text-primary-600 dark:text-primary-400 px-2 py-1 rounded w-fit">
                   {patient.patient_number}
                 </span>
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 text-sm text-gray-600 dark:text-gray-400">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 text-sm text-primary-600 dark:text-primary-400">
                 <div>
-                  <span className="font-medium">Edad:</span> {age} años
+                  <span className="font-normal">Edad:</span> {age} años
                 </div>
                 <div>
                   <span className="font-medium">Género:</span> {
@@ -219,12 +219,12 @@ export function PatientsPage() {
   }
 
   return (
-    <div className="space-y-4 sm:space-y-6">
+    <div className="section-spacing-large">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between space-y-4 sm:space-y-0">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between space-y-3 sm:space-y-0">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Gestión de Pacientes</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">
+          <h1 className="text-xl font-normal text-primary-1000 dark:text-primary-0">Gestión de Pacientes</h1>
+          <p className="text-primary-600 dark:text-primary-400 mt-1">
             Administra la información de todos los pacientes de la clínica
           </p>
         </div>
@@ -234,31 +234,34 @@ export function PatientsPage() {
         </Button>
       </div>
 
+      {/* Section Divider */}
+      <div className="section-divider"></div>
+
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <div className="flex items-center">
-              <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-lg">
-                <Users className="w-6 h-6 text-blue-600" />
+              <div className="flex items-center justify-center w-10 h-10 bg-primary-100 dark:bg-primary-900 rounded">
+                <Users className="w-5 h-5 text-primary-600 dark:text-primary-400" />
               </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Total Pacientes</p>
-                <p className="text-2xl font-bold text-gray-900">{patients.length}</p>
+              <div className="ml-3">
+                <p className="text-sm font-normal text-primary-600 dark:text-primary-400">Total Pacientes</p>
+                <p className="text-xl font-normal text-primary-1000 dark:text-primary-0">{patients.length}</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <div className="flex items-center">
-              <div className="flex items-center justify-center w-12 h-12 bg-green-100 rounded-lg">
-                <Calendar className="w-6 h-6 text-green-600" />
+              <div className="flex items-center justify-center w-10 h-10 bg-green-100 dark:bg-green-900 rounded">
+                <Calendar className="w-5 h-5 text-green-600 dark:text-green-400" />
               </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Nuevos este mes</p>
-                <p className="text-2xl font-bold text-gray-900">
+              <div className="ml-3">
+                <p className="text-sm font-normal text-primary-600 dark:text-primary-400">Nuevos este mes</p>
+                <p className="text-xl font-normal text-primary-1000 dark:text-primary-0">
                   {patients.filter(p => {
                     const created = new Date(p.created_at)
                     const now = new Date()
@@ -271,14 +274,14 @@ export function PatientsPage() {
         </Card>
 
         <Card>
-          <CardContent className="p-6">
+          <CardContent className="p-4">
             <div className="flex items-center">
-              <div className="flex items-center justify-center w-12 h-12 bg-purple-100 rounded-lg">
-                <FileText className="w-6 h-6 text-purple-600" />
+              <div className="flex items-center justify-center w-10 h-10 bg-accent-100 dark:bg-accent-900 rounded">
+                <FileText className="w-5 h-5 text-accent-600 dark:text-accent-400" />
               </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Con historiales</p>
-                <p className="text-2xl font-bold text-gray-900">
+              <div className="ml-3">
+                <p className="text-sm font-normal text-primary-600 dark:text-primary-400">Con historiales</p>
+                <p className="text-xl font-normal text-primary-1000 dark:text-primary-0">
                   {patients.filter(p => p.chronic_conditions || p.allergies).length}
                 </p>
               </div>

@@ -10,7 +10,7 @@ export function Card({ className, children, interactive = false, ...props }: Car
   return (
     <div
       className={cn(
-        interactive ? 'minimal-card-interactive' : 'minimal-card',
+        interactive ? 'notion-card-interactive' : 'notion-card',
         className
       )}
       {...props}
@@ -27,7 +27,7 @@ interface CardHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
 export function CardHeader({ className, children, ...props }: CardHeaderProps) {
   return (
     <div
-      className={cn('px-6 py-6 border-b border-primary-200 dark:border-primary-800', className)}
+      className={cn('px-4 py-3 border-b border-primary-200 dark:border-primary-800', className)}
       {...props}
     >
       {children}
@@ -42,7 +42,7 @@ interface CardContentProps extends React.HTMLAttributes<HTMLDivElement> {
 export function CardContent({ className, children, ...props }: CardContentProps) {
   return (
     <div
-      className={cn('px-6 py-6', className)}
+      className={cn('px-4 py-3', className)}
       {...props}
     >
       {children}
@@ -57,7 +57,7 @@ interface CardTitleProps extends React.HTMLAttributes<HTMLHeadingElement> {
 export function CardTitle({ className, children, ...props }: CardTitleProps) {
   return (
     <h3
-      className={cn('text-lg font-light text-primary-1000 dark:text-primary-0', className)}
+      className={cn('text-base font-normal text-primary-1000 dark:text-primary-0', className)}
       {...props}
     >
       {children}
@@ -72,7 +72,7 @@ interface CardDescriptionProps extends React.HTMLAttributes<HTMLParagraphElement
 export function CardDescription({ className, children, ...props }: CardDescriptionProps) {
   return (
     <p
-      className={cn('text-sm text-primary-700 dark:text-primary-300 mt-2 font-normal', className)}
+      className={cn('text-sm text-primary-600 dark:text-primary-400 mt-1', className)}
       {...props}
     >
       {children}

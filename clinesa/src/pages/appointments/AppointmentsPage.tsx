@@ -105,21 +105,24 @@ export function AppointmentsPage() {
   }
 
   return (
-    <div className="space-y-4 sm:space-y-6">
+    <div className="section-spacing-large">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between space-y-4 sm:space-y-0">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between space-y-3 sm:space-y-0">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Appointments</h1>
-          <p className="text-gray-600 dark:text-gray-400">Manage and schedule patient appointments</p>
+          <h1 className="text-xl font-normal text-primary-1000 dark:text-primary-0">Citas</h1>
+          <p className="text-primary-600 dark:text-primary-400">Gestiona y programa citas de pacientes</p>
         </div>
         <Button
           onClick={() => setIsCreateModalOpen(true)}
-          className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto"
+          className="w-full sm:w-auto"
         >
           <Plus className="w-4 h-4 mr-2" />
-          New Appointment
+          Nueva Cita
         </Button>
       </div>
+
+      {/* Section Divider */}
+      <div className="section-divider"></div>
 
       {/* Controls */}
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">

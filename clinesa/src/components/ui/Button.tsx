@@ -10,18 +10,17 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variants = {
-  primary: 'minimal-button-primary',
-  secondary: 'minimal-button-secondary',
-  outline: 'border border-primary-1000 dark:border-primary-0 text-primary-1000 dark:text-primary-0 bg-transparent hover:bg-primary-100 dark:hover:bg-primary-900 font-normal px-6 py-3 rounded-md transition-all duration-200 ease-out focus:outline-none focus:ring-1 focus:ring-warm-500 focus:ring-offset-1',
-  ghost: 'minimal-button-ghost',
-  warm: 'minimal-button-warm',
-  danger: 'bg-terracotta-600 hover:bg-terracotta-700 text-primary-0 font-normal px-6 py-3 rounded-md transition-all duration-200 ease-out focus:outline-none focus:ring-1 focus:ring-terracotta-500 focus:ring-offset-1'
+  primary: 'notion-button-primary',
+  secondary: 'notion-button-secondary',
+  outline: 'notion-button-outline',
+  ghost: 'notion-button-ghost',
+  danger: 'bg-red-600 hover:bg-red-700 text-white font-normal px-3 py-2 rounded-md transition-all duration-150 ease-out focus:outline-none focus:ring-1 focus:ring-red-500 focus:ring-offset-1'
 }
 
 const sizes = {
-  sm: 'px-3 py-1.5 text-sm',
-  md: 'px-4 py-2.5 text-sm',
-  lg: 'px-6 py-3 text-base'
+  sm: 'px-2 py-1.5 text-sm',
+  md: 'px-3 py-2 text-sm',
+  lg: 'px-4 py-2.5 text-base'
 }
 
 export function Button({ 

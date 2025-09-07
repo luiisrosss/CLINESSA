@@ -42,16 +42,19 @@ const columns = [
 
 export function Showcase() {
   return (
-    <div className="space-y-12">
+    <div className="section-spacing-large">
       {/* Header */}
-      <div className="text-center space-y-6">
-        <h1 className="text-5xl font-light text-primary-1000 dark:text-primary-0">
-          Sistema Visual Minimalista
+      <div className="text-center space-y-3">
+        <h1 className="text-3xl font-normal text-primary-1000 dark:text-primary-0">
+          Sistema Visual Básico
         </h1>
-        <p className="text-lg text-primary-700 dark:text-primary-300 max-w-2xl mx-auto font-normal">
-          Un sistema de diseño ultra minimalista con colores cálidos terciarios y una paleta principal de blancos y negros.
+        <p className="text-base text-primary-600 dark:text-primary-400 max-w-2xl mx-auto">
+          Un sistema de diseño con colores básicos (negro, gris, blanco) y separaciones sutiles entre apartados.
         </p>
       </div>
+
+      {/* Section Divider */}
+      <div className="section-divider"></div>
 
       {/* Buttons Section */}
       <Card>
@@ -59,17 +62,19 @@ export function Showcase() {
           <CardTitle>Botones</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-wrap gap-6">
+          <div className="flex flex-wrap gap-3">
             <Button variant="primary">Primario</Button>
             <Button variant="secondary">Secundario</Button>
             <Button variant="outline">Outline</Button>
             <Button variant="ghost">Ghost</Button>
-            <Button variant="warm">Warm</Button>
             <Button variant="danger">Peligro</Button>
             <Button variant="primary" loading>Cargando</Button>
           </div>
         </CardContent>
       </Card>
+
+      {/* Section Divider */}
+      <div className="section-divider"></div>
 
       {/* Badges Section */}
       <Card>
@@ -77,11 +82,12 @@ export function Showcase() {
           <CardTitle>Badges</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap gap-2">
             <Badge variant="default">Default</Badge>
-            <Badge variant="warm">Warm</Badge>
-            <Badge variant="terracotta">Terracotta</Badge>
-            <Badge variant="beige">Beige</Badge>
+            <Badge variant="accent">Accent</Badge>
+            <Badge variant="success">Éxito</Badge>
+            <Badge variant="warning">Advertencia</Badge>
+            <Badge variant="error">Error</Badge>
             <Badge variant="outline">Outline</Badge>
           </div>
         </CardContent>

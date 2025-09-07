@@ -7,6 +7,7 @@ import { DashboardLayout } from '@/components/layout/DashboardLayout'
 import { ProtectedRoute } from '@/components/layout/ProtectedRoute'
 
 // Pages
+import LandingPage from '@/pages/LandingPage'
 import { LoginPage } from '@/pages/auth/LoginPage'
 import { RegisterPage } from '@/pages/auth/RegisterPage'
 import { PlanSelectionPage } from '@/pages/auth/PlanSelectionPage'
@@ -18,6 +19,8 @@ import { UsersPage } from '@/pages/users/UsersPage'
 import { BillingPage } from '@/pages/billing/BillingPage'
 import { PlansPage } from '@/pages/billing/PlansPage'
 import { SettingsPage } from '@/pages/settings/SettingsPage'
+import SupportPage from '@/pages/support/SupportPage'
+import AccountPage from '@/pages/account/AccountPage'
 import { SetupPage } from '@/pages/SetupPage'
 
 function App() {
@@ -48,21 +51,23 @@ function App() {
         
         <Routes>
           {/* Public Routes */}
+          <Route path="/" element={<LandingPage />} />
           <Route path="/auth/login" element={<LoginPage />} />
           <Route path="/auth/plans" element={<PlanSelectionPage />} />
           <Route path="/auth/register" element={<RegisterPage />} />
           <Route path="/plans" element={<PlansPage />} />
+          <Route path="/support" element={<SupportPage />} />
           
           {/* Protected Routes */}
           <Route 
-            path="/" 
+            path="/app" 
             element={
               <ProtectedRoute>
                 <DashboardLayout />
               </ProtectedRoute>
             }
           >
-            <Route index element={<Navigate to="/dashboard" replace />} />
+            <Route index element={<Navigate to="/app/dashboard" replace />} />
             <Route path="dashboard" element={<DashboardPage />} />
             <Route 
               path="patients" 
@@ -98,10 +103,11 @@ function App() {
             />
             <Route path="billing" element={<BillingPage />} />
             <Route path="settings" element={<SettingsPage />} />
+            <Route path="account" element={<AccountPage />} />
           </Route>
           
-          {/* Catch all - redirect to dashboard */}
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          {/* Catch all - redirect to landing */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
     </Router>
