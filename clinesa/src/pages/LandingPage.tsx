@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import React, { useRef } from "react";
+import { useRef, useState } from "react";
 import { 
   Heart, 
   Users, 
@@ -10,7 +10,6 @@ import {
   BarChart3,
   ArrowRight,
   CheckCircle,
-  Play,
   Phone,
   Mail,
   MapPin,
@@ -18,12 +17,22 @@ import {
   X,
   Search,
   Plus,
-  Filter
+  Filter,
+  ChevronDown,
+  Zap,
+  Activity,
+  Database,
+  Workflow,
+  Target,
+  BarChart,
+  Settings
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
 const LandingPage = () => {
-  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [hoveredPlatform, setHoveredPlatform] = useState(false);
+  const [hoveredResources, setHoveredResources] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const features = [
@@ -105,19 +114,164 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center">
                 <Heart className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold text-gray-900">CLINESA</span>
+              <span className="text-xl font-semibold text-gray-900">CLINESA</span>
             </div>
 
             <div className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-gray-600 hover:text-gray-900 transition-colors">Características</a>
-              <a href="#benefits" className="text-gray-600 hover:text-gray-900 transition-colors">Beneficios</a>
-              <a href="#testimonials" className="text-gray-600 hover:text-gray-900 transition-colors">Testimonios</a>
-              <a href="#pricing" className="text-gray-600 hover:text-gray-900 transition-colors">Precios</a>
-              <Button variant="outline" size="sm">Iniciar Sesión</Button>
-              <Button size="sm">Comenzar Gratis</Button>
+              {/* Platform Dropdown */}
+              <div 
+                className="relative"
+                onMouseEnter={() => setHoveredPlatform(true)}
+                onMouseLeave={() => setHoveredPlatform(false)}
+              >
+                <button className="flex items-center space-x-1 text-gray-600 hover:text-gray-900 transition-colors">
+                  <span>Platform</span>
+                  <ChevronDown className="w-4 h-4" />
+                </button>
+                
+                {hoveredPlatform && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    className="absolute top-full left-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 p-6"
+                  >
+                    <div className="grid grid-cols-2 gap-6">
+                      <div>
+                        <h3 className="text-sm font-semibold text-gray-900 mb-3">CRM PLATFORM</h3>
+                        <div className="space-y-3">
+                          <div className="flex items-center space-x-3">
+                            <Database className="w-4 h-4 text-gray-600" />
+                            <div>
+                              <div className="text-sm font-medium text-gray-900">Data model</div>
+                              <div className="text-xs text-gray-600">Sync and enrich your data</div>
+                            </div>
+                          </div>
+                          <div className="flex items-center space-x-3">
+                            <Users className="w-4 h-4 text-gray-600" />
+                            <div>
+                              <div className="text-sm font-medium text-gray-900">Productivity & collaboration</div>
+                              <div className="text-xs text-gray-600">Context for your team operations</div>
+                            </div>
+                          </div>
+                          <div className="flex items-center space-x-3">
+                            <Zap className="w-4 h-4 text-gray-600" />
+                            <div>
+                              <div className="text-sm font-medium text-gray-900">AI</div>
+                              <div className="text-xs text-gray-600">Native to your CRM</div>
+                            </div>
+                          </div>
+                          <div className="flex items-center space-x-3">
+                            <Settings className="w-4 h-4 text-gray-600" />
+                            <div>
+                              <div className="text-sm font-medium text-gray-900">Apps & integrations</div>
+                              <div className="text-xs text-gray-600">Connect all your favorite tools</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-semibold text-gray-900 mb-3">AUTOMATIONS</h3>
+                        <div className="space-y-3">
+                          <div className="flex items-center space-x-3">
+                            <Workflow className="w-4 h-4 text-gray-600" />
+                            <div>
+                              <div className="text-sm font-medium text-gray-900">Workflows</div>
+                              <div className="text-xs text-gray-600">Automate any process</div>
+                            </div>
+                          </div>
+                          <div className="flex items-center space-x-3">
+                            <Target className="w-4 h-4 text-gray-600" />
+                            <div>
+                              <div className="text-sm font-medium text-gray-900">Sequences</div>
+                              <div className="text-xs text-gray-600">Personalized outreach</div>
+                            </div>
+                          </div>
+                        </div>
+                        <h3 className="text-sm font-semibold text-gray-900 mb-3 mt-6">INSIGHTS</h3>
+                        <div className="space-y-3">
+                          <div className="flex items-center space-x-3">
+                            <Activity className="w-4 h-4 text-gray-600" />
+                            <div>
+                              <div className="text-sm font-medium text-gray-900">Call intelligence</div>
+                              <div className="text-xs text-gray-600">Record and analyze meetings</div>
+                            </div>
+                          </div>
+                          <div className="flex items-center space-x-3">
+                            <BarChart className="w-4 h-4 text-gray-600" />
+                            <div>
+                              <div className="text-sm font-medium text-gray-900">Reporting</div>
+                              <div className="text-xs text-gray-600">Insights in real time</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </div>
+
+              {/* Resources Dropdown */}
+              <div 
+                className="relative"
+                onMouseEnter={() => setHoveredResources(true)}
+                onMouseLeave={() => setHoveredResources(false)}
+              >
+                <button className="flex items-center space-x-1 text-gray-600 hover:text-gray-900 transition-colors">
+                  <span>Resources</span>
+                  <ChevronDown className="w-4 h-4" />
+                </button>
+                
+                {hoveredResources && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    className="absolute top-full left-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 p-6"
+                  >
+                    <div className="space-y-4">
+                      <div>
+                        <h3 className="text-sm font-semibold text-gray-900 mb-3">Platform</h3>
+                        <div className="space-y-2">
+                          <a href="#" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors">Refer a team</a>
+                          <a href="#" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors">Changelog</a>
+                          <a href="#" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors">Gmail extension</a>
+                          <a href="#" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors">iOS app</a>
+                          <a href="#" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors">Android app</a>
+                          <a href="#" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors">Security</a>
+                        </div>
+                      </div>
+                      <div>
+                        <h3 className="text-sm font-semibold text-gray-900 mb-3">Company</h3>
+                        <div className="space-y-2">
+                          <a href="#" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors">Customers</a>
+                          <a href="#" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors">Announcements</a>
+                          <a href="#" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors">Engineering blog</a>
+                          <a href="#" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors">Careers</a>
+                          <a href="#" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors">Manifesto</a>
+                          <a href="#" className="block text-sm text-gray-600 hover:text-gray-900 transition-colors">Become a partner</a>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </div>
+
+              <a href="#customers" className="text-gray-600 hover:text-gray-900 transition-colors">Customers</a>
+              <a href="#pricing" className="text-gray-600 hover:text-gray-900 transition-colors">Pricing</a>
+              <a href="/blog" className="text-gray-600 hover:text-gray-900 transition-colors">Blog</a>
+            </div>
+
+            <div className="hidden md:flex items-center space-x-4">
+              <Button variant="outline" size="sm" className="text-sm px-4 py-2 border-gray-300 text-gray-700 hover:bg-gray-50">
+                Sign in
+              </Button>
+              <Button size="sm" className="text-sm px-4 py-2 bg-gray-900 text-white hover:bg-gray-800">
+                Start for free
+              </Button>
             </div>
 
             <button
@@ -131,7 +285,7 @@ const LandingPage = () => {
       </motion.nav>
 
       {/* Hero Section */}
-      <section className="pt-24 pb-16 bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex items-center">
+      <section className="pt-24 pb-16 bg-white min-h-screen flex items-center">
         <div className="max-w-7xl mx-auto px-6 w-full">
           <div className="text-center max-w-4xl mx-auto">
             <motion.div
@@ -139,13 +293,16 @@ const LandingPage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <h1 className="text-6xl md:text-8xl font-bold text-gray-900 mb-6 leading-tight">
-                La plataforma médica
-                <span className="text-blue-600 block">que necesitas</span>
+              <div className="inline-flex items-center space-x-2 bg-gray-100 rounded-full px-4 py-2 text-sm text-gray-600 mb-8">
+                <span>Preview our fall release</span>
+                <ArrowRight className="w-4 h-4" />
+              </div>
+              
+              <h1 className="text-6xl md:text-8xl font-bold text-gray-900 mb-6 leading-tight tracking-tight">
+                Medical relationship magic.
               </h1>
-              <p className="text-2xl text-gray-600 mb-8 max-w-3xl mx-auto">
-                Gestiona tu clínica de forma inteligente con nuestra plataforma integral. 
-                Pacientes, citas, historiales y reportes en un solo lugar.
+              <p className="text-2xl text-gray-600 mb-8 max-w-3xl mx-auto font-light">
+                CLINESA is the AI-native platform for medical professionals.
               </p>
             </motion.div>
 
@@ -155,13 +312,11 @@ const LandingPage = () => {
               transition={{ duration: 0.8, delay: 0.3 }}
               className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
             >
-              <Button size="lg" className="text-lg px-8 py-4">
-                Comenzar Gratis
-                <ArrowRight className="ml-2 w-5 h-5" />
+              <Button size="lg" className="text-lg px-6 py-3 bg-gray-900 text-white hover:bg-gray-800 rounded-lg">
+                Start for free
               </Button>
-              <Button variant="outline" size="lg" className="text-lg px-8 py-4">
-                <Play className="mr-2 w-5 h-5" />
-                Ver Demo
+              <Button variant="outline" size="lg" className="text-lg px-6 py-3 border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg">
+                Send me a demo
               </Button>
             </motion.div>
 
@@ -174,7 +329,7 @@ const LandingPage = () => {
             >
               {stats.map((stat, index) => (
                 <div key={index} className="text-center">
-                  <div className="text-4xl md:text-5xl font-bold text-blue-600 mb-2">
+                  <div className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
                     {stat.number}
                   </div>
                   <div className="text-sm text-gray-600">
@@ -197,10 +352,10 @@ const LandingPage = () => {
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+            <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 tracking-tight">
               Así es por dentro
             </h2>
-            <p className="text-2xl text-gray-600 max-w-4xl mx-auto">
+            <p className="text-2xl text-gray-600 max-w-4xl mx-auto font-light">
               Una interfaz intuitiva y moderna que hace que la gestión médica sea simple y eficiente
             </p>
           </motion.div>
@@ -229,10 +384,10 @@ const LandingPage = () => {
               {/* Top Navigation */}
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center space-x-4">
-                  <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                  <div className="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center">
                     <Heart className="w-5 h-5 text-white" />
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900">Dashboard</h3>
+                  <h3 className="text-2xl font-semibold text-gray-900">Dashboard</h3>
                 </div>
                 <div className="flex items-center space-x-4">
                   <div className="relative">
@@ -240,10 +395,10 @@ const LandingPage = () => {
                     <input 
                       type="text" 
                       placeholder="Buscar pacientes, citas..."
-                      className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                     />
                   </div>
-                  <Button size="sm">
+                  <Button size="sm" className="text-sm px-4 py-2 bg-gray-900 text-white hover:bg-gray-800 rounded-lg">
                     <Plus className="w-4 h-4 mr-2" />
                     Nuevo
                   </Button>
@@ -289,7 +444,7 @@ const LandingPage = () => {
                   <div className="p-6 border-b border-gray-200">
                     <div className="flex items-center justify-between">
                       <h4 className="text-lg font-semibold text-gray-900">Pacientes Recientes</h4>
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" size="sm" className="text-sm px-4 py-2 border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg">
                         <Filter className="w-4 h-4 mr-2" />
                         Filtrar
                       </Button>
@@ -381,10 +536,10 @@ const LandingPage = () => {
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+            <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 tracking-tight">
               Todo lo que necesitas para tu clínica
             </h2>
-            <p className="text-2xl text-gray-600 max-w-4xl mx-auto">
+            <p className="text-2xl text-gray-600 max-w-4xl mx-auto font-light">
               Una plataforma completa diseñada específicamente para profesionales de la salud
             </p>
           </motion.div>
@@ -426,10 +581,10 @@ const LandingPage = () => {
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+            <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 tracking-tight">
               Resultados que hablan por sí solos
             </h2>
-            <p className="text-2xl text-gray-600 max-w-4xl mx-auto">
+            <p className="text-2xl text-gray-600 max-w-4xl mx-auto font-light">
               Únete a cientos de profesionales que ya han transformado su práctica médica
             </p>
           </motion.div>
@@ -464,10 +619,10 @@ const LandingPage = () => {
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
+            <h2 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 tracking-tight">
               Lo que dicen nuestros usuarios
             </h2>
-            <p className="text-2xl text-gray-600 max-w-4xl mx-auto">
+            <p className="text-2xl text-gray-600 max-w-4xl mx-auto font-light">
               Profesionales de la salud que han transformado su práctica con CLINESA
             </p>
           </motion.div>
@@ -500,7 +655,7 @@ const LandingPage = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-32 bg-blue-600">
+      <section className="py-32 bg-gray-900">
         <div className="max-w-4xl mx-auto text-center px-6">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
@@ -508,19 +663,18 @@ const LandingPage = () => {
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">
+            <h2 className="text-5xl md:text-6xl font-bold text-white mb-6 tracking-tight">
               ¿Listo para transformar tu práctica médica?
             </h2>
-            <p className="text-2xl text-blue-100 mb-8">
+            <p className="text-2xl text-gray-300 mb-8 font-light">
               Comienza tu prueba gratuita de 14 días. Sin compromisos, sin tarjeta de crédito.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button size="lg" className="text-lg px-8 py-4 bg-white text-blue-600 hover:bg-gray-100">
-                Comenzar Gratis
-                <ArrowRight className="ml-2 w-5 h-5" />
+              <Button size="lg" className="text-lg px-6 py-3 bg-white text-gray-900 hover:bg-gray-100 rounded-lg">
+                Start for free
               </Button>
-              <Button variant="outline" size="lg" className="text-lg px-8 py-4 border-white text-white hover:bg-white hover:text-blue-600">
-                Hablar con Ventas
+              <Button variant="outline" size="lg" className="text-lg px-6 py-3 border-white text-white hover:bg-white hover:text-gray-900 rounded-lg">
+                Send me a demo
               </Button>
             </div>
           </motion.div>
@@ -528,44 +682,44 @@ const LandingPage = () => {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-16">
+      <footer className="bg-white text-gray-900 py-16 border-t border-gray-200">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center space-x-2 mb-4">
-                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-gray-900 rounded-lg flex items-center justify-center">
                   <Heart className="w-5 h-5 text-white" />
                 </div>
-                <span className="text-xl font-bold">CLINESA</span>
+                <span className="text-xl font-semibold">CLINESA</span>
               </div>
-              <p className="text-gray-400 mb-4">
+              <p className="text-gray-600 mb-4">
                 La plataforma más avanzada para la gestión integral de clínicas médicas.
               </p>
             </div>
 
             <div>
               <h3 className="text-lg font-semibold mb-4">Producto</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Características</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Precios</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Demo</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Integraciones</a></li>
+              <ul className="space-y-2 text-gray-600">
+                <li><a href="#" className="hover:text-gray-900 transition-colors">Características</a></li>
+                <li><a href="#" className="hover:text-gray-900 transition-colors">Precios</a></li>
+                <li><a href="#" className="hover:text-gray-900 transition-colors">Demo</a></li>
+                <li><a href="#" className="hover:text-gray-900 transition-colors">Integraciones</a></li>
               </ul>
             </div>
 
             <div>
               <h3 className="text-lg font-semibold mb-4">Soporte</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-white transition-colors">Centro de Ayuda</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Documentación</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Contacto</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Estado del Sistema</a></li>
+              <ul className="space-y-2 text-gray-600">
+                <li><a href="#" className="hover:text-gray-900 transition-colors">Centro de Ayuda</a></li>
+                <li><a href="#" className="hover:text-gray-900 transition-colors">Documentación</a></li>
+                <li><a href="#" className="hover:text-gray-900 transition-colors">Contacto</a></li>
+                <li><a href="#" className="hover:text-gray-900 transition-colors">Estado del Sistema</a></li>
               </ul>
             </div>
 
             <div>
               <h3 className="text-lg font-semibold mb-4">Contacto</h3>
-              <ul className="space-y-2 text-gray-400">
+              <ul className="space-y-2 text-gray-600">
                 <li className="flex items-center space-x-2">
                   <Phone className="w-4 h-4" />
                   <span>+34 900 123 456</span>
@@ -582,7 +736,7 @@ const LandingPage = () => {
             </div>
           </div>
 
-          <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
+          <div className="border-t border-gray-200 mt-12 pt-8 text-center text-gray-600">
             <p>&copy; 2024 CLINESA. Todos los derechos reservados.</p>
           </div>
         </div>
