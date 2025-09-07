@@ -16,6 +16,7 @@ import { PatientsPage } from '@/pages/patients/PatientsPage'
 import { AppointmentsPage } from '@/pages/appointments/AppointmentsPage'
 import { MedicalRecordsPage } from '@/pages/medical-records/MedicalRecordsPage'
 import { UsersPage } from '@/pages/users/UsersPage'
+import { ReportsPage } from '@/pages/reports/ReportsPage'
 import { BillingPage } from '@/pages/billing/BillingPage'
 import { PlansPage } from '@/pages/billing/PlansPage'
 import { SettingsPage } from '@/pages/settings/SettingsPage'
@@ -98,6 +99,14 @@ function App() {
               element={
                 <ProtectedRoute requiredPermissions={['canManageUsers']}>
                   <UsersPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="reports" 
+              element={
+                <ProtectedRoute requiredPermissions={['canViewReports']}>
+                  <ReportsPage />
                 </ProtectedRoute>
               } 
             />

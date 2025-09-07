@@ -10,6 +10,7 @@ import {
   Stethoscope,
   Activity,
   CreditCard,
+  BarChart3,
   X,
   Menu
 } from 'lucide-react'
@@ -58,6 +59,12 @@ const navigation: NavItem[] = [
     href: '/app/users',
     icon: UserPlus,
     permissions: ['canManageUsers']
+  },
+  {
+    label: 'Reportes',
+    href: '/app/reports',
+    icon: BarChart3,
+    permissions: ['canViewReports']
   },
   {
     label: 'Facturación',
