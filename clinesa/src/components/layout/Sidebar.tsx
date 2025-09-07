@@ -10,6 +10,7 @@ import {
   Activity,
   CreditCard,
   BarChart3,
+  User,
   X,
   Menu
 } from 'lucide-react'
@@ -72,7 +73,7 @@ const navigation: NavItem[] = [
   {
     label: 'Mi Cuenta',
     href: '/app/account',
-    icon: UserPlus,
+    icon: User,
   }
 ]
 
