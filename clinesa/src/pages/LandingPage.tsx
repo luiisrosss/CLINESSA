@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { 
   Heart, 
   Users, 
@@ -31,6 +32,7 @@ import {
 import { Button } from "@/components/ui/Button";
 
 const LandingPage = () => {
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [hoveredPlatform, setHoveredPlatform] = useState(false);
   const [hoveredResources, setHoveredResources] = useState(false);
@@ -50,6 +52,31 @@ const LandingPage = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  // Funciones de navegación
+  const handleLogin = () => {
+    navigate('/login');
+  };
+
+  const handleRegister = () => {
+    navigate('/register');
+  };
+
+  const handleDemo = () => {
+    // Scroll to demo section or show demo modal
+    const demoSection = document.getElementById('demo');
+    if (demoSection) {
+      demoSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleStartTrial = () => {
+    navigate('/register?plan=trial');
+  };
+
+  const handleViewDemo = () => {
+    handleDemo();
+  };
 
   const features = [
     {
@@ -338,10 +365,19 @@ const LandingPage = () => {
             </div>
 
             <div className="hidden md:flex items-center space-x-4">
-              <Button variant="outline" size="sm" className="text-sm px-4 py-2 border-gray-300 text-gray-700 hover:bg-gray-50 font-medium">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="text-sm px-4 py-2 border-gray-300 text-gray-700 hover:bg-gray-50 font-medium"
+                onClick={handleLogin}
+              >
                 Iniciar sesión
               </Button>
-              <Button size="sm" className="text-sm px-4 py-2 bg-gray-900 text-white hover:bg-gray-800 font-medium">
+              <Button 
+                size="sm" 
+                className="text-sm px-4 py-2 bg-gray-900 text-white hover:bg-gray-800 font-medium"
+                onClick={handleRegister}
+              >
                 Registrarse
               </Button>
             </div>
@@ -356,6 +392,63 @@ const LandingPage = () => {
         </div>
       </motion.nav>
 
+      {/* Mobile Menu */}
+      {isMenuOpen && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          className="fixed top-24 left-0 right-0 z-40 bg-white border-b border-gray-200 md:hidden"
+        >
+          <div className="px-6 py-4 space-y-4">
+            <a 
+              href="#features" 
+              className="block text-gray-600 hover:text-gray-900 transition-colors text-base font-medium"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Características
+            </a>
+            <a 
+              href="#pricing" 
+              className="block text-gray-600 hover:text-gray-900 transition-colors text-base font-medium"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Precios
+            </a>
+            <a 
+              href="/blog" 
+              className="block text-gray-600 hover:text-gray-900 transition-colors text-base font-medium"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              Blog
+            </a>
+            <div className="pt-4 border-t border-gray-200 space-y-3">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="w-full text-sm px-4 py-2 border-gray-300 text-gray-700 hover:bg-gray-50 font-medium"
+                onClick={() => {
+                  handleLogin();
+                  setIsMenuOpen(false);
+                }}
+              >
+                Iniciar sesión
+              </Button>
+              <Button 
+                size="sm" 
+                className="w-full text-sm px-4 py-2 bg-gray-900 text-white hover:bg-gray-800 font-medium"
+                onClick={() => {
+                  handleRegister();
+                  setIsMenuOpen(false);
+                }}
+              >
+                Registrarse
+              </Button>
+            </div>
+          </div>
+        </motion.div>
+      )}
+
       {/* Hero Section */}
       <section className="pt-36 pb-16 bg-white min-h-screen flex items-center">
         <div className="max-w-7xl mx-auto px-6 w-full">
@@ -365,7 +458,7 @@ const LandingPage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <div className="inline-flex items-center space-x-2 bg-gray-100 rounded-full px-4 py-2 text-sm text-gray-600 mb-8">
+              <div className="inline-flex items-center space-x-2 bg-gray-50 rounded-full px-4 py-2 text-sm text-gray-600 mb-8">
                 <span>Vista previa de nuestra versión de otoño</span>
                 <ArrowRight className="w-4 h-4" />
               </div>
@@ -384,10 +477,19 @@ const LandingPage = () => {
               transition={{ duration: 0.8, delay: 0.3 }}
               className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
             >
-              <Button size="lg" className="text-lg px-6 py-3 bg-gray-900 text-white hover:bg-gray-800 rounded-lg font-medium">
+              <Button 
+                size="lg" 
+                className="text-lg px-6 py-3 bg-gray-900 text-white hover:bg-gray-800 rounded-lg font-medium"
+                onClick={handleStartTrial}
+              >
                 Comenzar
               </Button>
-              <Button variant="outline" size="lg" className="text-lg px-6 py-3 border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg font-medium">
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="text-lg px-6 py-3 border-gray-300 text-gray-700 hover:bg-gray-50 rounded-lg font-medium"
+                onClick={handleViewDemo}
+              >
                 <Play className="w-5 h-5 mr-2" />
                 Ver demo
               </Button>
@@ -416,7 +518,7 @@ const LandingPage = () => {
       </section>
 
       {/* Software Preview Section - Attio Style */}
-      <section className="py-32 bg-white">
+      <section id="demo" className="py-32 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div 
             className="text-center mb-20"
@@ -442,7 +544,7 @@ const LandingPage = () => {
             viewport={{ once: true }}
           >
             {/* Browser Header */}
-            <div className="bg-gray-100 px-6 py-4 flex items-center justify-between border-b border-gray-200">
+            <div className="bg-gray-50 px-6 py-4 flex items-center justify-between border-b border-gray-200">
               <div className="flex items-center space-x-2">
                 <div className="w-3 h-3 bg-red-500 rounded-full"></div>
                 <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
@@ -531,7 +633,7 @@ const LandingPage = () => {
                         { name: "Ana Martínez", email: "ana@email.com", status: "Pendiente", lastVisit: "Hace 3 días" },
                         { name: "Luis García", email: "luis@email.com", status: "Activo", lastVisit: "Hace 1 día" }
                       ].map((patient, index) => (
-                        <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div key={index} className="flex items-center justify-between p-4 bg-gray-25 rounded-lg">
                           <div className="flex items-center space-x-3">
                             <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                               <Users className="w-5 h-5 text-blue-600" />
@@ -574,7 +676,7 @@ const LandingPage = () => {
                         { time: "14:00", patient: "Ana Martínez", type: "Consulta", status: "Pendiente" },
                         { time: "16:30", patient: "Luis García", type: "Seguimiento", status: "Confirmada" }
                       ].map((appointment, index) => (
-                        <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div key={index} className="flex items-center justify-between p-3 bg-gray-25 rounded-lg">
                           <div className="flex items-center space-x-3">
                             <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
                               <Calendar className="w-4 h-4 text-blue-600" />
@@ -600,7 +702,7 @@ const LandingPage = () => {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-32 bg-gray-50">
+      <section id="features" className="py-32 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div 
             className="text-center mb-20"
@@ -683,7 +785,7 @@ const LandingPage = () => {
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonials" className="py-32 bg-gray-50">
+      <section id="testimonials" className="py-32 bg-white">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div 
             className="text-center mb-20"
@@ -743,10 +845,19 @@ const LandingPage = () => {
               Comienza tu prueba gratuita de 14 días. Sin compromisos, sin tarjeta de crédito.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button size="lg" className="text-lg px-6 py-3 bg-white text-gray-900 hover:bg-gray-100 rounded-lg font-medium">
+              <Button 
+                size="lg" 
+                className="text-lg px-6 py-3 bg-white text-gray-900 hover:bg-gray-100 rounded-lg font-medium"
+                onClick={handleStartTrial}
+              >
                 Comenzar
               </Button>
-              <Button variant="outline" size="lg" className="text-lg px-6 py-3 border-white text-white hover:bg-white hover:text-gray-900 rounded-lg font-medium">
+              <Button 
+                variant="outline" 
+                size="lg" 
+                className="text-lg px-6 py-3 border-white text-white hover:bg-white hover:text-gray-900 rounded-lg font-medium"
+                onClick={handleViewDemo}
+              >
                 Ver demo
               </Button>
             </div>
