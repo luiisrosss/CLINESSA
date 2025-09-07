@@ -19,6 +19,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { useDashboard } from '@/hooks/useDashboard'
 // import { useMonitoring } from '@/hooks/useMonitoring'
 import { PlanUsageWidget } from '@/components/dashboard/PlanUsageWidget'
+import { PatientMetricsTable, mockPatientMetrics } from '@/components/dashboard/PatientMetricsTable'
 import { cn } from '@/lib/utils'
 
 interface StatCardProps {
@@ -365,12 +366,34 @@ export function DashboardPage() {
         </motion.div>
       </div>
 
+      {/* Patient Metrics Table */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.5 }}
+      >
+        <PatientMetricsTable
+          patients={mockPatientMetrics}
+          loading={loading}
+          onPatientClick={(patient) => {
+            console.log('Patient clicked:', patient)
+            // Navigate to patient details
+            navigate(`/app/patients?id=${patient.id}`)
+          }}
+          onViewDetails={(patient) => {
+            console.log('View details for:', patient)
+            // Navigate to patient details modal
+            navigate(`/app/patients?id=${patient.id}&tab=details`)
+          }}
+        />
+      </motion.div>
+
       {/* Alerts/Notifications */}
       <motion.div 
         className="notion-card p-4 border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-950"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.4 }}
+        transition={{ duration: 0.6, delay: 0.6 }}
       >
         <div className="flex items-center space-x-3">
           <AlertCircle className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
