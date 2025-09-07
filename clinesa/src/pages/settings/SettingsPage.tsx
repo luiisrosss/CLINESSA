@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Save, Building, Globe, Shield, Bell, User, Database, AlertCircle, CheckCircle } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Save, Building, Globe, Shield, Bell, User, Database, AlertCircle, CheckCircle, Download, Upload, RefreshCw, Trash2 } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
@@ -86,6 +87,8 @@ export function SettingsPage() {
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [activeTab, setActiveTab] = useState('organization')
+  const [hasChanges, setHasChanges] = useState(false)
+  const [backupData, setBackupData] = useState<any>(null)
 
   // Load organization settings
   useEffect(() => {
@@ -158,12 +161,90 @@ export function SettingsPage() {
       updateConfig('appointmentReminders', systemSettings.appointment_reminders)
       updateConfig('reminderTime', systemSettings.reminder_time.toString())
 
+      setHasChanges(false)
       toast.success('Configuración del sistema guardada correctamente')
     } catch (error) {
       console.error('Error saving system settings:', error)
       toast.error('Error al guardar la configuración del sistema')
     } finally {
       setSaving(false)
+    }
+  }
+
+  // Export configuration
+  const exportConfiguration = () => {
+    const configData = {
+      organization: organizationSettings,
+      system: systemSettings,
+      exported_at: new Date().toISOString(),
+      version: '1.0'
+    }
+
+    const blob = new Blob([JSON.stringify(configData, null, 2)], { type: 'application/json' })
+    const link = document.createElement('a')
+    const url = URL.createObjectURL(blob)
+    link.setAttribute('href', url)
+    link.setAttribute('download', `configuracion_clinesa_${new Date().toISOString().split('T')[0]}.json`)
+    link.style.visibility = 'hidden'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    
+    toast.success('Configuración exportada correctamente')
+  }
+
+  // Import configuration
+  const importConfiguration = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      try {
+        const configData = JSON.parse(e.target?.result as string)
+        
+        if (configData.organization) {
+          setOrganizationSettings(configData.organization)
+        }
+        if (configData.system) {
+          setSystemSettings(configData.system)
+        }
+        
+        setHasChanges(true)
+        toast.success('Configuración importada correctamente')
+      } catch (error) {
+        toast.error('Error al importar la configuración')
+      }
+    }
+    reader.readAsText(file)
+  }
+
+  // Reset to defaults
+  const resetToDefaults = () => {
+    if (window.confirm('¿Está seguro que desea restaurar la configuración por defecto?')) {
+      setOrganizationSettings({
+        name: '',
+        type: 'clinic',
+        address: '',
+        phone: '',
+        email: '',
+        website: '',
+        description: '',
+      })
+      setSystemSettings({
+        timezone: 'America/Mexico_City',
+        date_format: 'DD/MM/YYYY',
+        time_format: '24h',
+        language: 'es',
+        auto_logout: false,
+        session_timeout: 30,
+        email_notifications: true,
+        push_notifications: true,
+        appointment_reminders: true,
+        reminder_time: 15,
+      })
+      setHasChanges(true)
+      toast.success('Configuración restaurada a valores por defecto')
     }
   }
 
@@ -175,54 +256,131 @@ export function SettingsPage() {
   ]
 
   return (
-    <div className="space-y-4 sm:space-y-6">
+    <div className="space-y-8">
       {/* Header */}
-      <div>
-        <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Configuración</h1>
-        <p className="text-gray-600 dark:text-gray-400 mt-1">
-          Administra la configuración de la organización y el sistema
-        </p>
-      </div>
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between space-y-3 sm:space-y-0">
+          <div>
+            <h1 className="text-xl font-normal text-primary-1000 dark:text-primary-0">Configuración</h1>
+            <p className="text-primary-600 dark:text-primary-400 mt-1">
+              Administra la configuración de la organización y el sistema
+            </p>
+          </div>
+          
+          {/* Action Buttons */}
+          <div className="flex items-center space-x-2">
+            <Button
+              variant="outline"
+              onClick={exportConfiguration}
+              className="flex items-center space-x-2"
+            >
+              <Download className="w-4 h-4" />
+              <span>Exportar</span>
+            </Button>
+            
+            <label className="notion-button-outline cursor-pointer flex items-center space-x-2">
+              <Upload className="w-4 h-4" />
+              <span>Importar</span>
+              <input
+                type="file"
+                accept=".json"
+                onChange={importConfiguration}
+                className="hidden"
+              />
+            </label>
+            
+            <Button
+              variant="outline"
+              onClick={resetToDefaults}
+              className="flex items-center space-x-2 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950"
+            >
+              <RefreshCw className="w-4 h-4" />
+              <span>Restaurar</span>
+            </Button>
+          </div>
+        </div>
+        
+        {/* Changes Indicator */}
+        {hasChanges && (
+          <motion.div 
+            className="mt-4 p-3 bg-yellow-50 dark:bg-yellow-950 border border-yellow-200 dark:border-yellow-800 rounded-md"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="flex items-center space-x-2">
+              <AlertCircle className="w-4 h-4 text-yellow-600 dark:text-yellow-400" />
+              <span className="text-sm text-yellow-800 dark:text-yellow-200">
+                Tienes cambios sin guardar
+              </span>
+            </div>
+          </motion.div>
+        )}
+      </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Sidebar */}
-        <div className="lg:col-span-1">
-          <Card>
-            <CardContent className="p-4">
-              <nav className="space-y-2">
-                {tabs.map((tab) => {
-                  const Icon = tab.icon
-                  return (
-                    <button
-                      key={tab.id}
-                      onClick={() => setActiveTab(tab.id)}
-                      className={`w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-left transition-colors ${
-                        activeTab === tab.id
-                          ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
-                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600'
-                      }`}
-                    >
-                      <Icon className="w-5 h-5" />
-                      <span className="text-sm font-medium">{tab.label}</span>
-                    </button>
-                  )
-                })}
-              </nav>
-            </CardContent>
-          </Card>
-        </div>
+        <motion.div 
+          className="lg:col-span-1"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+        >
+          <div className="notion-card p-4">
+            <nav className="space-y-1">
+              {tabs.map((tab, index) => {
+                const Icon = tab.icon
+                return (
+                  <motion.button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`w-full flex items-center space-x-3 px-3 py-2 rounded-md text-left transition-colors ${
+                      activeTab === tab.id
+                        ? 'bg-primary-100 dark:bg-primary-900 text-primary-900 dark:text-primary-100'
+                        : 'text-primary-600 dark:text-primary-400 hover:bg-primary-100 dark:hover:bg-primary-900 hover:text-primary-900 dark:hover:text-primary-100'
+                    }`}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                    whileHover={{ x: 2 }}
+                  >
+                    <Icon className="w-4 h-4" />
+                    <span className="text-sm font-medium">{tab.label}</span>
+                  </motion.button>
+                )
+              })}
+            </nav>
+          </div>
+        </motion.div>
 
         {/* Content */}
-        <div className="lg:col-span-3">
-          {activeTab === 'organization' && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Building className="w-5 h-5" />
-                  <span>Configuración de Organización</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
+        <motion.div 
+          className="lg:col-span-3"
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          <AnimatePresence mode="wait">
+            {activeTab === 'organization' && (
+              <motion.div
+                key="organization"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="notion-card p-6">
+                  <div className="flex items-center space-x-2 mb-6">
+                    <Building className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                    <h2 className="text-lg font-medium text-primary-1000 dark:text-primary-0">
+                      Configuración de Organización
+                    </h2>
+                  </div>
+                  <div className="space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Input
                     label="Nombre de la Organización"
@@ -277,25 +435,33 @@ export function SettingsPage() {
                   rows={3}
                 />
 
-                <div className="flex justify-end">
-                  <Button onClick={handleOrganizationSave} loading={saving}>
-                    <Save className="w-4 h-4 mr-2" />
-                    Guardar Cambios
-                  </Button>
+                    <div className="flex justify-end">
+                      <Button onClick={handleOrganizationSave} loading={saving}>
+                        <Save className="w-4 h-4 mr-2" />
+                        Guardar Cambios
+                      </Button>
+                    </div>
+                  </div>
                 </div>
-              </CardContent>
-            </Card>
-          )}
+              </motion.div>
+            )}
 
-          {activeTab === 'system' && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Database className="w-5 h-5" />
-                  <span>Configuración del Sistema</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
+            {activeTab === 'system' && (
+              <motion.div
+                key="system"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="notion-card p-6">
+                  <div className="flex items-center space-x-2 mb-6">
+                    <Database className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                    <h2 className="text-lg font-medium text-primary-1000 dark:text-primary-0">
+                      Configuración del Sistema
+                    </h2>
+                  </div>
+                  <div className="space-y-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -342,25 +508,33 @@ export function SettingsPage() {
                   </div>
                 </div>
 
-                <div className="flex justify-end">
-                  <Button onClick={handleSystemSave} loading={saving}>
-                    <Save className="w-4 h-4 mr-2" />
-                    Guardar Cambios
-                  </Button>
+                    <div className="flex justify-end">
+                      <Button onClick={handleSystemSave} loading={saving}>
+                        <Save className="w-4 h-4 mr-2" />
+                        Guardar Cambios
+                      </Button>
+                    </div>
+                  </div>
                 </div>
-              </CardContent>
-            </Card>
-          )}
+              </motion.div>
+            )}
 
-          {activeTab === 'notifications' && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Bell className="w-5 h-5" />
-                  <span>Configuración de Notificaciones</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
+            {activeTab === 'notifications' && (
+              <motion.div
+                key="notifications"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="notion-card p-6">
+                  <div className="flex items-center space-x-2 mb-6">
+                    <Bell className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                    <h2 className="text-lg font-medium text-primary-1000 dark:text-primary-0">
+                      Configuración de Notificaciones
+                    </h2>
+                  </div>
+                  <div className="space-y-6">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
@@ -419,25 +593,33 @@ export function SettingsPage() {
                   </div>
                 </div>
 
-                <div className="flex justify-end">
-                  <Button onClick={handleSystemSave} loading={saving}>
-                    <Save className="w-4 h-4 mr-2" />
-                    Guardar Cambios
-                  </Button>
+                    <div className="flex justify-end">
+                      <Button onClick={handleSystemSave} loading={saving}>
+                        <Save className="w-4 h-4 mr-2" />
+                        Guardar Cambios
+                      </Button>
+                    </div>
+                  </div>
                 </div>
-              </CardContent>
-            </Card>
-          )}
+              </motion.div>
+            )}
 
-          {activeTab === 'security' && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Shield className="w-5 h-5" />
-                  <span>Configuración de Seguridad</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
+            {activeTab === 'security' && (
+              <motion.div
+                key="security"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="notion-card p-6">
+                  <div className="flex items-center space-x-2 mb-6">
+                    <Shield className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                    <h2 className="text-lg font-medium text-primary-1000 dark:text-primary-0">
+                      Configuración de Seguridad
+                    </h2>
+                  </div>
+                  <div className="space-y-6">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
@@ -483,16 +665,18 @@ export function SettingsPage() {
                   </div>
                 </div>
 
-                <div className="flex justify-end">
-                  <Button onClick={handleSystemSave} loading={saving}>
-                    <Save className="w-4 h-4 mr-2" />
-                    Guardar Cambios
-                  </Button>
+                    <div className="flex justify-end">
+                      <Button onClick={handleSystemSave} loading={saving}>
+                        <Save className="w-4 h-4 mr-2" />
+                        Guardar Cambios
+                      </Button>
+                    </div>
+                  </div>
                 </div>
-              </CardContent>
-            </Card>
-          )}
-        </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
       </div>
     </div>
   )
