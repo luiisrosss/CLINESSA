@@ -73,48 +73,6 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen bg-white dark:bg-primary-1000">
-      {/* Header */}
-      <motion.header 
-        className="border-b border-primary-200 dark:border-primary-800"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <h1 className="text-xl font-semibold text-primary-1000 dark:text-primary-0">
-                CLINESA
-              </h1>
-            </div>
-            <nav className="hidden md:flex space-x-8">
-              <a href="#features" className="text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-100 transition-colors">
-                Características
-              </a>
-              <a href="#testimonials" className="text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-100 transition-colors">
-                Testimonios
-              </a>
-              <a href="#pricing" className="text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-100 transition-colors">
-                Precios
-              </a>
-            </nav>
-            <div className="flex items-center space-x-4">
-              <Link 
-                to="/auth/login"
-                className="text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-100 transition-colors"
-              >
-                Iniciar Sesión
-              </Link>
-              <Link 
-                to="/auth/register"
-                className="notion-button-primary"
-              >
-                Comenzar Gratis
-              </Link>
-            </div>
-          </div>
-        </div>
-      </motion.header>
 
       {/* Hero Section */}
       <motion.section 

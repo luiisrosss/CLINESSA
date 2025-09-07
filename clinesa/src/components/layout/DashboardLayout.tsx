@@ -66,18 +66,18 @@ export function DashboardLayout({ title, className }: DashboardLayoutProps) {
       <div className="flex-1 flex flex-col min-w-0 lg:ml-0">
         {/* Header */}
         <motion.div 
-          className="flex items-center bg-white dark:bg-primary-1000 border-b border-primary-200 dark:border-primary-800 h-16 px-4"
+          className="flex items-center bg-white dark:bg-primary-1000 border-b border-primary-200 dark:border-primary-800 h-10 px-4"
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.4 }}
         >
           {/* Mobile Menu Button */}
           <button
-            className="lg:hidden p-2 mr-2 text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-100 hover:bg-primary-100 dark:hover:bg-primary-900 rounded-md transition-colors"
+            className="lg:hidden p-1 mr-2 text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-100 hover:bg-primary-100 dark:hover:bg-primary-900 rounded-sm transition-colors"
             onClick={() => setSidebarOpen(true)}
             title="Abrir menú"
           >
-            <Menu className="w-5 h-5" />
+            <Menu className="w-4 h-4" />
           </button>
           
           <Header title={title} />
