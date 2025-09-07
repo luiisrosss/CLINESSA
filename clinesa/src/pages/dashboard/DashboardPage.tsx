@@ -20,6 +20,7 @@ import { useDashboard } from '@/hooks/useDashboard'
 // import { useMonitoring } from '@/hooks/useMonitoring'
 import { PlanUsageWidget } from '@/components/dashboard/PlanUsageWidget'
 import { PatientMetricsTable, mockPatientMetrics } from '@/components/dashboard/PatientMetricsTable'
+import { RealTimeMetrics } from '@/components/dashboard/RealTimeMetrics'
 import { cn } from '@/lib/utils'
 
 interface StatCardProps {
@@ -248,6 +249,15 @@ export function DashboardPage() {
             <StatCard {...stat} />
           </motion.div>
         ))}
+      </motion.div>
+
+      {/* Real-time Metrics Charts */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.3 }}
+      >
+        <RealTimeMetrics />
       </motion.div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
