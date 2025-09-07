@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/Input'
 import { ConfigModal } from '@/components/ui/ConfigModal'
 import { ProfileModal } from '@/components/ui/ProfileModal'
 import { NotificationCenter } from '@/components/ui/NotificationCenter'
+import { PerformanceMonitor } from '@/components/ui/PerformanceMonitor'
 import { useAuth } from '@/hooks/useAuth'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
@@ -47,6 +48,9 @@ export function Header({ title, className }: HeaderProps) {
 
       {/* Right Section - Minimal User */}
       <div className="flex items-center space-x-2 flex-shrink-0">
+        {/* Performance Monitor */}
+        <PerformanceMonitor />
+        
         {/* Notifications */}
         <NotificationCenter />
         
