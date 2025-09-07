@@ -54,17 +54,17 @@ UPDATE organizations
 SET type = 'private_practice'
 WHERE type = 'clinic' OR type = 'hospital';
 
--- Remove team management permissions from existing users
-UPDATE users 
-SET role = 'psychologist'
-WHERE role = 'admin' OR role = 'doctor' OR role = 'nurse' OR role = 'receptionist';
-
 -- Update role enum to focus on psychology
 ALTER TYPE user_role RENAME TO user_role_old;
 CREATE TYPE user_role AS ENUM ('psychologist', 'admin');
 
 -- Update users table to use new role enum
-ALTER TABLE users ALTER COLUMN role TYPE user_role USING role::text::user_role;
+ALTER TABLE users ALTER COLUMN role TYPE user_role USING 
+  CASE 
+    WHEN role::text IN ('admin') THEN 'admin'::user_role
+    WHEN role::text IN ('doctor', 'nurse', 'receptionist') THEN 'psychologist'::user_role
+    ELSE 'psychologist'::user_role
+  END;
 
 -- Drop old enum
 DROP TYPE user_role_old;
