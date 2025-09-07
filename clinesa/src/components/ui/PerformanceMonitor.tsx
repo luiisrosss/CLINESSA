@@ -47,29 +47,31 @@ export function PerformanceMonitor({ className, showDetails = false }: Performan
     const maxMemory = (performance as any).memory?.totalJSHeapSize || 0
     const memoryPercentage = maxMemory > 0 ? (memoryUsage / maxMemory) * 100 : 0
 
-    setMetrics(prev => ({
-      ...prev,
-      cacheSize,
-      memoryUsage: memoryPercentage,
-      lastRefresh: new Date()
-    }))
+    setMetrics(prev => {
+      // Check for alerts
+      const newAlerts: string[] = []
+      
+      if (cacheSize > 100) {
+        newAlerts.push('Cache size is high (>100 items)')
+      }
+      
+      if (memoryPercentage > 80) {
+        newAlerts.push('Memory usage is high (>80%)')
+      }
+      
+      if (prev.averageQueryTime > 1000) {
+        newAlerts.push('Average query time is slow (>1s)')
+      }
 
-    // Check for alerts
-    const newAlerts: string[] = []
-    
-    if (cacheSize > 100) {
-      newAlerts.push('Cache size is high (>100 items)')
-    }
-    
-    if (memoryPercentage > 80) {
-      newAlerts.push('Memory usage is high (>80%)')
-    }
-    
-    if (prev.averageQueryTime > 1000) {
-      newAlerts.push('Average query time is slow (>1s)')
-    }
+      setAlerts(newAlerts)
 
-    setAlerts(newAlerts)
+      return {
+        ...prev,
+        cacheSize,
+        memoryUsage: memoryPercentage,
+        lastRefresh: new Date()
+      }
+    })
   }
 
   // Clear cache
