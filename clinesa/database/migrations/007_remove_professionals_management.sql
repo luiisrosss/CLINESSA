@@ -1,10 +1,14 @@
 -- Migration: Remove professionals management functionality
 -- This migration removes team management features and focuses on individual psychologists
 
--- Remove canManageUsers permission from existing roles
+-- Remove team management features from existing plans
 UPDATE subscription_plans 
-SET permissions = permissions - 'canManageUsers'::text
-WHERE permissions ? 'canManageUsers';
+SET features = features - 'Gestión de equipos médicos'::text
+WHERE features ? 'Gestión de equipos médicos';
+
+UPDATE subscription_plans 
+SET features = features - 'Gestión de usuarios'::text
+WHERE features ? 'Gestión de usuarios';
 
 -- Update role descriptions to focus on individual practice
 UPDATE subscription_plans 
@@ -19,26 +23,30 @@ UPDATE subscription_plans
 SET description = 'Plan completo para psicólogos con múltiples especialidades'
 WHERE type = 'enterprise';
 
--- Remove team-related features from plan features
+-- Remove additional team-related features from plan features
 UPDATE subscription_plans 
-SET features = array_remove(features, 'Gestión de equipos médicos')
-WHERE 'Gestión de equipos médicos' = ANY(features);
+SET features = features - 'Administración de múltiples profesionales'::text
+WHERE features ? 'Administración de múltiples profesionales';
 
 UPDATE subscription_plans 
-SET features = array_remove(features, 'Administración de múltiples profesionales')
-WHERE 'Administración de múltiples profesionales' = ANY(features);
+SET features = features - 'Roles personalizados'::text
+WHERE features ? 'Roles personalizados';
+
+UPDATE subscription_plans 
+SET features = features - 'Múltiples sucursales'::text
+WHERE features ? 'Múltiples sucursales';
 
 -- Add psychology-focused features
 UPDATE subscription_plans 
-SET features = array_append(features, 'Gestión individual de consulta psicológica')
+SET features = features || '["Gestión individual de consulta psicológica"]'::jsonb
 WHERE type = 'basic';
 
 UPDATE subscription_plans 
-SET features = array_append(features, 'Herramientas especializadas para terapia')
+SET features = features || '["Herramientas especializadas para terapia"]'::jsonb
 WHERE type = 'professional';
 
 UPDATE subscription_plans 
-SET features = array_append(features, 'Múltiples especialidades psicológicas')
+SET features = features || '["Múltiples especialidades psicológicas"]'::jsonb
 WHERE type = 'enterprise';
 
 -- Update organization types to focus on individual practices
