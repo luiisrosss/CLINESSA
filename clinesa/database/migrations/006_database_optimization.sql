@@ -242,7 +242,7 @@ CREATE OR REPLACE FUNCTION get_appointments_with_details(
     org_id UUID,
     start_date TIMESTAMP WITH TIME ZONE,
     end_date TIMESTAMP WITH TIME ZONE,
-    doctor_id UUID DEFAULT NULL,
+    doctor_filter_id UUID DEFAULT NULL,
     status_filter appointment_status DEFAULT NULL
 )
 RETURNS TABLE (
@@ -279,7 +279,7 @@ BEGIN
     JOIN users u ON a.doctor_id = u.id
     WHERE a.organization_id = org_id
     AND a.appointment_date BETWEEN start_date AND end_date
-    AND (doctor_id IS NULL OR a.doctor_id = doctor_id)
+    AND (doctor_filter_id IS NULL OR a.doctor_id = doctor_filter_id)
     AND (status_filter IS NULL OR a.status = status_filter)
     ORDER BY a.appointment_date ASC;
 END;
@@ -288,8 +288,8 @@ $$ LANGUAGE plpgsql;
 -- Function to get medical records with patient and doctor info
 CREATE OR REPLACE FUNCTION get_medical_records_with_details(
     org_id UUID,
-    patient_id UUID DEFAULT NULL,
-    doctor_id UUID DEFAULT NULL,
+    patient_filter_id UUID DEFAULT NULL,
+    doctor_filter_id UUID DEFAULT NULL,
     limit_count INTEGER DEFAULT 100
 )
 RETURNS TABLE (
@@ -323,8 +323,8 @@ BEGIN
     JOIN patients p ON mr.patient_id = p.id
     JOIN users u ON mr.doctor_id = u.id
     WHERE mr.organization_id = org_id
-    AND (patient_id IS NULL OR mr.patient_id = patient_id)
-    AND (doctor_id IS NULL OR mr.doctor_id = doctor_id)
+    AND (patient_filter_id IS NULL OR mr.patient_id = patient_filter_id)
+    AND (doctor_filter_id IS NULL OR mr.doctor_id = doctor_filter_id)
     ORDER BY mr.visit_date DESC
     LIMIT limit_count;
 END;
