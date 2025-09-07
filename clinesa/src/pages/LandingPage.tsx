@@ -55,11 +55,11 @@ const LandingPage = () => {
 
   // Funciones de navegación
   const handleLogin = () => {
-    navigate('/login');
+    navigate('/auth/login');
   };
 
   const handleRegister = () => {
-    navigate('/register');
+    navigate('/auth/register');
   };
 
   const handleDemo = () => {
@@ -71,7 +71,7 @@ const LandingPage = () => {
   };
 
   const handleStartTrial = () => {
-    navigate('/register?plan=trial');
+    navigate('/auth/register?plan=trial');
   };
 
   const handleViewDemo = () => {
