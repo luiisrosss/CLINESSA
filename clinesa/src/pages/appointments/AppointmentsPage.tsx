@@ -1,6 +1,7 @@
-import { useState } from 'react';
-import { format, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, addWeeks, subWeeks } from 'date-fns';
-import { Calendar, Plus, ChevronLeft, ChevronRight, Search } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { format, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, addWeeks, subWeeks, addDays, subDays } from 'date-fns';
+import { Calendar, Plus, ChevronLeft, ChevronRight, Search, Filter, Download, Clock, Users, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Select } from '@/components/ui/Select';
@@ -10,6 +11,7 @@ import { AppointmentForm } from '@/components/forms/AppointmentForm';
 import { AppointmentCard } from '@/components/dashboard/AppointmentCard';
 import { useAppointments, type Appointment, type CreateAppointmentData } from '@/hooks/useAppointments';
 import { cn } from '@/lib/utils';
+import toast from 'react-hot-toast';
 
 type ViewMode = 'week' | 'day' | 'list';
 
@@ -23,6 +25,9 @@ export function AppointmentsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [doctorFilter, setDoctorFilter] = useState('');
+  const [showFilters, setShowFilters] = useState(false);
+  const [sortBy, setSortBy] = useState<'date' | 'patient' | 'status'>('date');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
   const weekStart = startOfWeek(currentDate, { weekStartsOn: 1 });
   const weekEnd = endOfWeek(currentDate, { weekStartsOn: 1 });
@@ -69,13 +74,81 @@ export function AppointmentsPage() {
   };
 
   const handleDeleteAppointment = async (id: string) => {
-    if (confirm('Are you sure you want to delete this appointment?')) {
-      await deleteAppointment(id);
+    if (confirm('¿Está seguro que desea eliminar esta cita?')) {
+      try {
+        await deleteAppointment(id);
+        toast.success('Cita eliminada correctamente');
+      } catch (error) {
+        toast.error('Error al eliminar la cita');
+      }
     }
   };
 
+  // Export appointments to CSV
+  const exportToCSV = () => {
+    const headers = ['Fecha', 'Hora', 'Paciente', 'Doctor', 'Estado', 'Tipo', 'Notas'];
+    const csvContent = [
+      headers.join(','),
+      ...filteredAppointments.map(appointment => [
+        format(new Date(appointment.appointment_date), 'dd/MM/yyyy'),
+        format(new Date(appointment.appointment_date), 'HH:mm'),
+        `${appointment.patient?.first_name} ${appointment.patient?.last_name}`,
+        `${appointment.doctor?.first_name} ${appointment.doctor?.last_name}`,
+        appointment.status,
+        appointment.appointment_type || '',
+        appointment.notes || ''
+      ].join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `citas_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    toast.success('Lista de citas exportada correctamente');
+  };
+
+  // Get appointment statistics
+  const getAppointmentStats = () => {
+    const today = new Date();
+    const todayAppointments = appointments.filter(apt => 
+      isSameDay(new Date(apt.appointment_date), today)
+    );
+    
+    const thisWeekAppointments = appointments.filter(apt => {
+      const aptDate = new Date(apt.appointment_date);
+      return aptDate >= weekStart && aptDate <= weekEnd;
+    });
+
+    const statusCounts = appointments.reduce((acc, apt) => {
+      acc[apt.status] = (acc[apt.status] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    return {
+      today: todayAppointments.length,
+      thisWeek: thisWeekAppointments.length,
+      total: appointments.length,
+      confirmed: statusCounts.confirmed || 0,
+      pending: statusCounts.scheduled || 0,
+      completed: statusCounts.completed || 0,
+      cancelled: statusCounts.cancelled || 0
+    };
+  };
+
+  const stats = getAppointmentStats();
+
   const navigateWeek = (direction: 'prev' | 'next') => {
     setCurrentDate(prev => direction === 'next' ? addWeeks(prev, 1) : subWeeks(prev, 1));
+  };
+
+  const navigateDay = (direction: 'prev' | 'next') => {
+    setCurrentDate(prev => direction === 'next' ? addDays(prev, 1) : subDays(prev, 1));
   };
 
   const getAppointmentsForDay = (day: Date) => {
@@ -105,11 +178,16 @@ export function AppointmentsPage() {
   }
 
   return (
-    <div className="section-spacing-large">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between space-y-3 sm:space-y-0">
+      <motion.div 
+        className="flex flex-col sm:flex-row sm:items-center justify-between space-y-3 sm:space-y-0"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
         <div>
-          <h1 className="text-xl font-normal text-primary-1000 dark:text-primary-0">Citas</h1>
+          <h1 className="text-xl font-normal text-primary-1000 dark:text-primary-0">Gestión de Citas</h1>
           <p className="text-primary-600 dark:text-primary-400">Gestiona y programa citas de pacientes</p>
         </div>
         <Button
@@ -119,91 +197,218 @@ export function AppointmentsPage() {
           <Plus className="w-4 h-4 mr-2" />
           Nueva Cita
         </Button>
-      </div>
+      </motion.div>
 
-      {/* Section Divider */}
-      <div className="section-divider"></div>
+      {/* Stats Cards */}
+      <motion.div 
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.1 }}
+      >
+        <div className="notion-card p-4">
+          <div className="flex items-center">
+            <div className="flex items-center justify-center w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded">
+              <Calendar className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+            </div>
+            <div className="ml-3">
+              <p className="text-sm font-normal text-primary-600 dark:text-primary-400">Hoy</p>
+              <p className="text-xl font-normal text-primary-1000 dark:text-primary-0">{stats.today}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="notion-card p-4">
+          <div className="flex items-center">
+            <div className="flex items-center justify-center w-10 h-10 bg-green-100 dark:bg-green-900 rounded">
+              <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
+            </div>
+            <div className="ml-3">
+              <p className="text-sm font-normal text-primary-600 dark:text-primary-400">Confirmadas</p>
+              <p className="text-xl font-normal text-primary-1000 dark:text-primary-0">{stats.confirmed}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="notion-card p-4">
+          <div className="flex items-center">
+            <div className="flex items-center justify-center w-10 h-10 bg-yellow-100 dark:bg-yellow-900 rounded">
+              <Clock className="w-5 h-5 text-yellow-600 dark:text-yellow-400" />
+            </div>
+            <div className="ml-3">
+              <p className="text-sm font-normal text-primary-600 dark:text-primary-400">Pendientes</p>
+              <p className="text-xl font-normal text-primary-1000 dark:text-primary-0">{stats.pending}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="notion-card p-4">
+          <div className="flex items-center">
+            <div className="flex items-center justify-center w-10 h-10 bg-gray-100 dark:bg-gray-900 rounded">
+              <Users className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+            </div>
+            <div className="ml-3">
+              <p className="text-sm font-normal text-primary-600 dark:text-primary-400">Total</p>
+              <p className="text-xl font-normal text-primary-1000 dark:text-primary-0">{stats.total}</p>
+            </div>
+          </div>
+        </div>
+      </motion.div>
 
       {/* Controls */}
-      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-        <div className="flex items-center gap-2">
-          {/* View Mode Toggle */}
-          <div className="flex bg-gray-100 rounded-lg p-1">
-            {(['week', 'day', 'list'] as ViewMode[]).map((mode) => (
-              <button
-                key={mode}
-                onClick={() => setViewMode(mode)}
-                className={cn(
-                  'px-3 py-1 rounded-md text-sm font-medium capitalize transition-colors',
-                  viewMode === mode
-                    ? 'bg-white text-gray-900 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
-                )}
-              >
-                {mode}
-              </button>
-            ))}
-          </div>
-
-          {/* Navigation */}
-          {viewMode !== 'list' && (
-            <div className="flex items-center gap-2 ml-4">
-              <Button variant="outline" size="sm" onClick={() => navigateWeek('prev')}>
-                <ChevronLeft className="w-4 h-4" />
-              </Button>
-              <span className="text-sm font-medium min-w-[200px] text-center">
-                {viewMode === 'week' 
-                  ? `${format(weekStart, 'MMM d')} - ${format(weekEnd, 'MMM d, yyyy')}`
-                  : format(currentDate, 'MMMM d, yyyy')
-                }
-              </span>
-              <Button variant="outline" size="sm" onClick={() => navigateWeek('next')}>
-                <ChevronRight className="w-4 h-4" />
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => setCurrentDate(new Date())}>
-                Today
-              </Button>
+      <motion.div 
+        className="notion-card p-6"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+      >
+        <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+          <div className="flex items-center gap-4">
+            {/* View Mode Toggle */}
+            <div className="flex bg-primary-100 dark:bg-primary-900 rounded-lg p-1">
+              {(['week', 'day', 'list'] as ViewMode[]).map((mode) => (
+                <button
+                  key={mode}
+                  onClick={() => setViewMode(mode)}
+                  className={cn(
+                    'px-3 py-1 rounded-md text-sm font-medium capitalize transition-colors',
+                    viewMode === mode
+                      ? 'bg-white dark:bg-primary-1000 text-primary-1000 dark:text-primary-0 shadow-sm'
+                      : 'text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-100'
+                  )}
+                >
+                  {mode === 'week' ? 'Semana' : mode === 'day' ? 'Día' : 'Lista'}
+                </button>
+              ))}
             </div>
-          )}
-        </div>
 
-        {/* Filters */}
-        <div className="flex items-center gap-3">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <Input
-              placeholder="Search appointments..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 w-64"
-            />
+            {/* Navigation */}
+            {viewMode !== 'list' && (
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => viewMode === 'week' ? navigateWeek('prev') : navigateDay('prev')}
+                  className="p-2 text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-100 hover:bg-primary-100 dark:hover:bg-primary-900 rounded-md transition-colors"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+                <span className="text-sm font-medium min-w-[200px] text-center text-primary-1000 dark:text-primary-0">
+                  {viewMode === 'week' 
+                    ? `${format(weekStart, 'MMM d')} - ${format(weekEnd, 'MMM d, yyyy')}`
+                    : format(currentDate, 'MMMM d, yyyy')
+                  }
+                </span>
+                <button
+                  onClick={() => viewMode === 'week' ? navigateWeek('next') : navigateDay('next')}
+                  className="p-2 text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-100 hover:bg-primary-100 dark:hover:bg-primary-900 rounded-md transition-colors"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => setCurrentDate(new Date())}
+                  className="px-3 py-1 text-sm text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-100 hover:bg-primary-100 dark:hover:bg-primary-900 rounded-md transition-colors"
+                >
+                  Hoy
+                </button>
+              </div>
+            )}
           </div>
-          <Select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="w-40"
-          >
-            <option value="">All Status</option>
-            <option value="scheduled">Scheduled</option>
-            <option value="confirmed">Confirmed</option>
-            <option value="completed">Completed</option>
-            <option value="cancelled">Cancelled</option>
-            <option value="no_show">No Show</option>
-          </Select>
-          <Select
-            value={doctorFilter}
-            onChange={(e) => setDoctorFilter(e.target.value)}
-            className="w-48"
-          >
-            <option value="">All Doctors</option>
-            {uniqueDoctors.map((doctor) => (
-              <option key={doctor?.id} value={doctor?.id}>
-                Dr. {doctor?.first_name} {doctor?.last_name}
-              </option>
-            ))}
-          </Select>
+
+          {/* Search and Filters */}
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary-400 w-4 h-4" />
+              <input
+                type="text"
+                placeholder="Buscar citas..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="notion-input pl-10 w-64"
+              />
+            </div>
+            
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className={`p-2 rounded-md transition-colors flex items-center space-x-1 ${
+                showFilters 
+                  ? 'bg-primary-100 dark:bg-primary-900 text-primary-900 dark:text-primary-100' 
+                  : 'text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-100 hover:bg-primary-100 dark:hover:bg-primary-900'
+              }`}
+            >
+              <Filter className="w-4 h-4" />
+              <span className="text-sm">Filtros</span>
+            </button>
+            
+            <button
+              onClick={exportToCSV}
+              className="p-2 text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-100 hover:bg-primary-100 dark:hover:bg-primary-900 rounded-md transition-colors"
+              title="Exportar a CSV"
+            >
+              <Download className="w-4 h-4" />
+            </button>
+          </div>
         </div>
-      </div>
+        
+        {/* Advanced Filters */}
+        {showFilters && (
+          <motion.div 
+            className="mt-4 pt-4 border-t border-primary-200 dark:border-primary-800"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-primary-700 dark:text-primary-300 mb-2">
+                  Estado
+                </label>
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="notion-input"
+                >
+                  <option value="">Todos los estados</option>
+                  <option value="scheduled">Programada</option>
+                  <option value="confirmed">Confirmada</option>
+                  <option value="completed">Completada</option>
+                  <option value="cancelled">Cancelada</option>
+                  <option value="no_show">No se presentó</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-primary-700 dark:text-primary-300 mb-2">
+                  Doctor
+                </label>
+                <select
+                  value={doctorFilter}
+                  onChange={(e) => setDoctorFilter(e.target.value)}
+                  className="notion-input"
+                >
+                  <option value="">Todos los doctores</option>
+                  {uniqueDoctors.map((doctor) => (
+                    <option key={doctor?.id} value={doctor?.id}>
+                      Dr. {doctor?.first_name} {doctor?.last_name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              
+              <div className="flex items-end">
+                <button
+                  onClick={() => {
+                    setSearchTerm('')
+                    setStatusFilter('')
+                    setDoctorFilter('')
+                  }}
+                  className="notion-button-outline text-sm"
+                >
+                  Limpiar Filtros
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </motion.div>
 
       {/* Content */}
       {viewMode === 'week' && (

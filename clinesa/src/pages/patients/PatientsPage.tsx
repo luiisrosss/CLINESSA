@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
-import { Plus, Search, Filter, Users, Calendar, FileText, Edit, Trash2, Eye } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { Plus, Search, Filter, Users, Calendar, FileText, Edit, Trash2, Eye, Download, SortAsc, SortDesc } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner'
 import { usePatients } from '@/hooks/usePatients'
 import { useAuth } from '@/hooks/useAuth'
@@ -23,8 +23,12 @@ function PatientCard({ patient, onView, onEdit, onDelete }: PatientCardProps) {
   const age = calculateAge(patient.birth_date)
   
   return (
-    <Card className="hover:shadow-notion-sm transition-shadow duration-200 cursor-pointer group">
-      <CardContent className="p-4">
+    <motion.div
+      whileHover={{ y: -2 }}
+      transition={{ duration: 0.2 }}
+    >
+      <Card className="notion-card hover:shadow-notion-md transition-all duration-200 cursor-pointer group">
+        <CardContent className="p-6">
         <div className="flex flex-col sm:flex-row sm:items-start justify-between space-y-3 sm:space-y-0">
           <div className="flex items-start space-x-3 flex-1 min-w-0">
             {/* Avatar */}
@@ -123,6 +127,7 @@ function PatientCard({ patient, onView, onEdit, onDelete }: PatientCardProps) {
         </div>
       </CardContent>
     </Card>
+    </motion.div>
   )
 }
 
@@ -136,23 +141,86 @@ export function PatientsPage() {
   const [showEditModal, setShowEditModal] = useState(false)
   const [showViewModal, setShowViewModal] = useState(false)
   const [formLoading, setFormLoading] = useState(false)
+  
+  // New state for advanced features
+  const [sortBy, setSortBy] = useState<'name' | 'age' | 'created_at'>('created_at')
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
+  const [ageFilter, setAgeFilter] = useState<{ min: number; max: number } | null>(null)
+  const [showFilters, setShowFilters] = useState(false)
 
-  // Filter patients based on search query
+  // Filter and sort patients
   useEffect(() => {
-    if (!searchQuery.trim()) {
-      setFilteredPatients(patients)
-      return
+    let filtered = [...patients]
+
+    // Apply search filter
+    if (searchQuery.trim()) {
+      filtered = filtered.filter(patient => 
+        `${patient.first_name} ${patient.last_name}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        patient.dni?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        patient.patient_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        patient.email?.toLowerCase().includes(searchQuery.toLowerCase())
+      )
     }
 
-    const filtered = patients.filter(patient => 
-      `${patient.first_name} ${patient.last_name}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      patient.dni?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      patient.patient_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      patient.email?.toLowerCase().includes(searchQuery.toLowerCase())
-    )
+    // Apply age filter
+    if (ageFilter) {
+      filtered = filtered.filter(patient => {
+        const age = calculateAge(patient.birth_date)
+        return age >= ageFilter.min && age <= ageFilter.max
+      })
+    }
+
+    // Apply sorting
+    filtered.sort((a, b) => {
+      let comparison = 0
+      
+      switch (sortBy) {
+        case 'name':
+          comparison = `${a.first_name} ${a.last_name}`.localeCompare(`${b.first_name} ${b.last_name}`)
+          break
+        case 'age':
+          comparison = calculateAge(a.birth_date) - calculateAge(b.birth_date)
+          break
+        case 'created_at':
+          comparison = new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+          break
+      }
+      
+      return sortOrder === 'asc' ? comparison : -comparison
+    })
     
     setFilteredPatients(filtered)
-  }, [patients, searchQuery])
+  }, [patients, searchQuery, ageFilter, sortBy, sortOrder])
+
+  // Export patients to CSV
+  const exportToCSV = () => {
+    const headers = ['Nombre', 'Apellido', 'DNI', 'Email', 'Teléfono', 'Edad', 'Número de Paciente', 'Fecha de Registro']
+    const csvContent = [
+      headers.join(','),
+      ...filteredPatients.map(patient => [
+        patient.first_name,
+        patient.last_name,
+        patient.dni || '',
+        patient.email || '',
+        patient.phone || '',
+        calculateAge(patient.birth_date),
+        patient.patient_number,
+        new Date(patient.created_at).toLocaleDateString()
+      ].join(','))
+    ].join('\n')
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    const url = URL.createObjectURL(blob)
+    link.setAttribute('href', url)
+    link.setAttribute('download', `pacientes_${new Date().toISOString().split('T')[0]}.csv`)
+    link.style.visibility = 'hidden'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    
+    toast.success('Lista de pacientes exportada correctamente')
+  }
 
   const handleDeletePatient = async (patient: Patient) => {
     if (!window.confirm(`¿Está seguro que desea eliminar el paciente ${patient.first_name} ${patient.last_name}?`)) {
@@ -291,25 +359,132 @@ export function PatientsPage() {
       </div>
 
       {/* Search and Filters */}
-      <Card>
-        <CardContent className="p-4 sm:p-6">
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <Input
-                placeholder="Buscar pacientes por nombre, DNI, número de paciente..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            <Button variant="outline" className="flex items-center space-x-2 w-full sm:w-auto">
-              <Filter className="w-4 h-4" />
-              <span>Filtros</span>
-            </Button>
+      <motion.div 
+        className="notion-card p-6"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        <div className="flex flex-col lg:flex-row items-stretch lg:items-center space-y-4 lg:space-y-0 lg:space-x-4">
+          {/* Search */}
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-primary-400" />
+            <input
+              type="text"
+              placeholder="Buscar pacientes por nombre, DNI, número de paciente..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="notion-input pl-10"
+            />
           </div>
-        </CardContent>
-      </Card>
+          
+          {/* Controls */}
+          <div className="flex items-center space-x-2">
+            {/* Sort */}
+            <div className="flex items-center space-x-1">
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as 'name' | 'age' | 'created_at')}
+                className="notion-input text-sm"
+              >
+                <option value="created_at">Fecha</option>
+                <option value="name">Nombre</option>
+                <option value="age">Edad</option>
+              </select>
+              <button
+                onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                className="p-2 text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-100 hover:bg-primary-100 dark:hover:bg-primary-900 rounded-md transition-colors"
+                title={`Ordenar ${sortOrder === 'asc' ? 'descendente' : 'ascendente'}`}
+              >
+                {sortOrder === 'asc' ? <SortAsc className="w-4 h-4" /> : <SortDesc className="w-4 h-4" />}
+              </button>
+            </div>
+            
+            {/* Filters */}
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className={`p-2 rounded-md transition-colors flex items-center space-x-1 ${
+                showFilters 
+                  ? 'bg-primary-100 dark:bg-primary-900 text-primary-900 dark:text-primary-100' 
+                  : 'text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-100 hover:bg-primary-100 dark:hover:bg-primary-900'
+              }`}
+            >
+              <Filter className="w-4 h-4" />
+              <span className="text-sm">Filtros</span>
+            </button>
+            
+            {/* Export */}
+            <button
+              onClick={exportToCSV}
+              className="p-2 text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-100 hover:bg-primary-100 dark:hover:bg-primary-900 rounded-md transition-colors"
+              title="Exportar a CSV"
+            >
+              <Download className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+        
+        {/* Advanced Filters */}
+        {showFilters && (
+          <motion.div 
+            className="mt-4 pt-4 border-t border-primary-200 dark:border-primary-800"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-primary-700 dark:text-primary-300 mb-2">
+                  Rango de Edad
+                </label>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="number"
+                    placeholder="Min"
+                    value={ageFilter?.min || ''}
+                    onChange={(e) => setAgeFilter(prev => ({ 
+                      min: parseInt(e.target.value) || 0, 
+                      max: prev?.max || 100 
+                    }))}
+                    className="notion-input w-20"
+                  />
+                  <span className="text-primary-500">-</span>
+                  <input
+                    type="number"
+                    placeholder="Max"
+                    value={ageFilter?.max || ''}
+                    onChange={(e) => setAgeFilter(prev => ({ 
+                      min: prev?.min || 0, 
+                      max: parseInt(e.target.value) || 100 
+                    }))}
+                    className="notion-input w-20"
+                  />
+                  <button
+                    onClick={() => setAgeFilter(null)}
+                    className="text-sm text-primary-500 hover:text-primary-700 dark:hover:text-primary-300"
+                  >
+                    Limpiar
+                  </button>
+                </div>
+              </div>
+              
+              <div className="flex items-end">
+                <button
+                  onClick={() => {
+                    setSearchQuery('')
+                    setAgeFilter(null)
+                    setSortBy('created_at')
+                    setSortOrder('desc')
+                  }}
+                  className="notion-button-outline text-sm"
+                >
+                  Limpiar Filtros
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </motion.div>
 
       {/* Patients List */}
       <div className="space-y-4">
@@ -345,17 +520,28 @@ export function PatientsPage() {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid gap-4">
-            {filteredPatients.map((patient) => (
-              <PatientCard
+          <motion.div 
+            className="grid gap-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            {filteredPatients.map((patient, index) => (
+              <motion.div
                 key={patient.id}
-                patient={patient}
-                onView={handleViewPatient}
-                onEdit={handleEditPatient}
-                onDelete={handleDeletePatient}
-              />
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
+              >
+                <PatientCard
+                  patient={patient}
+                  onView={handleViewPatient}
+                  onEdit={handleEditPatient}
+                  onDelete={handleDeletePatient}
+                />
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         )}
       </div>
 

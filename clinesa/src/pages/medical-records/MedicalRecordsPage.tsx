@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Plus, Search, Filter, FileText, Calendar, User, Eye, Edit, Trash2, Download } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { Plus, Search, Filter, FileText, Calendar, User, Eye, Edit, Trash2, Download, SortAsc, SortDesc } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
@@ -21,8 +22,12 @@ interface MedicalRecordCardProps {
 
 function MedicalRecordCard({ record, onView, onEdit, onDelete }: MedicalRecordCardProps) {
   return (
-    <Card className="hover:shadow-lg transition-shadow duration-200 cursor-pointer group">
-      <CardContent className="p-4 sm:p-6">
+    <motion.div
+      whileHover={{ y: -2 }}
+      transition={{ duration: 0.2 }}
+    >
+      <Card className="notion-card hover:shadow-notion-md transition-all duration-200 cursor-pointer group">
+        <CardContent className="p-6">
         <div className="flex flex-col sm:flex-row sm:items-start justify-between space-y-4 sm:space-y-0">
           <div className="flex items-start space-x-3 sm:space-x-4 flex-1 min-w-0">
             {/* Icon */}
@@ -119,6 +124,7 @@ function MedicalRecordCard({ record, onView, onEdit, onDelete }: MedicalRecordCa
         </div>
       </CardContent>
     </Card>
+    </motion.div>
   )
 }
 
@@ -132,25 +138,84 @@ export function MedicalRecordsPage() {
   const [showEditModal, setShowEditModal] = useState(false)
   const [showViewModal, setShowViewModal] = useState(false)
   const [formLoading, setFormLoading] = useState(false)
+  
+  // Advanced features
+  const [sortBy, setSortBy] = useState<'date' | 'patient' | 'type'>('date')
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
+  const [typeFilter, setTypeFilter] = useState('')
+  const [showFilters, setShowFilters] = useState(false)
 
-  // Filter records based on search query
+  // Filter and sort records
   useEffect(() => {
-    if (!searchQuery.trim()) {
-      setFilteredRecords(records)
-      return
+    let filtered = [...records]
+
+    // Apply search filter
+    if (searchQuery.trim()) {
+      filtered = filtered.filter(record => 
+        record.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        record.patient?.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        record.patient?.last_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        record.patient?.patient_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        record.diagnosis?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        record.record_type.toLowerCase().includes(searchQuery.toLowerCase())
+      )
     }
 
-    const filtered = records.filter(record => 
-      record.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      record.patient?.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      record.patient?.last_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      record.patient?.patient_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      record.diagnosis?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      record.record_type.toLowerCase().includes(searchQuery.toLowerCase())
-    )
+    // Apply type filter
+    if (typeFilter) {
+      filtered = filtered.filter(record => record.record_type === typeFilter)
+    }
+
+    // Apply sorting
+    filtered.sort((a, b) => {
+      let comparison = 0
+      
+      switch (sortBy) {
+        case 'date':
+          comparison = new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+          break
+        case 'patient':
+          comparison = `${a.patient?.first_name} ${a.patient?.last_name}`.localeCompare(`${b.patient?.first_name} ${b.patient?.last_name}`)
+          break
+        case 'type':
+          comparison = a.record_type.localeCompare(b.record_type)
+          break
+      }
+      
+      return sortOrder === 'asc' ? comparison : -comparison
+    })
     
     setFilteredRecords(filtered)
-  }, [records, searchQuery])
+  }, [records, searchQuery, typeFilter, sortBy, sortOrder])
+
+  // Export records to CSV
+  const exportToCSV = () => {
+    const headers = ['Título', 'Paciente', 'Tipo', 'Diagnóstico', 'Doctor', 'Fecha', 'Descripción']
+    const csvContent = [
+      headers.join(','),
+      ...filteredRecords.map(record => [
+        record.title,
+        `${record.patient?.first_name} ${record.patient?.last_name}`,
+        record.record_type,
+        record.diagnosis || '',
+        record.doctor ? `Dr. ${record.doctor.first_name} ${record.doctor.last_name}` : '',
+        format(new Date(record.created_at), 'dd/MM/yyyy'),
+        record.description || ''
+      ].join(','))
+    ].join('\n')
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+    const link = document.createElement('a')
+    const url = URL.createObjectURL(blob)
+    link.setAttribute('href', url)
+    link.setAttribute('download', `historiales_medicos_${new Date().toISOString().split('T')[0]}.csv`)
+    link.style.visibility = 'hidden'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    
+    toast.success('Historiales médicos exportados correctamente')
+  }
 
   const handleDeleteRecord = async (record: MedicalRecord) => {
     if (!window.confirm(`¿Está seguro que desea eliminar el historial "${record.title}"?`)) {
@@ -204,12 +269,17 @@ export function MedicalRecordsPage() {
   }
 
   return (
-    <div className="space-y-4 sm:space-y-6">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between space-y-4 sm:space-y-0">
+      <motion.div 
+        className="flex flex-col sm:flex-row sm:items-center justify-between space-y-3 sm:space-y-0"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">Historiales Médicos</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">
+          <h1 className="text-xl font-normal text-primary-1000 dark:text-primary-0">Historiales Médicos</h1>
+          <p className="text-primary-600 dark:text-primary-400 mt-1">
             Gestiona los historiales médicos de los pacientes
           </p>
         </div>
@@ -217,97 +287,185 @@ export function MedicalRecordsPage() {
           <Plus className="w-4 h-4" />
           <span>Nuevo Historial</span>
         </Button>
-      </div>
+      </motion.div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        <Card>
-          <CardContent className="p-4 sm:p-6">
-            <div className="flex items-center">
-              <div className="flex items-center justify-center w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg">
-                <FileText className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Total Historiales</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">{records.length}</p>
-              </div>
+      <motion.div 
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.1 }}
+      >
+        <div className="notion-card p-4">
+          <div className="flex items-center">
+            <div className="flex items-center justify-center w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded">
+              <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
             </div>
-          </CardContent>
-        </Card>
+            <div className="ml-3">
+              <p className="text-sm font-normal text-primary-600 dark:text-primary-400">Total Historiales</p>
+              <p className="text-xl font-normal text-primary-1000 dark:text-primary-0">{records.length}</p>
+            </div>
+          </div>
+        </div>
 
-        <Card>
-          <CardContent className="p-4 sm:p-6">
-            <div className="flex items-center">
-              <div className="flex items-center justify-center w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg">
-                <Calendar className="w-6 h-6 text-green-600 dark:text-green-400" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Esta Semana</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {records.filter(r => {
-                    const weekAgo = new Date()
-                    weekAgo.setDate(weekAgo.getDate() - 7)
-                    return new Date(r.created_at) >= weekAgo
-                  }).length}
-                </p>
-              </div>
+        <div className="notion-card p-4">
+          <div className="flex items-center">
+            <div className="flex items-center justify-center w-10 h-10 bg-green-100 dark:bg-green-900 rounded">
+              <Calendar className="w-5 h-5 text-green-600 dark:text-green-400" />
             </div>
-          </CardContent>
-        </Card>
+            <div className="ml-3">
+              <p className="text-sm font-normal text-primary-600 dark:text-primary-400">Esta Semana</p>
+              <p className="text-xl font-normal text-primary-1000 dark:text-primary-0">
+                {records.filter(r => {
+                  const weekAgo = new Date()
+                  weekAgo.setDate(weekAgo.getDate() - 7)
+                  return new Date(r.created_at) >= weekAgo
+                }).length}
+              </p>
+            </div>
+          </div>
+        </div>
 
-        <Card>
-          <CardContent className="p-4 sm:p-6">
-            <div className="flex items-center">
-              <div className="flex items-center justify-center w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg">
-                <User className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Pacientes Únicos</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {new Set(records.map(r => r.patient_id)).size}
-                </p>
-              </div>
+        <div className="notion-card p-4">
+          <div className="flex items-center">
+            <div className="flex items-center justify-center w-10 h-10 bg-purple-100 dark:bg-purple-900 rounded">
+              <User className="w-5 h-5 text-purple-600 dark:text-purple-400" />
             </div>
-          </CardContent>
-        </Card>
+            <div className="ml-3">
+              <p className="text-sm font-normal text-primary-600 dark:text-primary-400">Pacientes Únicos</p>
+              <p className="text-xl font-normal text-primary-1000 dark:text-primary-0">
+                {new Set(records.map(r => r.patient_id)).size}
+              </p>
+            </div>
+          </div>
+        </div>
 
-        <Card>
-          <CardContent className="p-4 sm:p-6">
-            <div className="flex items-center">
-              <div className="flex items-center justify-center w-12 h-12 bg-orange-100 dark:bg-orange-900 rounded-lg">
-                <FileText className="w-6 h-6 text-orange-600 dark:text-orange-400" />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400">Tipos Diferentes</p>
-                <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                  {new Set(records.map(r => r.record_type)).size}
-                </p>
-              </div>
+        <div className="notion-card p-4">
+          <div className="flex items-center">
+            <div className="flex items-center justify-center w-10 h-10 bg-orange-100 dark:bg-orange-900 rounded">
+              <FileText className="w-5 h-5 text-orange-600 dark:text-orange-400" />
             </div>
-          </CardContent>
-        </Card>
-      </div>
+            <div className="ml-3">
+              <p className="text-sm font-normal text-primary-600 dark:text-primary-400">Tipos Diferentes</p>
+              <p className="text-xl font-normal text-primary-1000 dark:text-primary-0">
+                {new Set(records.map(r => r.record_type)).size}
+              </p>
+            </div>
+          </div>
+        </div>
+      </motion.div>
 
       {/* Search and Filters */}
-      <Card>
-        <CardContent className="p-4 sm:p-6">
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
-              <Input
+      <motion.div 
+        className="notion-card p-6"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+      >
+        <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+          <div className="flex items-center gap-4">
+            {/* Search */}
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary-400 w-4 h-4" />
+              <input
+                type="text"
                 placeholder="Buscar historiales por título, paciente, diagnóstico..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
+                className="notion-input pl-10 w-80"
               />
             </div>
-            <Button variant="outline" className="flex items-center space-x-2 w-full sm:w-auto">
-              <Filter className="w-4 h-4" />
-              <span>Filtros</span>
-            </Button>
+            
+            {/* Sort */}
+            <div className="flex items-center space-x-1">
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as 'date' | 'patient' | 'type')}
+                className="notion-input text-sm"
+              >
+                <option value="date">Fecha</option>
+                <option value="patient">Paciente</option>
+                <option value="type">Tipo</option>
+              </select>
+              <button
+                onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                className="p-2 text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-100 hover:bg-primary-100 dark:hover:bg-primary-900 rounded-md transition-colors"
+                title={`Ordenar ${sortOrder === 'asc' ? 'descendente' : 'ascendente'}`}
+              >
+                {sortOrder === 'asc' ? <SortAsc className="w-4 h-4" /> : <SortDesc className="w-4 h-4" />}
+              </button>
+            </div>
           </div>
-        </CardContent>
-      </Card>
+
+          <div className="flex items-center gap-3">
+            {/* Filters */}
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className={`p-2 rounded-md transition-colors flex items-center space-x-1 ${
+                showFilters 
+                  ? 'bg-primary-100 dark:bg-primary-900 text-primary-900 dark:text-primary-100' 
+                  : 'text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-100 hover:bg-primary-100 dark:hover:bg-primary-900'
+              }`}
+            >
+              <Filter className="w-4 h-4" />
+              <span className="text-sm">Filtros</span>
+            </button>
+            
+            {/* Export */}
+            <button
+              onClick={exportToCSV}
+              className="p-2 text-primary-600 dark:text-primary-400 hover:text-primary-900 dark:hover:text-primary-100 hover:bg-primary-100 dark:hover:bg-primary-900 rounded-md transition-colors"
+              title="Exportar a CSV"
+            >
+              <Download className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+        
+        {/* Advanced Filters */}
+        {showFilters && (
+          <motion.div 
+            className="mt-4 pt-4 border-t border-primary-200 dark:border-primary-800"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-primary-700 dark:text-primary-300 mb-2">
+                  Tipo de Historial
+                </label>
+                <select
+                  value={typeFilter}
+                  onChange={(e) => setTypeFilter(e.target.value)}
+                  className="notion-input"
+                >
+                  <option value="">Todos los tipos</option>
+                  <option value="consulta">Consulta</option>
+                  <option value="diagnostico">Diagnóstico</option>
+                  <option value="tratamiento">Tratamiento</option>
+                  <option value="seguimiento">Seguimiento</option>
+                  <option value="emergencia">Emergencia</option>
+                </select>
+              </div>
+              
+              <div className="flex items-end">
+                <button
+                  onClick={() => {
+                    setSearchQuery('')
+                    setTypeFilter('')
+                    setSortBy('date')
+                    setSortOrder('desc')
+                  }}
+                  className="notion-button-outline text-sm"
+                >
+                  Limpiar Filtros
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </motion.div>
 
       {/* Records List */}
       <div className="space-y-4">
@@ -343,23 +501,34 @@ export function MedicalRecordsPage() {
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-4">
-            {filteredRecords.map((record) => (
-              <MedicalRecordCard
+          <motion.div 
+            className="grid grid-cols-1 gap-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            {filteredRecords.map((record, index) => (
+              <motion.div
                 key={record.id}
-                record={record}
-                onView={(record) => {
-                  setSelectedRecord(record)
-                  setShowViewModal(true)
-                }}
-                onEdit={(record) => {
-                  setSelectedRecord(record)
-                  setShowEditModal(true)
-                }}
-                onDelete={handleDeleteRecord}
-              />
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
+              >
+                <MedicalRecordCard
+                  record={record}
+                  onView={(record) => {
+                    setSelectedRecord(record)
+                    setShowViewModal(true)
+                  }}
+                  onEdit={(record) => {
+                    setSelectedRecord(record)
+                    setShowEditModal(true)
+                  }}
+                  onDelete={handleDeleteRecord}
+                />
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         )}
       </div>
 
